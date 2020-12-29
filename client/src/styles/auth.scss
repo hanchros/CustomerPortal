@@ -1,0 +1,239 @@
+.auth {
+  margin: 0 auto;
+  margin-top: 20vh;
+  margin-bottom: 50px;
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  form {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+
+.auth-wide {
+  align-items: unset !important;
+  margin-top: 10vh !important;
+}
+
+.auth-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+.qr-image {
+  text-align: center;
+  img {
+    width: 150px;
+  }
+}
+
+.org-item {
+  cursor: pointer;
+}
+
+.login-page {
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+  min-height: calc(100vh - 209px);
+  font-size: 13px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .login-remember {
+    width: 100%;
+    text-align: left;
+  }
+
+  .register-city {
+    display: flex;
+    justify-content: space-between;
+    .ant-form-item {
+      width: 48%;
+    }
+  }
+
+  #org_register {
+    text-align: left;
+  }
+}
+
+.forgot-form {
+  padding-top: 50px !important;
+}
+
+.avatar-uploader {
+  width: 110px;
+  margin: 0 auto;
+}
+
+.verify-redirect {
+  width: 150px;
+  margin: 50px auto;
+}
+
+.verify-link {
+  text-decoration: underline;
+  color: inherit;
+}
+
+.login-verify {
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: blue !important;
+}
+
+.register-modal {
+  .ant-card {
+    margin-bottom: 10px;
+  }
+  .active {
+    box-shadow: 1px 3px 9px rgb(93, 190, 93);
+    .ant-card-cover {
+      color: rgb(93, 190, 93);
+    }
+  }
+  .ant-card-cover {
+    padding: 15px;
+    font-size: 80px;
+    width: 200px;
+  }
+}
+
+.invite-title {
+  width: 100%;
+  text-align: center;
+}
+
+.invite-form {
+  max-width: 600px;
+  margin: 80px auto !important;
+}
+
+.home-child {
+  .register-form {
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .login-form {
+    margin-top: 100px;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .login-options {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .resend-desc {
+    margin-top: 70px;
+    font-size: 25px !important;
+  }
+
+  .resend-intro {
+    margin-top: 30vh;
+  }
+
+  .ant-input {
+    background-color: $gray;
+    border: 1px solid $gray-500;
+  }
+
+  .signup-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .register-btn-group {
+    display: flex;
+    margin-top: 30px;
+    .main-btn {
+      width: 100px;
+    }
+    .main-btn:nth-child(1) {
+      margin-right: 30px;
+    }
+  }
+
+  .send-invite-email {
+    width: 100%;
+    margin-top: 150px;
+    margin-bottom: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .register-inv-send {
+      max-width: 500px;
+      display: flex;
+      justify-content: center;
+      .main-btn {
+        margin-left: 30px;
+        width: 180px;
+      }
+    }
+  }
+
+  .reset-btn-group {
+    width: 250px;
+    margin: 50px auto;
+  }
+
+  .file-drop-target {
+    padding: 20px;
+    padding-top: 100px;
+
+  }
+
+  .file-drop-dragging-over-target {
+    box-shadow: 0px 0px 5px $gray-500;
+  }
+}
+
+.fileread-modal {
+  .ant-modal-body {
+    text-align: center;
+  }
+}
+
+.fileread-modal.transparent .ant-modal-content {
+  background: transparent;
+  box-shadow: none;
+}
+
+@media screen and (max-width: 768px) {
+  .register-modal {
+    .ant-card-cover {
+      width: 300px;
+    }
+  }
+
+  .home-child {
+    .login-form {
+      margin-top: 60px;
+    }
+    .resend-intro {
+      margin-top: 20vh;
+    }
+    .send-invite-email {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+    .file-drop-target {
+      padding-top: 60px;
+    }
+  }
+}

@@ -1,0 +1,149 @@
+.main-background {
+  width: 100%;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  letter-spacing: 1px;
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  .home-bg {
+    width: 70vw;
+    position: absolute;
+    top: -40vw;
+    opacity: 0.3;
+  }
+
+  .home-footer {
+    height: 45px;
+    margin-bottom: 5px;
+  }
+
+  .home-child {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - 50px);
+
+    .main-background-title {
+      margin-top: 70px;
+      color: $blue;
+      font-size: 70px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .home-btn-group {
+      display: flex;
+      margin-top: 12vh;
+
+      .main-btn {
+        width: 230px;
+      }
+      .main-btn:nth-child(1) {
+        margin-right: 50px;
+      }
+    }
+
+    p {
+      font-size: 22px;
+    }
+
+    .home-intro {
+      margin-top: 15vh;
+    }
+
+    .is-btn {
+      position: absolute;
+      bottom: 70px;
+      display: flex;
+    }
+
+    .inv-btn {
+      position: absolute;
+      bottom: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .main-btn {
+        padding: 0 40px;
+      }
+
+      .inv-learn {
+        margin-top: 10px;
+        font-size: 20px;
+        &:hover {
+          text-decoration: unset;
+          color: $blue;
+        }
+      }
+    }
+  }
+}
+
+.mt-big {
+  margin-top: 17vh !important;
+}
+
+.main-btn {
+  color: white;
+  background: $blue;
+  height: 40px;
+  font-size: 20px;
+  border: 1px solid blue;
+  padding: 0px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    color: white;
+    background: $purple-blue;
+    text-decoration: unset;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-background {
+    .home-bg {
+      width: 90vw;
+      top: -45vw;
+    }
+
+    .home-child {
+      .main-background-title {
+        font-size: 38px;
+        margin-top: 50px;
+      }
+
+      .home-btn-group {
+        .main-btn:nth-child(1) {
+          margin-right: 20px;
+        }
+        .main-btn {
+          width: 150px;
+        }
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      .inv-btn {
+        position: relative;
+        margin: 30px 0;
+        bottom: unset;
+
+        .main-btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

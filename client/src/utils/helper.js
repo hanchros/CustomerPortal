@@ -1,0 +1,78 @@
+export const getFieldData = (fieldData = [], field) => {
+  let result = fieldData.filter((item) => item.field === field);
+  return result;
+};
+
+export const getOneFieldData = (fieldData = [], field) => {
+  for (let fd of fieldData) {
+    if (fd.field === field) return fd.value;
+  }
+  return "";
+};
+
+export const getFieldDataById = (fieldData = [], id) => {
+  for (let fd of fieldData) {
+    if (fd._id === id) return fd;
+  }
+  return null;
+};
+
+export const getTargetFieldName = (prefix, fieldData) => {
+  let list = [];
+  for (let item of fieldData) {
+    if (item.field.startsWith(`${prefix}_`)) list.push(item.field);
+  }
+  let result = list.filter((v, i, a) => a.indexOf(v) === i);
+  return result;
+};
+
+export const processTargetSectionName = (prefix, name) => {
+  if (!name || name.length < 2) return "";
+  let result = name.toLowerCase();
+  result = result.split(" ").join("_");
+  return prefix + "_" + result;
+};
+
+export const getTargetLabelFromSection = (prefix, sectionFieldName) => {
+  let result = sectionFieldName.replace(`${prefix}_`, "");
+  result = result.split("_").join(" ");
+  return result.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1);
+  });
+};
+
+export const randomColor = (index) => {
+  const colors = ["blue", "cyan", "geekblue", "purple", "green"];
+  // return colors[Math.floor(Math.random() * colors.length)];
+  if (index > colors.length - 1) return "green";
+  return colors[index];
+};
+
+export const toTitleText = (text) => {
+  if (!text) return "";
+  return text.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
+
+export const getLabel = (name, labels) => {
+  if (!labels) labels = [];
+  for (let label of labels) {
+    if (label.name === name) return label.text;
+  }
+  return "";
+};
+
+export const sortByValue = (arrObj = []) => {
+  return arrObj.sort((a, b) => {
+    var valueA = a.value.toLowerCase(); // ignore upper and lowercase
+    var valueB = b.value.toLowerCase(); // ignore upper and lowercase
+    if (valueA < valueB) {
+      return -1;
+    }
+    if (valueA > valueB) {
+      return 1;
+    }
+    return 0;
+  });
+};

@@ -1,0 +1,119 @@
+.project-user {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    margin-left: 10px;
+  }
+}
+
+.comment {
+  .ant-collapse-content {
+    background-color: #ddeeff !important;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+}
+
+.project-unfollow {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  button {
+    margin: 2px;
+  }
+}
+
+.homepage-card .project-invite {
+  position: absolute;
+  display: flex;
+  right: 30px;
+  top: 25px;
+  z-index: 100;
+}
+
+@media screen and (max-width: 768px) {
+  .homepage-card .project-invite {
+    position: relative;
+    right: 0px;
+    top: 10px;
+  }
+}
+
+.ant-result {
+  background-color: white;
+}
+
+.project-editor {
+  padding: 0 !important;
+  .ql-toolbar.ql-snow {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+  }
+  .ql-container.ql-snow {
+    border: 0;
+  }
+}
+
+.produced-by {
+  font-size: 14px;
+  .challenge-link {
+    font-weight: 600;
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+
+  .btn-project-access {
+    font-size: 30px !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+}
+
+.ant-dropdown-menu-item {
+  a:hover {
+    text-decoration: none !important;
+  }
+}
+
+.demo-option-label-item {
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+  }
+}
+
+.project-share-select {
+  display: flex;
+
+  .ant-select {
+    margin-top: 10px;
+  }
+  button {
+    margin-top: 10px;
+    width: 120px;
+  }
+}
+
+.btn-footer-group {
+  display: flex;
+  justify-content: center;
+  
+}
+
+@media screen and (max-width: 768px) {
+  .project-share-select {
+    flex-direction: column;
+  }
+}

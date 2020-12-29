@@ -1,0 +1,217 @@
+@import "./variables.scss";
+@import "./base.scss";
+@import "./pages.scss";
+@import "./auth.scss";
+@import "./user.scss";
+@import "./dashboard.scss";
+@import "./organization.scss";
+@import "./challenge.scss";
+@import "./profile/index.scss";
+@import "./project.scss";
+@import "./message.scss";
+@import "./admin.scss";
+@import "./notification.scss";
+@import "./gallery.scss";
+@import "./home.scss";
+@import "./counter.scss";
+@import "../assets/fonts/Poppins-Black.ttf";
+@import "./help.scss";
+@import "./privacy.scss";
+@import "./resource.scss";
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap");
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.layout {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  color: #333;
+  font-family: "Roboto";
+}
+
+.main-nav {
+  // text-transform: uppercase;
+  width: 100%;
+  z-index: 100;
+  background-color: $blue-2;
+
+  .container-nav {
+    padding: 10px 5%;
+  }
+  nav a:hover {
+    color: $gray-200 !important;
+  }
+  nav a {
+    color: white !important;
+  }
+
+  button a {
+    color: gray !important;
+  }
+  button a:hover {
+    color: black !important;
+  }
+
+  .nav-link .ant-badge {
+    color: white !important;
+  }
+  & .page-logo {
+    h3 {
+      color: white;
+    }
+  }
+
+  .anticon {
+    vertical-align: 5px !important;
+  }
+}
+.ant-badge {
+  font-size: inherit !important;
+  .ant-badge-count {
+    height: 16px;
+    min-width: 14px;
+    border-radius: 8px;
+    right: -1px;
+    padding: 0 5px;
+    line-height: 16px;
+  }
+}
+
+.anticon {
+  vertical-align: 2px !important;
+}
+
+.content {
+  padding: 40px;
+  min-height: calc(100vh - 209px);
+  margin: 0 auto;
+  .summary {
+    color: white !important;
+    &:hover {
+      text-decoration: none !important;
+      color: $gray-400 !important;
+    }
+  }
+
+  .ant-page-header {
+    padding: 0 !important;
+  }
+
+  .sun-editor-editable {
+    font-family: inherit;
+    font-size: 16px;
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 10px;
+    p,
+    ul {
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.footer {
+  padding: 20px;
+  background-color: $blue-2;
+  color: white;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .footer-poweredby {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    span {
+      font-size: 12px;
+    }
+    img {
+      height: 40px;
+      margin-left: -5px;
+    }
+  }
+
+  .footer-address {
+    font-size: 14px;
+    line-height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .footer-list {
+    text-align: right;
+  }
+
+  .footer-link {
+    color: white;
+    font-size: 14px;
+  }
+}
+
+.ant-dropdown-placement-bottomRight {
+  top: 20px !important;
+  & ul {
+    border-radius: 7px;
+    padding: 10px;
+  }
+  & h5 {
+    font-size: 13px;
+    font-weight: bolder;
+  }
+}
+
+.ant-popover {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.underscore {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    padding: 30px !important;
+  }
+  h3 {
+    font-size: 1.4rem !important;
+  }
+  h5 {
+    font-size: 1.1rem !important;
+  }
+  .footer {
+    .footer-link {
+      font-size: 12px;
+    }
+    .footer-poweredby {
+      padding-right: 10px;
+      img {
+        height: 30px;
+        margin-left: -8px;
+        width: 90px;
+      }
+    }
+    .footer-address {
+      font-size: 12px;
+    }
+  }
+}
+
+@media screen and (min-width: 276px) {
+  .ant-col-sm-24 {
+    display: block;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,109 @@
+.organization {
+  .ant-list-item-meta-title {
+    font-size: 20px !important;
+  }
+  .ant-list-item-meta-description {
+    font-size: 17px !important;
+  }
+
+  .create-section {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 40px;
+    background-color: white;
+    border-radius: 5px;
+    min-height: 300px;
+    padding: 5% 10% 5% 10%;
+  }
+
+}
+
+@media (max-width: 520px) {
+  .organization {
+    .create-section {
+      width: 100%;
+      padding: 10px 20px 10px 20px;
+    }
+  }
+}
+
+.list-view {
+  h4 {
+    margin-bottom: 10px;
+  }
+  .list-view-btn {
+    height: 50px;
+    color: blue;
+  }
+
+  .list-view-btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .challenge_item {
+    cursor: pointer;
+  }
+
+  .challenge_item:hover h4 {
+    color: black !important;
+  }
+  .homepage-card {
+    width: 300px;
+    margin: 10px 16px 10px 0px;
+    border-radius: 10px;
+    background: $white;
+    position: relative;
+    &:active,
+    &:hover {
+      box-shadow: 5px 5px 10px;
+    }
+    a {
+      color: rgb(4, 9, 37) !important;
+    }
+  }
+  .name {
+    width: 100%;
+  }
+  .participant_dashboard {
+    width: 100%;
+    background: white;
+    border-radius: 14px;
+    padding: 15px;
+    margin: 8px;
+    margin-left: 0px;
+  }
+}
+.ant-input-suffix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn-profile {
+  background-image: linear-gradient(
+    rgb(64, 70, 104),
+    rgb(21, 29, 77),
+    rgb(26, 36, 93)
+  );
+  display: inline-block;
+  padding: 10px;
+  width: 200px;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cancel {
+  background-image: none;
+  color: black;
+}
+
+@media screen and (max-width: 768px) {
+  .btn-form-group .btn-profile {
+    width: 130px !important;
+  }
+}
