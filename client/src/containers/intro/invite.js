@@ -11,7 +11,7 @@ const InvitePage = () => (
       <br /> Once you are registered – you can invite your partners and clients
       to work to collaborate or colleagues to join organization.​
       <br /> Invited party will receive an email link with personal invitation
-      letter after gistration you will already have shared project to work on.
+      letter after Registration you will already have shared project to work on.
       <br /> It is very important to use that link if you have it!​
       <br /> If you don’t – not a problem! Register new organization now​
     </p>

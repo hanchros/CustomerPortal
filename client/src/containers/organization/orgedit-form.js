@@ -123,7 +123,7 @@ const OrgEditForm = ({
       </Row>
       <div className="divid-head">
         <span>
-          {label.titleOrganization} Liaison to the Hackathon Dev{" "}
+          {label.titleOrganization} Liaison to the Integration Center{" "}
           {label.titleChallenge}
         </span>
       </div>

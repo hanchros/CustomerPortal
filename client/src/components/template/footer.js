@@ -5,8 +5,8 @@ import Container from "reactstrap/lib/Container";
 import Policy from "../../containers/privacy/policy";
 import Rules from "../../containers/privacy/rule";
 
-const ruleTitle = "Hackathon Dev Rules";
-const policyTitle = "Hackathon Dev Privacy Policy";
+const ruleTitle = "Integration Center Rules";
+const policyTitle = "Integration Center Privacy Policy";
 
 class Footer extends React.Component {
   constructor(props) {

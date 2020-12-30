@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Header, Footer } from "../../components/template";
 import { listSimpleOrg } from "../../actions/organization";
 import { updateProfile } from "../../actions/auth";
 import { getFieldData } from "../../utils/helper";
 import ProfileForm from "./profile-form";
 import history from "../../history";
+import HomeHOC from "../../components/template/home-hoc";
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -35,10 +35,9 @@ class ProfilePage extends Component {
     const roles = getFieldData(fieldData, "user_role");
 
     return (
-      <React.Fragment>
-        <Header />
+      <HomeHOC>
         <div className="container ">
-          <h1 className="mt-5 mb-4 center">{label.titleParticipant} Profile</h1>
+        <div className="main-background-title">Create a user profile</div>
           <ProfileForm
             onSubmit={this.onUpdateProfile}
             profile={profile}
@@ -50,8 +49,7 @@ class ProfilePage extends Component {
             label={label}
           />
         </div>
-        <Footer />
-      </React.Fragment>
+      </HomeHOC>
     );
   };
 }

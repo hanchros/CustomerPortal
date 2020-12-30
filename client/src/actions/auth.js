@@ -115,7 +115,7 @@ export function dropRegFile(file) {
   return async (dispatch) => {
     try {
       let res = await axios.post(
-        "https://integraapi.azurewebsites.net/analyze",
+        "https://integraapiproduction.azurewebsites.net/analyze",
         formData,
         {
           headers: {
