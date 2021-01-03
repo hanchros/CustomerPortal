@@ -12,10 +12,6 @@ const CommentSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Project",
     },
-    challenge: {
-      type: Schema.Types.ObjectId,
-      ref: "Challenge",
-    },
     participant: {
       type: Schema.Types.ObjectId,
       ref: "User",

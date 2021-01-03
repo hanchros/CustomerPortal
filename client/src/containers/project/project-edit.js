@@ -49,7 +49,6 @@ class EditProject extends Component {
             curProject={curProject}
             hideProjectCreate={this.props.hideModal}
             fieldData={this.props.fieldData}
-            label={this.props.label}
           />
         )}
       </div>
@@ -60,7 +59,6 @@ class EditProject extends Component {
 function mapStateToProps(state) {
   return {
     fieldData: state.profile.fieldData,
-    label: state.label
   };
 }
 

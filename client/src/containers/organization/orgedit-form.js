@@ -1,42 +1,32 @@
 import React, { useState } from "react";
-import { Form, Input, Select, message } from "antd";
+import { Form, Input, Select, Button } from "antd";
 import { Col, Row } from "reactstrap";
 import Avatar from "../../components/template/upload";
-import { countries } from "../../constants/countries";
-import Tags from "../../components/pages/tags_addons";
-import RichTextEditor from "../../components/pages/editor";
+import ColorPicker from "rc-color-picker";
+import IconLinkedin from "../../assets/icon/linkedin.png";
+import IconFacebook from "../../assets/icon/facebook.png";
+import IconTwitter from "../../assets/icon/twitter.png";
+import IconWeb from "../../assets/icon/challenge.png";
 
 const OrgEditForm = ({
   onSubmit,
+  onCancel,
   orgTypes,
   setAvatar,
   avatarURL,
   org,
-  fieldData,
-  label,
 }) => {
-  const [tags, setTags] = useState(org.tags || []);
-  const ofields = fieldData.filter((fd) => fd.field === "orgform_attr");
-  for (let pf of ofields) {
-    org[pf.value] = (org.attr && org.attr[pf.value]) || "";
-  }
-  
+  const [color, setColor] = useState(org.color || "#000");
+
   const onFinish = (values) => {
-    console.log(values)
-    if (!avatarURL) {
-      message.error("Please upload logo image");
-      return;
-    }
-    values._id = org._id;
-    values.logo = avatarURL;
-    values.tags = tags;
-    let attr = {};
-    for (let pf of ofields) {
-      attr[pf.value] = values[pf.value] || "";
-      delete values[pf.value];
-    }
-    values.attr = attr;
+    values._id = org._id || null;
+    values.logo = avatarURL || "";
+    values.color = color;
     onSubmit(values);
+  };
+
+  const onSelectColor = (colors) => {
+    setColor(colors.color);
   };
 
   return (
@@ -46,42 +36,51 @@ const OrgEditForm = ({
       onFinish={onFinish}
       initialValues={{ ...org }}
     >
-      <div className="avatar-uploader">
-        <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
-      </div>
-      <div className="divid-head">
-        <span>General Information</span>
-      </div>
-      <hr />
+      <h5 className="mb-5">
+        You have a great responsibility to create a profile for your
+        organization (you can always change it later)​
+      </h5>
+      <Row className="mb-4">
+        <Col sm={6}>
+          <Input size="large" disabled placeholder="Upload Logo" />
+        </Col>
+        <Col sm={6} className="center">
+          <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
+        </Col>
+      </Row>
+      <Row className="mb-4">
+        <Col sm={6}>
+          <Input size="large" disabled placeholder="Choose your color pallet" />
+        </Col>
+        <Col sm={6} className="center">
+          <ColorPicker
+            color={color}
+            alpha={100}
+            onClose={onSelectColor}
+            placement="topLeft"
+            className="some-class"
+          >
+            <span className="rc-color-picker-trigger" />
+          </ColorPicker>
+        </Col>
+      </Row>
       <Row>
-        <Col md={6} sm={12}>
+        <Col sm={6}>
           <Form.Item
             name="org_name"
             rules={[
               {
                 required: true,
-                message: "Please input the name!",
+                message: "Please input the organization name!",
               },
             ]}
           >
-            <Input size="large" placeholder="Name" />
-          </Form.Item>
-          <Form.Item name="website">
-            <Input size="large" placeholder="Website" />
-          </Form.Item>
-          <Form.Item
-            name="address"
-            rules={[
-              {
-                required: true,
-                message: "Please input the address!",
-              },
-            ]}
-          >
-            <Input size="large" placeholder="Address" />
+            <Input placeholder="Organization Name" size="large" />
           </Form.Item>
         </Col>
-        <Col md={6} sm={12}>
+      </Row>
+      <Row>
+        <Col sm={6}>
           <Form.Item
             name="org_type"
             rules={[
@@ -91,7 +90,7 @@ const OrgEditForm = ({
               },
             ]}
           >
-            <Select placeholder="Type" size="large">
+            <Select placeholder="Organization type​" size="large">
               {orgTypes.length > 0 &&
                 orgTypes.map((item, index) => {
                   return (
@@ -102,124 +101,66 @@ const OrgEditForm = ({
                 })}
             </Select>
           </Form.Item>
-          <Form.Item name="country">
-            <Select placeholder="Country" size="large">
-              {countries.map((item) => (
-                <Select.Option key={item} value={item}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={6}>
+          <Form.Item
+            name="location"
+            rules={[
+              {
+                required: true,
+                message: "Please input the organization location!",
+              },
+            ]}
+          >
+            <Input placeholder="Headquarters location" size="large" />
           </Form.Item>
-          <div className="register-city">
-            <Form.Item name="city">
-              <Input placeholder="City" size="large" />
-            </Form.Item>
-            <Form.Item name="state">
-              <Input placeholder="State" size="large" />
-            </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={6}>
+          <Form.Item
+            name="social"
+            rules={[
+              {
+                required: true,
+                message: "Please input the organization social media!",
+              },
+            ]}
+          >
+            <Input placeholder="Add social media" size="large" />
+          </Form.Item>
+        </Col>
+        <Col sm={6}>
+          <div className="org-social-input center">
+            <img src={IconLinkedin} alt="" />
+            <img src={IconTwitter} alt="" />
+            <img src={IconFacebook} alt="" />
+            <img src={IconWeb} alt="" />
           </div>
         </Col>
       </Row>
-      <div className="divid-head">
-        <span>
-          {label.titleOrganization} Liaison to the Integration Center{" "}
-          {label.titleChallenge}
-        </span>
-      </div>
-      <hr />
       <Row>
-        <Col md={6} sm={12}>
-          <Form.Item name="contact_name">
-            <Input size="large" placeholder="Contact Name" />
-          </Form.Item>
-          <Form.Item name="contact_phone">
-            <Input size="large" placeholder="Contact Phone" />
-          </Form.Item>
-        </Col>
-        <Col md={6} sm={12}>
-          <Form.Item
-            name="contact_email"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid Email!",
-              },
-              {
-                required: true,
-                message: "Please input the contact Email!",
-              },
-            ]}
-          >
-            <Input size="large" type="email" placeholder="Contact Email" />
+        <Col sm={6}>
+          <Form.Item name="bio">
+            <Input.TextArea rows={3} size="large" placeholder="Bio" />
           </Form.Item>
         </Col>
       </Row>
-      <div className="divid-head">
-        <span>Authorized Representative</span>
-      </div>
-      <hr />
-      <Row>
-        <Col md={6} sm={12}>
-          <Form.Item name="authorized_name">
-            <Input size="large" placeholder="Authorized Name" />
-          </Form.Item>
-          <Form.Item
-            name="authorized_email"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid Email!",
-              },
-              {
-                required: true,
-                message: "Please input the authorized Email!",
-              },
-            ]}
-          >
-            <Input size="large" placeholder="Authorized Email" />
-          </Form.Item>
-        </Col>
-        <Col md={6} sm={12}>
-          <Form.Item name="authorized_title">
-            <Input size="large" placeholder="Authorized Title" />
-          </Form.Item>
-          <Form.Item name="authorized_phone">
-            <Input size="large" placeholder="Authorized Phone" />
-          </Form.Item>
-        </Col>
-      </Row>
-
-      {ofields.length > 0 && (
-        <div className="profile-head">
-          <span>More Attributes</span>
-        </div>
-      )}
-      <Row>
-        {ofields.map((pf) => (
-          <Col key={pf._id} md={pf.option === "richtext" ? 12 : 6} sm={12}>
-            <Form.Item name={pf.value}>
-              {pf.option !== "richtext" ? (
-                <Input size="large" placeholder={pf.value} />
-              ) : (
-                <RichTextEditor placeholder={pf.value} />
-              )}
-            </Form.Item>
-          </Col>
-        ))}
-      </Row>
-
-      <Tags
-        fieldData={fieldData}
-        tags={tags}
-        updateTags={setTags}
-        prefix={"organization"}
-      />
-
       <div className="signup-btn">
-        <button type="submit" className="hk_button">
-          Save
-        </button>
+        <Button type="primary" className="mr-3" htmlType="submit">
+          Submit
+        </Button>
+        <Button
+          type="default"
+          onClick={(e) => {
+            e.preventDefault();
+            onCancel();
+          }}
+        >
+          Cancel
+        </Button>
       </div>
     </Form>
   );

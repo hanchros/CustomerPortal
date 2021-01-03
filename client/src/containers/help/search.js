@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 import { Link } from "react-router-dom";
 import { FileTextOutlined } from "@ant-design/icons";
 import HelpSider from "./sider";
@@ -84,7 +84,6 @@ class HelpSearch extends Component {
             </Col>
           </Row>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }

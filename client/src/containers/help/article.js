@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 import HelpSider from "./sider";
 
 class HelpArticle extends Component {
@@ -39,7 +39,6 @@ class HelpArticle extends Component {
             </Col>
           </Row>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }

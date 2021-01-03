@@ -33,7 +33,7 @@ class ProfileData extends React.Component {
     const { namelist, newsection } = this.state;
     return (
       <div className="admin-const" tabIndex="-1">
-        <h5>{this.props.label.titleParticipant} constants</h5>
+        <h5>Participant constants</h5>
         {namelist.map((name, i) => (
           <ConstSection
             fieldName={name}
@@ -59,7 +59,7 @@ class ProfileData extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { fieldData: state.profile.fieldData, label: state.label };
+  return { fieldData: state.profile.fieldData };
 }
 
 export default connect(mapStateToProps, { deleteFieldData, createFieldData })(

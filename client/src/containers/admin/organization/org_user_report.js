@@ -32,7 +32,7 @@ class OrgUserReport extends Component {
   };
 
   render() {
-    const { organization, label } = this.props;
+    const { organization } = this.props;
     const organizations = organization.adminOrganizations || [];
     const { loading } = this.state;
 
@@ -77,7 +77,7 @@ class OrgUserReport extends Component {
       },
       {
         dataField: "name",
-        text: `${label.titleOrganization} Name`,
+        text: `Organization Name`,
       },
       {
         dataField: "authroized_email",
@@ -94,7 +94,7 @@ class OrgUserReport extends Component {
         <div className="content">
           <Row>
             <Col className="flex">
-              <h5 className="mr-auto">{label.titleOrganization}</h5>
+              <h5 className="mr-auto">Organization</h5>
             </Col>
           </Row>
           <Row>
@@ -149,7 +149,7 @@ class OrgUserReport extends Component {
 }
 
 function mapStateToProps(state) {
-  return { organization: state.organization, label: state.label };
+  return { organization: state.organization };
 }
 
 export default connect(mapStateToProps, { listOrgUserReport })(OrgUserReport);

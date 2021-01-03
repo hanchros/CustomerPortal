@@ -190,9 +190,7 @@ class Register extends Component {
 }
 
 function mapStateToProps(state) {
-  return {
-    label: state.label,
-  };
+  return {};
 }
 
 export default connect(mapStateToProps, { registerUser, dropRegFile })(

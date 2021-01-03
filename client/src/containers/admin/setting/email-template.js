@@ -34,7 +34,6 @@ class EmailTemplates extends React.Component {
             {templates.map((tpl) => (
               <Panel header={tpl.title} key={tpl.title}>
                 <div
-                  className="sun-editor-editable"
                   dangerouslySetInnerHTML={{ __html: tpl.html }}
                 />
               </Panel>

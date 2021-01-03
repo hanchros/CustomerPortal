@@ -4,9 +4,7 @@ import {
   FETCH_ORGANIZATIONLIST,
   DELETE_ORGANIZATION,
   SET_CURRENT_ORGANIZATION,
-  ORGANIZATION_ERROR,
   FETCH_ORGANIZATION,
-  AUTH_ORGANIZATION,
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
@@ -17,8 +15,6 @@ const INITIAL_STATE = {
   organizations: [],
   adminOrganizations: [],
   currentOrganization: {},
-  authOrg: {},
-  error: "",
   searchTxt: "",
   total: 0,
 };
@@ -30,19 +26,17 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         organizations: [...state.organizations, action.payload.organization],
-        currentOrganization: action.payload.organization,
       };
     case UPDATE_ORGANIZATION:
       org = action.payload.organization;
-      for (let chl of state.organizations) {
-        if (chl._id === org._id) {
-          chl = org;
+      for (let item of state.organizations) {
+        if (item._id === org._id) {
+          item = org;
         }
       }
       return {
         ...state,
         organizations: state.organizations,
-        currentOrganization: org,
       };
     case FETCH_ORGANIZATIONLIST:
       return {
@@ -60,17 +54,8 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, organizations: state.organizations };
     case SET_CURRENT_ORGANIZATION:
       return { ...state, currentOrganization: action.organization };
-    case ORGANIZATION_ERROR:
-      return { ...state, error: action.payload };
     case FETCH_ORGANIZATION:
       return { ...state, currentOrganization: action.payload.organization };
-    case AUTH_ORGANIZATION:
-      localStorage.setItem("orgID", action.organization._id);
-      return {
-        ...state,
-        authOrg: action.organization,
-        currentOrganization: action.organization,
-      };
     case FETCH_ORG_SEARCH_LIST:
       return {
         ...state,

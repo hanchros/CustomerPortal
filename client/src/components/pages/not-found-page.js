@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Result } from "antd";
 import Header from "../template/header";
-import Footer from "../template/footer";
 import { Link } from "react-router-dom";
 
 class NotFoundPage extends Component {
@@ -17,7 +16,6 @@ class NotFoundPage extends Component {
             extra={<Link to="/" >Back Home</Link>}
           />
         </div>
-        <Footer />
       </React.Fragment>
     );
   }

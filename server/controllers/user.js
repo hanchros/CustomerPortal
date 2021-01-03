@@ -1,9 +1,6 @@
 const User = require("../models/user");
 const setUserInfo = require("../helpers").setUserInfo;
 const setPublicUsers = require("../helpers").setPublicUsers;
-const ROLE_RESTRICT = require("../constants").ROLE_RESTRICT;
-const ROLE_BLOCK = require("../constants").ROLE_BLOCK;
-const Challenge = require("../models/challenge");
 const Project = require("../models/project");
 const ProjectMember = require("../models/projectmember");
 
@@ -95,7 +92,7 @@ exports.listAllUsers = async (req, res, next) => {
     delete req.body.loading;
     delete req.body.searchStr;
     delete req.body.filter_sort;
-    let filter = { usertype: "participant", role: { $ne: ROLE_BLOCK } };
+    let filter = {};
     let tags = [];
     for (let k of Object.keys(req.body)) {
       if (req.body[k] && req.body[k].length > 0) {
@@ -132,9 +129,6 @@ exports.listAllUsers = async (req, res, next) => {
     users = setPublicUsers(users);
     let result = [];
     for (let user of users) {
-      let chl_count = await Challenge.where({
-        participant: user._id,
-      }).countDocuments();
       let proj_count = await Project.where({
         participant: user._id,
       }).countDocuments();
@@ -143,7 +137,6 @@ exports.listAllUsers = async (req, res, next) => {
       }).countDocuments();
       let newUser = {
         ...user,
-        challenges: chl_count,
         projects: proj_count + pm_count,
       };
       result.push(newUser);
@@ -157,52 +150,9 @@ exports.listAllUsers = async (req, res, next) => {
   }
 };
 
-exports.listMentors = async (req, res, next) => {
-  try {
-    let total = await User.find({
-      usertype: "mentor",
-      role: { $ne: ROLE_BLOCK },
-    }).countDocuments();
-    let users = await User.find({
-      usertype: "mentor",
-      role: { $ne: ROLE_BLOCK },
-    });
-    return res.status(201).json({
-      participants: setPublicUsers(users),
-      total,
-    });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.restrictUser = async (req, res, next) => {
-  try {
-    await User.findByIdAndUpdate(req.params.id, {
-      role: ROLE_RESTRICT,
-    });
-    let user = await User.findById(req.params.id);
-    res.send({ user });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.blockUser = async (req, res, next) => {
-  try {
-    await User.findByIdAndUpdate(req.params.id, {
-      role: ROLE_BLOCK,
-    });
-    let user = await User.findById(req.params.id);
-    res.send({ user });
-  } catch (err) {
-    return next(err);
-  }
-};
-
 exports.listSimpleParticipants = async (req, res, next) => {
   try {
-    let users = await User.find({ role: { $ne: ROLE_BLOCK } }, "_id profile");
+    let users = await User.find({}, "_id profile");
     return res.status(201).json({
       participants: users,
     });
@@ -213,7 +163,10 @@ exports.listSimpleParticipants = async (req, res, next) => {
 
 exports.adminListUnverifiedParticipants = async (req, res, next) => {
   try {
-    let users = await User.find({ verified: { $ne: true} }, "_id profile email");
+    let users = await User.find(
+      { verified: { $ne: true } },
+      "_id profile email"
+    );
     return res.status(201).json({
       participants: users,
     });

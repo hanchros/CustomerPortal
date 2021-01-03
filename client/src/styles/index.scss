@@ -8,16 +8,12 @@
 @import "./challenge.scss";
 @import "./profile/index.scss";
 @import "./project.scss";
-@import "./message.scss";
 @import "./admin.scss";
 @import "./notification.scss";
-@import "./gallery.scss";
 @import "./home.scss";
-@import "./counter.scss";
 @import "../assets/fonts/Poppins-Black.ttf";
 @import "./help.scss";
-@import "./privacy.scss";
-@import "./resource.scss";
+@import "./message.scss";
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap");
 
 body {
@@ -91,7 +87,7 @@ body {
 
 .content {
   padding: 40px;
-  min-height: calc(100vh - 209px);
+  min-height: calc(100vh - 73px);
   margin: 0 auto;
   .summary {
     color: white !important;

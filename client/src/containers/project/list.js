@@ -6,7 +6,7 @@ import { Skeleton, Input, Button, Checkbox, Popover, Tag, Select } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
 import { FilterOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { listProjects, clearSearch } from "../../actions/project";
-import { Header, Footer, CustomCard } from "../../components/template";
+import { Header, CustomCard } from "../../components/template";
 import ProjectAvatar from "../../assets/icon/challenge.png";
 import Spinner from "../../components/pages/spinner";
 import { createNotification } from "../../actions";
@@ -216,19 +216,19 @@ class ProjectList extends Component {
   };
 
   render() {
-    const { project, label, fieldData } = this.props;
+    const { project, fieldData } = this.props;
     const projects = project.projects;
     const { loading } = this.state;
     const cols = getOneFieldData(fieldData, "proj_column");
     const nCol = parseInt(cols);
-    const projIntro = getOneFieldData(fieldData, "proj_intro")
+    const projIntro = getOneFieldData(fieldData, "proj_intro");
 
     return (
       <React.Fragment>
         <Header />
         <Container className="content">
           <div className="dashboard">
-            <h5>{label.titleProject}s</h5>
+            <h5>Projects</h5>
             <hr />
             {projIntro && (
               <div
@@ -276,7 +276,6 @@ class ProjectList extends Component {
             </InfiniteScroll>
           </div>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }
@@ -286,7 +285,6 @@ function mapStateToProps(state) {
   return {
     project: state.project,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 }
 

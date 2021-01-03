@@ -41,9 +41,7 @@ const UserSchema = new Schema(
       tags: [{ type: Schema.Types.ObjectId, ref: "FieldData" }],
       contact: { type: String },
       role: { type: String },
-      attr: { type: Object },
     },
-    usertype: { type: String, required: true },
     role: {
       type: String,
       enum: [
@@ -55,7 +53,6 @@ const UserSchema = new Schema(
       ],
       default: ROLE_MEMBER,
     },
-    blockers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
     verified: { type: Boolean },

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
-  IssuesCloseOutlined,
   ProjectOutlined,
   TeamOutlined,
   UserOutlined,
@@ -13,19 +12,12 @@ import history from "../../history";
 import UserAll from "./user/all";
 import Creators from "./user/creators";
 import Message from "./user/message";
-import Reports from "./user/report";
 import Verify from "./user/unverified";
 import Constants from "./constants";
 import OrgAll from "./organization/org_report";
-import VerifyOrg from "./organization/unverified";
-import ChallengeAll from "./challenge/challenge_report";
 import ProjectAll from "./project/project_report";
-import SiteSetting from "./setting";
-import Announcement from "./setting/announce";
 import HelpDoc from "./help";
 import EmailTemplate from "./setting/email-template";
-import Resource from "./resource";
-import Faq from "./faq";
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -44,7 +36,7 @@ class AdminDashboard extends Component {
   componentDidMount() {
     if (!this.props.isAdmin) {
       history.push("/user-dashboard");
-      return
+      return;
     }
   }
 
@@ -54,7 +46,6 @@ class AdminDashboard extends Component {
 
   render() {
     const { pageTitle, submenu } = this.state;
-    const { label } = this.props;
     return (
       <React.Fragment>
         <Header />
@@ -70,7 +61,7 @@ class AdminDashboard extends Component {
                 title={
                   <span>
                     <UserOutlined />
-                    <span>{label.titleParticipant}</span>
+                    <span>Participant</span>
                   </span>
                 }
               >
@@ -86,19 +77,13 @@ class AdminDashboard extends Component {
                     this.switchPage("Participant", "Project Owners")
                   }
                 >
-                  {label.titleProject} Owners
+                  Project Owners
                 </Menu.Item>
                 <Menu.Item
                   key="pt-msg"
                   onClick={() => this.switchPage("Participant", "Message")}
                 >
                   Message
-                </Menu.Item>
-                <Menu.Item
-                  key="pt-rpt"
-                  onClick={() => this.switchPage("Participant", "Report")}
-                >
-                  Report
                 </Menu.Item>
                 <Menu.Item
                   key="pt-vrf"
@@ -112,7 +97,7 @@ class AdminDashboard extends Component {
                 title={
                   <span>
                     <TeamOutlined />
-                    <span>{label.titleOrganization}</span>
+                    <span>Organization</span>
                   </span>
                 }
               >
@@ -122,35 +107,13 @@ class AdminDashboard extends Component {
                 >
                   All
                 </Menu.Item>
-                <Menu.Item
-                  key="org-vrf"
-                  onClick={() => this.switchPage("Organization", "Verify")}
-                >
-                  Unverified
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub3"
-                title={
-                  <span>
-                    <IssuesCloseOutlined />
-                    <span>{label.titleChallenge}</span>
-                  </span>
-                }
-              >
-                <Menu.Item
-                  key="chl-all"
-                  onClick={() => this.switchPage("Challenge", "All")}
-                >
-                  All
-                </Menu.Item>
               </SubMenu>
               <SubMenu
                 key="sub4"
                 title={
                   <span>
                     <ProjectOutlined />
-                    <span>{label.titleProject}</span>
+                    <span>Project</span>
                   </span>
                 }
               >
@@ -161,22 +124,6 @@ class AdminDashboard extends Component {
                   All
                 </Menu.Item>
               </SubMenu>
-              {/* <SubMenu
-                key="sub5"
-                title={
-                  <span>
-                    <FileImageOutlined />
-                    <span>Resource</span>
-                  </span>
-                }
-              >
-                <Menu.Item
-                  key="res-all"
-                  onClick={() => this.switchPage("Resource", "All")}
-                >
-                  All
-                </Menu.Item>
-              </SubMenu> */}
               {this.props.isSuper && (
                 <SubMenu
                   key="sub6"
@@ -194,18 +141,6 @@ class AdminDashboard extends Component {
                     Constants
                   </Menu.Item>
                   <Menu.Item
-                    key="set-sset"
-                    onClick={() => this.switchPage("Setting", "SiteSetting")}
-                  >
-                    Site Setting
-                  </Menu.Item>
-                  <Menu.Item
-                    key="set-anc"
-                    onClick={() => this.switchPage("Setting", "Announce")}
-                  >
-                    Announcement
-                  </Menu.Item>
-                  <Menu.Item
                     key="set-help"
                     onClick={() => this.switchPage("Setting", "Help")}
                   >
@@ -216,12 +151,6 @@ class AdminDashboard extends Component {
                     onClick={() => this.switchPage("Setting", "Email")}
                   >
                     Email Templates
-                  </Menu.Item>
-                  <Menu.Item
-                    key="faq"
-                    onClick={() => this.switchPage("Setting", "Faq")}
-                  >
-                    Faq
                   </Menu.Item>
                 </SubMenu>
               )}
@@ -251,32 +180,18 @@ class AdminDashboard extends Component {
         return <Creators />;
       case "Participant Message":
         return <Message />;
-      case "Participant Report":
-        return <Reports />;
       case "Participant Verify":
         return <Verify />;
       case "Organization All":
         return <OrgAll />;
-      case "Organization Verify":
-        return <VerifyOrg />;
-      case "Challenge All":
-        return <ChallengeAll />;
       case "Project All":
         return <ProjectAll />;
       case "Setting Constants":
         return <Constants />;
-      case "Setting SiteSetting":
-        return <SiteSetting />;
-      case "Setting Announce":
-        return <Announcement />;
       case "Setting Help":
         return <HelpDoc />;
       case "Setting Email":
         return <EmailTemplate />;
-      case "Resource All":
-        return <Resource />;
-      case "Setting Faq":
-        return <Faq />;
       default:
         return null;
     }
@@ -288,7 +203,6 @@ const mapStateToProps = (state) => {
     user: state.user.profile,
     isAdmin: state.user.isAdmin,
     isSuper: state.user.isSuper,
-    label: state.label,
   };
 };
 

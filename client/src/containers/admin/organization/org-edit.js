@@ -35,7 +35,7 @@ class EditOrg extends Component {
   };
 
   render = () => {
-    const { fieldData, organization, label, id } = this.props;
+    const { fieldData, organization, id } = this.props;
     const orgTypes = getFieldData(fieldData, "org_type");
     const { avatarURL, loading } = this.state;
     const org = organization.currentOrganization;
@@ -52,7 +52,6 @@ class EditOrg extends Component {
             avatarURL={avatarURL || org.logo}
             org={org}
             fieldData={fieldData}
-            label={label}
           />
         )}
       </div>
@@ -64,7 +63,6 @@ function mapStateToProps(state) {
   return {
     organization: state.organization,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 }
 

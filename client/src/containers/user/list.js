@@ -6,7 +6,7 @@ import { Skeleton, Input, Button, Checkbox, Popover, Tag, Select } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
 import { FilterOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { listAllParticipants, clearSearch } from "../../actions/auth";
-import { Header, Footer, CustomCard } from "../../components/template";
+import { Header, CustomCard } from "../../components/template";
 import Spinner from "../../components/pages/spinner";
 import UserAvatar from "../../assets/img/user-avatar.png";
 import {
@@ -52,7 +52,7 @@ class UserList extends Component {
   onSearch = (value) => {
     if (value && value.length < 3) {
       createNotification(
-        `Search ${this.props.label.titleParticipant}`,
+        `Search Participant`,
         "Search text should be at least 3 in length"
       );
       this.setState({ searchStr: value });
@@ -216,19 +216,19 @@ class UserList extends Component {
   };
 
   render() {
-    const { user, label, fieldData } = this.props;
+    const { user, fieldData } = this.props;
     const users = user.participants;
     const { loading } = this.state;
     const cols = getOneFieldData(fieldData, "ptp_column");
     const nCol = parseInt(cols);
-    const userIntro = getOneFieldData(fieldData, "ptp_intro")
+    const userIntro = getOneFieldData(fieldData, "ptp_intro");
 
     return (
       <React.Fragment>
         <Header />
         <Container className="content">
           <div className="dashboard">
-            <h5>{label.titleParticipant}s</h5>
+            <h5>Participants</h5>
             <hr />
             {userIntro && (
               <div
@@ -291,7 +291,6 @@ class UserList extends Component {
             </InfiniteScroll>
           </div>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }
@@ -301,7 +300,6 @@ function mapStateToProps(state) {
   return {
     fieldData: state.profile.fieldData,
     user: state.user,
-    label: state.label,
   };
 }
 

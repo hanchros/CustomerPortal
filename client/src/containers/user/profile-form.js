@@ -15,7 +15,6 @@ const ProfileForm = ({
   avatarURL,
   roles,
   fieldData,
-  label,
 }) => {
   const [tags, setTags] = useState(profile.tags || []);
   const [org_name, setOrgName] = useState(profile.org_name);
@@ -183,7 +182,7 @@ const ProfileForm = ({
       </Row>
 
       <div className="profile-head">
-        <span>{label.titleOrganization}</span>
+        <span>Organization</span>
       </div>
       {!org_name && (
         <Row>
@@ -193,7 +192,7 @@ const ProfileForm = ({
                 options={orglist}
                 onSelect={selectOrg}
                 size="large"
-                placeholder={`Find ${label.titleOrganization}`}
+                placeholder={`Find Organization`}
                 filterOption={(inputValue, option) =>
                   option.value
                     .toUpperCase()
@@ -204,10 +203,7 @@ const ProfileForm = ({
           </Col>
           <Col md={6} sm={12}>
             <Form.Item name="org_input">
-              <Input
-                size="large"
-                placeholder={`Enter ${label.titleOrganization} Name`}
-              />
+              <Input size="large" placeholder={`Enter Organization Name`} />
             </Form.Item>
           </Col>
         </Row>
@@ -245,7 +241,7 @@ const ProfileForm = ({
           <Col key={pf._id} md={pf.option === "richtext" ? 12 : 6} sm={12}>
             <Form.Item name={pf.value}>
               {pf.option !== "richtext" ? (
-                <Input size="large" placeholder={pf.value}/>
+                <Input size="large" placeholder={pf.value} />
               ) : (
                 <RichTextEditor placeholder={pf.value} />
               )}

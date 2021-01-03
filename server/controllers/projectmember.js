@@ -55,7 +55,10 @@ exports.listParticipant = (req, res, next) => {
       let participants = [];
       pms.map((pm) => {
         if (!pm.participant) return;
-        if (!req.user || !utils.compareIds(pm.project.participant, req.user._id)) {
+        if (
+          !req.user ||
+          !utils.compareIds(pm.project.participant, req.user._id)
+        ) {
           pm.participant.email = "";
         }
         pm.participant.password = "";
@@ -132,7 +135,6 @@ exports.acceptInviteTeam = async (req, res, next) => {
 exports.cleanProjectMember = async () => {
   try {
     let list = await ProjectMember.find({});
-    console.log("total numbers--", list.length);
     let i = 0;
     for (let pm of list) {
       let fr = list.filter(

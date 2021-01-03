@@ -37,7 +37,7 @@ class Creators extends Component {
   }
 
   render() {
-    const { admin, label } = this.props;
+    const { admin } = this.props;
     const creators = admin.creators || [];
     const { loading } = this.state;
 
@@ -99,7 +99,7 @@ class Creators extends Component {
       },
       {
         dataField: "org_name",
-        text: label.titleOrganization,
+        text: "Organization",
       },
       {
         dataField: "phone",
@@ -111,11 +111,11 @@ class Creators extends Component {
       },
       {
         dataField: "projectName",
-        text: `${label.titleProject} Name`,
+        text: `Project Name`,
       },
       {
         dataField: "projectId",
-        text: `${label.titleProject} ID`,
+        text: `Project ID`,
       },
     ];
 
@@ -123,7 +123,7 @@ class Creators extends Component {
       <div className="content-admin">
         <Row>
           <Col className="flex">
-            <h5 className="mr-auto">{label.titleProject} Creator</h5>
+            <h5 className="mr-auto">Project Creator</h5>
           </Col>
         </Row>
         <Row>
@@ -177,7 +177,7 @@ class Creators extends Component {
 }
 
 function mapStateToProps(state) {
-  return { admin: state.admin, label: state.label };
+  return { admin: state.admin };
 }
 
 export default connect(mapStateToProps, { listAdminProjectCreators })(Creators);

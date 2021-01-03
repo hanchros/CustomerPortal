@@ -4,18 +4,12 @@ import { API_URL, createNotification, errorMessage } from "./index";
 import {
   AUTH_USER,
   UNAUTH_USER,
-  RESET_PASSWORD_REQUEST,
   FETCH_USER,
   FETCH_USER_LIST,
-  AUTH_ORGANIZATION,
-  FORGOT_PASSWORD_REQUEST,
   FETCH_USER_SEARCH_LIST,
-  FETCH_MENTOR_LIST,
 } from "./types";
 import history from "../history";
 import Client from "./api";
-import { setMessageUserId } from "./message";
-import { getOneFieldData } from "../utils/helper";
 import { message } from "antd";
 
 //= ===============================
@@ -31,27 +25,10 @@ export function loginUser({ email, password }) {
       });
       cookie.save("token", response.data.token, { path: "/" });
       const user = response.data.user;
-      const organization = response.data.organization;
-      if (user) {
-        cookie.save("user", user, { path: "/" });
-        dispatch({ type: AUTH_USER });
-        dispatch({ type: FETCH_USER, payload: user });
-        setMessageUserId({ userId: user._id })(dispatch);
-        history.push("/user-dashboard");
-      } else {
-        cookie.save("organization", organization, { path: "/" });
-        dispatch({ type: AUTH_USER, loginMode: 1 });
-        dispatch({
-          type: AUTH_ORGANIZATION,
-          organization,
-        });
-        setMessageUserId({ userId: organization._id })(dispatch);
-        // if (response.data.newer) {
-        history.push("/org-summary");
-        // } else {
-        // history.push("/org-dashboard");
-        // }
-      }
+      cookie.save("user", user, { path: "/" });
+      dispatch({ type: AUTH_USER });
+      dispatch({ type: FETCH_USER, payload: user });
+      history.push("/user-dashboard");
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));
     }
@@ -59,7 +36,7 @@ export function loginUser({ email, password }) {
 }
 
 export function registerUser(values) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     let vrf = {};
     const client = Client();
     try {
@@ -74,35 +51,7 @@ export function registerUser(values) {
         email: user.email,
       };
       localStorage.setItem("vrf", JSON.stringify(vrf));
-      let show_ev = getOneFieldData(getState().profile.fieldData, "show_ev");
-      if (show_ev) history.push("/resend");
-      else history.push("/login");
-    } catch (err) {
-      createNotification("Register Failed", errorMessage(err));
-    }
-  };
-}
-
-export function registerOrg(values) {
-  return async (dispatch, getState) => {
-    let vrf = {};
-    const client = Client();
-    try {
-      const response = await client.post(
-        `${API_URL}/auth/org-register`,
-        values
-      );
-      let org = response.data.organization;
-      vrf = {
-        _id: org._id,
-        name: org.org_name,
-        email: org.authorized_email,
-        mode: "organization",
-      };
-      localStorage.setItem("vrf", JSON.stringify(vrf));
-      let show_ev = getOneFieldData(getState().profile.fieldData, "show_ev");
-      if (show_ev) history.push("/resend");
-      else history.push("/login");
+      history.push("/resend");
     } catch (err) {
       createNotification("Register Failed", errorMessage(err));
     }
@@ -155,18 +104,13 @@ export function confirmEmail({ token, mode }) {
   };
 }
 
-export function sendInvite(email, file) {
-  var formData = new FormData();
-  formData.append("file", file);
-  formData.append("email", email);
+export function sendInvite(values) {
+  const client = Client(true);
   return async (dispatch) => {
     try {
-      await axios.post(`${API_URL}/auth/send-invite`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await client.post(`${API_URL}/auth/send-invite`, values);
       message.success("Invitation sent successfully!");
+      return res.data.content;
     } catch (error) {
       createNotification("Send Invitation", errorMessage(error));
     }
@@ -204,11 +148,7 @@ export function getForgotPasswordToken(email, mode) {
   return function (dispatch) {
     axios
       .post(url, { email })
-      .then((response) => {
-        dispatch({
-          type: FORGOT_PASSWORD_REQUEST,
-          payload: response.data.message,
-        });
+      .then(() => {
         history.push("/");
       })
       .catch((error) => {
@@ -225,11 +165,7 @@ export function resetPassword(token, password, conf_password, mode) {
     }
     axios
       .post(`${API_URL}/auth/reset-password/${token}`, { password })
-      .then((response) => {
-        dispatch({
-          type: RESET_PASSWORD_REQUEST,
-          payload: response.data.message,
-        });
+      .then(() => {
         history.push("/login");
       })
       .catch((error) => {
@@ -246,11 +182,7 @@ export function resetPasswordSecurity(userid, password, conf_password) {
     }
     axios
       .post(`${API_URL}/auth/reset-password-security`, { userid, password })
-      .then((response) => {
-        dispatch({
-          type: RESET_PASSWORD_REQUEST,
-          payload: response.data.message,
-        });
+      .then(() => {
         // Redirect to login page on successful password reset
         history.push("/login");
       })
@@ -269,13 +201,6 @@ export function protectedTest() {
       if (response.data.user) {
         dispatch({ type: AUTH_USER });
         dispatch({ type: FETCH_USER, payload: response.data.user });
-        setMessageUserId({ userId: response.data.user._id })(dispatch);
-      } else if (response.data.organization) {
-        dispatch({ type: AUTH_USER, loginMode: 1 });
-        dispatch({
-          type: AUTH_ORGANIZATION,
-          organization: response.data.organization,
-        });
       }
     } catch (error) {
       dispatch({ type: UNAUTH_USER, payload: "" });
@@ -332,51 +257,6 @@ export function resendVerification() {
     axios.post(`${API_URL}/auth/resend`, vrf).catch((err) => {
       createNotification("Resend", errorMessage(err));
     });
-  };
-}
-
-export function listAllMentors() {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/user/mentor/list`);
-      dispatch({
-        type: FETCH_MENTOR_LIST,
-        participants: res.data.participants,
-        total: res.data.total,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
-export function searchMentors(text) {
-  return async (dispatch) => {
-    if (text.length < 3) {
-      createNotification(
-        "Search Mentor",
-        "Search text should be at least 3 in length"
-      );
-      return;
-    }
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/search/mentor/${text}`);
-      dispatch({
-        type: FETCH_MENTOR_LIST,
-        participants: res.data.participants,
-        searchTxt: text,
-      });
-    } catch (err) {
-      createNotification("Search Mentor", errorMessage(err));
-    }
-  };
-}
-
-export function clearMentorSearch() {
-  return (dispatch) => {
-    dispatch({ type: FETCH_MENTOR_LIST, participants: [], searchTxt: "" });
   };
 }
 

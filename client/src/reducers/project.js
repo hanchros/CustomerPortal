@@ -35,8 +35,8 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         projects: action.projects,
-        searchTxt: action.searchTxt
-      }
+        searchTxt: action.searchTxt,
+      };
     case FETCH_PROJECT_DETAIL_LIST:
       return { ...state, projectDetails: action.projectDetails };
     default:

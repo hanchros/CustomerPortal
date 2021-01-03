@@ -19,11 +19,11 @@ const ProjectMemberSchema = new Schema(
       required: true,
     },
     member: {
-      type: Boolean
+      type: Boolean,
     },
     pending: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   {
     timestamps: true,

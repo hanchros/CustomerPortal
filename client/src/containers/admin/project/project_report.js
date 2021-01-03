@@ -53,7 +53,7 @@ class ProjectReport extends Component {
   };
 
   render() {
-    const { project, label } = this.props;
+    const { project } = this.props;
     const projects = project.projectDetails || [];
     const { loading, visible, projid } = this.state;
 
@@ -111,7 +111,7 @@ class ProjectReport extends Component {
       },
       {
         dataField: "project_name",
-        text: `${label.titleProject} Name`,
+        text: `Project Name`,
       },
       {
         dataField: "short_description",
@@ -123,27 +123,11 @@ class ProjectReport extends Component {
       },
       {
         dataField: "project_creator",
-        text: `${label.titleProject} Creator`,
+        text: `Project Creator`,
       },
       {
         dataField: "creator_org",
-        text: `Creator ${label.titleOrganization}`,
-      },
-      {
-        dataField: "gallery_link",
-        text: `${label.titleGallery} Link`,
-      },
-      {
-        dataField: "challenge_name",
-        text: `${label.titleChallenge} Name`,
-      },
-      {
-        dataField: "challenge_org",
-        text: `${label.titleChallenge} ${label.titleOrganization}`,
-      },
-      {
-        dataField: "challenge_short_description",
-        text: `${label.titleChallenge} Description`,
+        text: `Creator Organization`,
       },
       {
         dataField: "contact_detail",
@@ -161,7 +145,7 @@ class ProjectReport extends Component {
         <div className="content">
           <Row>
             <Col className="flex">
-              <h5 className="mr-auto">{label.titleProject}</h5>
+              <h5 className="mr-auto">Project</h5>
             </Col>
           </Row>
           <Row>
@@ -208,7 +192,7 @@ class ProjectReport extends Component {
                 </CardBody>
               </Card>
               <Modal
-                title={`${label.titleProject} Profile`}
+                title={`Project Profile`}
                 visible={visible}
                 width={800}
                 footer={false}
@@ -227,7 +211,7 @@ class ProjectReport extends Component {
 }
 
 function mapStateToProps(state) {
-  return { project: state.project, label: state.label };
+  return { project: state.project };
 }
 
 export default connect(mapStateToProps, { listProjectDetails, deleteProject })(

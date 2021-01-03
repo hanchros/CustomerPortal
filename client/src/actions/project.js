@@ -14,9 +14,10 @@ import { message } from "antd";
 // Project actions
 //= ===============================
 export function createProject(project) {
+  const client = Client(true);
   return async (dispatch) => {
     try {
-      let res = await axios.post(`${API_URL}/project`, project);
+      let res = await client.post(`${API_URL}/project`, project);
       return res.data.project;
     } catch (err) {
       createNotification("Create Project", errorMessage(err));
@@ -25,9 +26,10 @@ export function createProject(project) {
 }
 
 export function updateProject(project) {
+  const client = Client(true);
   return async (dispatch) => {
     try {
-      let res = await axios.put(`${API_URL}/project`, project);
+      let res = await client.put(`${API_URL}/project`, project);
       return res.data.project;
     } catch (err) {
       createNotification("Update Project", errorMessage(err));
@@ -65,17 +67,6 @@ export function upvoteProject(id, vote) {
   };
 }
 
-export function challengeProjects(challengeId) {
-  return async (dispatch) => {
-    try {
-      let res = await axios.get(`${API_URL}/project/challenge/${challengeId}`);
-      return res.data.projects;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
 export function getProject(projectId) {
   return async (dispatch) => {
     try {
@@ -101,9 +92,10 @@ export function deleteProject(projid) {
 }
 
 export function getProjectsByUser(userId) {
+  const client = Client();
   return async (dispatch) => {
     try {
-      let res = await axios.get(`${API_URL}/projectmember/project/${userId}`);
+      let res = await client.get(`${API_URL}/projectmember/project/${userId}`);
       return res.data.projects;
     } catch (err) {
       console.log(err);
@@ -293,8 +285,10 @@ export function shareProject(sharers, id) {
       const res = await client.post(`${API_URL}/project/share/${id}`, {
         sharers,
       });
-      message.success("Project has been shared for this participants successfully");
-      return res.data.project
+      message.success(
+        "Project has been shared for this participants successfully"
+      );
+      return res.data.project;
     } catch (err) {
       createNotification("Share Project", errorMessage(err));
     }

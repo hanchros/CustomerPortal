@@ -13,9 +13,9 @@ const ProjectSchema = new Schema(
       ref: "User",
       required: true,
     },
-    challenge: {
+    organization: {
       type: Schema.Types.ObjectId,
-      ref: "Challenge",
+      ref: "Organization",
       required: true,
     },
     name: {

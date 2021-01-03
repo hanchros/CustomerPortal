@@ -1,6 +1,5 @@
 import {
   FETCH_USER,
-  ERROR_RESPONSE,
   FETCH_USER_LIST,
   FETCH_USER_SEARCH_LIST,
 } from "../actions/types";
@@ -8,9 +7,7 @@ import {
 const INITIAL_STATE = {
   profile: {},
   participants: [],
-  message: "",
   searchTxt: "",
-  error: "",
   total: 0,
   isAdmin: false,
   isSuper: false,
@@ -36,8 +33,6 @@ export default function (state = INITIAL_STATE, action) {
         participants: action.participants,
         searchTxt: action.searchTxt,
       };
-    case ERROR_RESPONSE:
-      return { ...state, error: action.payload };
     default:
       return state;
   }

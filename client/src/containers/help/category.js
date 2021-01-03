@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 import { Link } from "react-router-dom";
 import { FileTextOutlined } from "@ant-design/icons";
 import { orgQuote, chlQuote } from "./index";
@@ -59,7 +59,6 @@ class HelpCategory extends Component {
             </Col>
           </Row>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }

@@ -9,7 +9,6 @@ const EditHelpDoc = ({
   deleteHelpDoc,
   hideModal,
   setLoading,
-  label,
 }) => {
   const onFinish = async (values) => {
     setLoading(true);
@@ -63,7 +62,7 @@ const EditHelpDoc = ({
       <Form.Item name="related" label="Related">
         <Radio.Group>
           <Radio value={"organizer"}>Organizer</Radio>
-          <Radio value={"challenge"}>{label.titleChallenge}</Radio>
+          <Radio value={"challenge"}>Challenge</Radio>
         </Radio.Group>
       </Form.Item>
       <div className="flex">

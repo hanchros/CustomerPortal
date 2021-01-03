@@ -18,32 +18,6 @@ exports.setUserInfo = function setUserInfo(request) {
   };
 };
 
-// Set org info from request
-exports.setOrgInfo = function setOrgInfo(request) {
-  return {
-    _id: request._id,
-    org_name: request.org_name,
-    org_type: request.org_type,
-    address: request.address,
-    country: request.country,
-    city: request.city,
-    state: request.state,
-    website: request.website,
-    logo: request.logo,
-    authorized_name: request.authorized_name,
-    authorized_title: request.authorized_title,
-    authorized_email: request.authorized_email,
-    authorized_phone: request.authorized_phone,
-    agree_terms: request.agree_terms,
-    contact_name: request.contact_name,
-    contact_email: request.contact_email,
-    contact_phone: request.contact_phone,
-    verified: request.verified,
-    tags: request.tags,
-    attr: request.attr,
-  };
-};
-
 exports.setPublicUsers = (users) => {
   if (!users || users.length === 0) return [];
   let result = [];

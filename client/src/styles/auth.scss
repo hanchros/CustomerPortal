@@ -42,7 +42,7 @@
   width: 90%;
   max-width: 700px;
   margin: 0 auto;
-  min-height: calc(100vh - 209px);
+  min-height: calc(100vh - 73px);
   font-size: 13px;
   padding-bottom: 30px;
   display: flex;
@@ -117,8 +117,10 @@
 }
 
 .invite-form {
+  width: 94%;
   max-width: 600px;
-  margin: 80px auto !important;
+  margin: 50px auto !important;
+  margin-bottom: 0 !important;
 }
 
 .home-child {
@@ -195,7 +197,6 @@
   .file-drop-target {
     padding: 20px;
     padding-top: 100px;
-
   }
 
   .file-drop-dragging-over-target {

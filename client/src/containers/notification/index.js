@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
 import { Collapse } from "antd";
 import { readNotification } from "../../actions/notification";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 import { CaretRightOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
@@ -46,7 +46,6 @@ class Notification extends Component {
             </Col>
           </Row>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }

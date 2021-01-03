@@ -1,7 +1,6 @@
 const Project = require("../models/project");
 const sendgrid = require("../config/sendgrid");
 const Notification = require("../models/notification");
-const Gallery = require("../models/gallery");
 
 exports.createProject = (req, res, next) => {
   const project = new Project(req.body);
@@ -56,7 +55,6 @@ exports.voteProject = async (req, res, next) => {
 exports.getProject = (req, res, next) => {
   Project.findById(req.params.projectId)
     .populate("participant")
-    .populate("challenge")
     .exec((err, project) => {
       if (err) {
         return next(err);
@@ -124,17 +122,6 @@ exports.deleteProject = (req, res, next) => {
   });
 };
 
-exports.challengeProjects = (req, res, next) => {
-  Project.find({ challenge: req.params.challengeId })
-    .sort({ createdAt: "desc" })
-    .exec((err, projects) => {
-      if (err) {
-        return next(err);
-      }
-      res.status(201).json({ projects });
-    });
-};
-
 exports.listProjectByCreator = (req, res, next) => {
   Project.find({ participant: req.params.participantId })
     .sort({ createdAt: "desc" })
@@ -191,36 +178,18 @@ exports.contactCreator = async (req, res, next) => {
 // for admin
 exports.listAllProject = async (req, res, next) => {
   try {
-    let projects = await Project.find({})
-      .populate("participant")
-      .populate({
-        path: "challenge",
-        select: "challenge_name short_description",
-        populate: {
-          path: "organization",
-          model: "Organization",
-        },
-      });
+    let projects = await Project.find({}).populate("organization");
     let result = [];
     for (let proj of projects) {
-      if (!proj.challenge) proj.challenge = {};
+      if (!proj.organization) proj.organization = {};
       if (!proj.participant) proj.participant = { profile: {} };
-      // let gallery = await Gallery.findOne({ project: proj._id });
-      // if (!gallery || !gallery.public) continue;
       let gallery_link = "";
-      // if (gallery)
-      // gallery_link = `https://challenge.cbinsights.com/gallery/${gallery._id}`;
       result.push({
         project_name: proj.name,
         project_creator: `${proj.participant.profile.first_name} ${proj.participant.profile.last_name}`,
         creator_org: proj.participant.profile.org_name,
         short_description: proj.short_description,
-        gallery_link,
-        challenge_name: proj.challenge.challenge_name,
-        challenge_org: proj.challenge.organization
-          ? proj.challenge.organization.org_name
-          : "",
-        challenge_short_description: proj.challenge.short_description,
+        organization: proj.organization.org_name,
         logo: proj.logo,
         contact_detail: proj.contact_detail,
         _id: proj._id,

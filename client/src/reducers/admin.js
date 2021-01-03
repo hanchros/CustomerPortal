@@ -12,7 +12,6 @@ const INITIAL_STATE = {
   reports: [],
   participant: {},
   organization: {},
-  challenge: {},
   project: {},
 };
 

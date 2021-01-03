@@ -63,7 +63,7 @@ class Participants extends Component {
   }
 
   render() {
-    const { admin, isSuper, label } = this.props;
+    const { admin, isSuper } = this.props;
     const participants = admin.participants || [];
     const { loading } = this.state;
     const { SearchBar } = Search;
@@ -138,7 +138,7 @@ class Participants extends Component {
       },
       {
         dataField: "org_name",
-        text: label.titleOrganization,
+        text: "Organization",
       },
       {
         dataField: "phone",
@@ -172,7 +172,7 @@ class Participants extends Component {
       <div className="content-admin">
         <Row>
           <Col className="flex">
-            <h5 className="mr-auto">All {label.titleParticipant}</h5>
+            <h5 className="mr-auto">All Participants</h5>
           </Col>
         </Row>
         <Row>
@@ -219,7 +219,7 @@ class Participants extends Component {
               </CardBody>
             </Card>
             <Modal
-              title={`${label.titleParticipant} Profile`}
+              title={`Participant Profile`}
               visible={this.state.visible}
               width={800}
               footer={false}
@@ -243,7 +243,6 @@ function mapStateToProps(state) {
   return {
     admin: state.admin,
     isSuper: state.user.isSuper,
-    label: state.label,
   };
 }
 

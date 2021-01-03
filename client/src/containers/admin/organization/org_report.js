@@ -59,7 +59,7 @@ class OrgReport extends Component {
   };
 
   render() {
-    const { organization, label } = this.props;
+    const { organization } = this.props;
     const organizations = organization.adminOrganizations || [];
     const { loading, visible, orgid } = this.state;
 
@@ -118,7 +118,7 @@ class OrgReport extends Component {
       },
       {
         dataField: "name",
-        text: `${label.titleOrganization} Name`,
+        text: `Organization Name`,
       },
       {
         dataField: "authroized_email",
@@ -134,15 +134,11 @@ class OrgReport extends Component {
       },
       {
         dataField: "participants",
-        text: label.titleParticipant,
-      },
-      {
-        dataField: "challenges",
-        text: label.titleChallenge,
+        text: "Participant",
       },
       {
         dataField: "projects",
-        text: label.titleProject,
+        text: "Project",
       },
       {
         dataField: "",
@@ -156,7 +152,7 @@ class OrgReport extends Component {
         <div className="content">
           <Row>
             <Col className="flex">
-              <h5 className="mr-auto">{label.titleOrganization}</h5>
+              <h5 className="mr-auto">Organization</h5>
             </Col>
           </Row>
           <Row>
@@ -204,7 +200,7 @@ class OrgReport extends Component {
               </Card>
             </Col>
             <Modal
-              title={`${label.titleOrganization} Profile`}
+              title={`Organization Profile`}
               visible={visible}
               width={800}
               footer={false}
@@ -220,7 +216,7 @@ class OrgReport extends Component {
 }
 
 function mapStateToProps(state) {
-  return { organization: state.organization, label: state.label };
+  return { organization: state.organization };
 }
 
 export default connect(mapStateToProps, { listOrgReport, deleteOrganization })(

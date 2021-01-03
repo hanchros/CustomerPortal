@@ -64,7 +64,7 @@ class ProfileForm extends React.Component {
   };
 
   render() {
-    const { label, fieldData } = this.props;
+    const { fieldData } = this.props;
     const { newPf, newOf, radioValue } = this.state;
     const pfields = fieldData.filter((fd) => fd.field === "userform_attr");
     const ofields = fieldData.filter((fd) => fd.field === "orgform_attr");
@@ -74,7 +74,7 @@ class ProfileForm extends React.Component {
         <Row>
           <Col md={6}>
             <p>
-              <b>{label.titleParticipant}</b>
+              <b>Participant</b>
             </p>
             {pfields.map((pf) => (
               <div key={pf._id} className="profile-form-item">
@@ -122,7 +122,7 @@ class ProfileForm extends React.Component {
           </Col>
           <Col md={6}>
             <p>
-              <b>{label.titleOrganization}</b>
+              <b>Organization</b>
             </p>
             {ofields.map((of) => (
               <div key={of._id} className="profile-form-item">
@@ -176,7 +176,7 @@ class ProfileForm extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { fieldData: state.profile.fieldData, label: state.label };
+  return { fieldData: state.profile.fieldData };
 }
 
 export default connect(mapStateToProps, { deleteFieldData, createFieldData })(

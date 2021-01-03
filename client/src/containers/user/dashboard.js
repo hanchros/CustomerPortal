@@ -9,13 +9,11 @@ import {
   listProjectByCreator,
   getParticipant,
 } from "../../actions/project";
-import { Header, Footer, CustomCard } from "../../components/template";
+import { Header, CustomCard } from "../../components/template";
 import sampleUrl from "../../assets/img/user-avatar.png";
 import ProjectAvatar from "../../assets/icon/challenge.png";
 import CreateForm from "../../components/project/create_project";
 import UserTags from "./user-tag";
-import QuestionForm from "../../components/template/question_form";
-import AttrBlock from "../../components/pages/attr-block";
 import { getOneFieldData } from "../../utils/helper";
 
 class UserDashboard extends Component {
@@ -31,7 +29,6 @@ class UserDashboard extends Component {
       isUpdate: false,
       avatarURL: "",
       curProject: {},
-      showDrawer: false,
     };
   }
 
@@ -77,17 +74,9 @@ class UserDashboard extends Component {
     this.setState({ avatarURL: url });
   };
 
-  showDrawer = () => {
-    this.setState({ showDrawer: true });
-  };
-
-  onCloseDrawer = () => {
-    this.setState({ showDrawer: false });
-  };
-
   render = () => {
-    const { isUpdate, avatarURL, curProject, showDrawer } = this.state;
-    const { user, label, updateProject, fieldData } = this.props;
+    const { isUpdate, avatarURL, curProject } = this.state;
+    const { user, updateProject, fieldData } = this.props;
     const userInfo = user.profile;
     const dashIntro = getOneFieldData(fieldData, "dash_intro");
 
@@ -97,7 +86,7 @@ class UserDashboard extends Component {
         <Container className="content">
           {isUpdate && (
             <div className="login-page">
-              <h4 className="mt-3 mb-4">Create {label.titleProject}</h4>
+              <h4 className="mt-3 mb-4">Create Project</h4>
               <CreateForm
                 updateProject={updateProject}
                 hideProjectCreate={this.hideProjectCreate}
@@ -105,7 +94,6 @@ class UserDashboard extends Component {
                 avatarURL={avatarURL || curProject.logo}
                 curProject={curProject}
                 fieldData={fieldData}
-                label={label}
               />
             </div>
           )}
@@ -113,7 +101,6 @@ class UserDashboard extends Component {
             <div className="user-dashboard">
               {this.renderProfileAlert(userInfo)}
               {this.renderMessageAlert()}
-              {this.renderSQAlert()}
               {dashIntro && (
                 <div
                   className="sun-editor-editable mb-4"
@@ -127,8 +114,6 @@ class UserDashboard extends Component {
             </div>
           )}
         </Container>
-        <Footer />
-        <QuestionForm visible={showDrawer} onCloseDrawer={this.onCloseDrawer} />
       </React.Fragment>
     );
   };
@@ -141,9 +126,8 @@ class UserDashboard extends Component {
     if (message.length === 0) return null;
     const valid = (
       <div className="profile-alert">
-        {this.props.label.titleParticipant} Profile has not been completed!
-        &nbsp;&nbsp; Click <Link to="/profile">here</Link> to update your
-        profile
+        Participant Profile has not been completed! &nbsp;&nbsp; Click{" "}
+        <Link to="/profile">here</Link> to update your profile
       </div>
     );
     return <Alert description={valid} type="info" closable />;
@@ -164,31 +148,14 @@ class UserDashboard extends Component {
         {invPros.map((proj) => {
           let valid = (
             <div className="profile-alert">
-              A {this.props.label.project} - "{proj.name}" has invited you to
-              join the team. Click <Link to={`/project/${proj._id}`}>here</Link>{" "}
-              to accept invitation
+              A project - "{proj.name}" has invited you to join the team. Click{" "}
+              <Link to={`/project/${proj._id}`}>here</Link> to accept invitation
             </div>
           );
           return <Alert description={valid} type="success" closable />;
         })}
       </React.Fragment>
     );
-  };
-
-  renderSQAlert = () => {
-    const { question } = this.props;
-    if (question.securityquestion._id) return null;
-    const valid = (
-      <div className="profile-alert">
-        {this.props.label.titleParticipant} security questions have not been
-        set! Click{" "}
-        <Link to="#" onClick={this.showDrawer}>
-          here
-        </Link>{" "}
-        to set your security questions
-      </div>
-    );
-    return <Alert description={valid} type="info" closable />;
   };
 
   renderUserInfo = (userInfo) => {
@@ -200,9 +167,6 @@ class UserDashboard extends Component {
         <Col xl={4} md={5} className="mb-3">
           <div className="user-card">
             <Avatar src={userInfo.photo || sampleUrl} size={200} />
-          </div>
-          <div className="dashboard-invite">
-            <Link to="/invite" className="main-btn">Send Invitation</Link>
           </div>
         </Col>
         <Col xl={8} md={7}>
@@ -262,11 +226,6 @@ class UserDashboard extends Component {
             )}
           </div>
           <UserTags tags={userInfo.tags} contact={userInfo.contact} />
-          <AttrBlock
-            fieldData={this.props.fieldData}
-            fieldName={"userform_attr"}
-            attr={userInfo.attr}
-          />
         </Col>
       </Row>
     );
@@ -274,12 +233,11 @@ class UserDashboard extends Component {
 
   renderCreatedProjects = () => {
     const { createdProjects } = this.state;
-    const { label } = this.props;
     if (createdProjects.length === 0) return null;
 
     return (
       <React.Fragment>
-        <h5 className="mt-5">{label.titleProject} Created</h5>
+        <h5 className="mt-5">Project Created</h5>
         {this.renderSpin()}
         <Row>
           {createdProjects.map((item, index) => (
@@ -295,7 +253,7 @@ class UserDashboard extends Component {
               </Link>
               <div className="edit-chal">
                 <Tag color="purple" onClick={() => this.handleUpdate(item)}>
-                  Edit {label.titleProject}
+                  Edit Project
                 </Tag>
               </div>
             </Col>
@@ -312,7 +270,7 @@ class UserDashboard extends Component {
 
     return (
       <React.Fragment>
-        <h5 className="mt-5">{this.props.label.titleProject} Team Member</h5>
+        <h5 className="mt-5">Project Team Member</h5>
         {this.renderSpin()}
         <Row>
           {listItem.map((item, index) => {
@@ -341,7 +299,7 @@ class UserDashboard extends Component {
 
     return (
       <React.Fragment>
-        <h5 className="mt-5">{this.props.label.titleProject} Followed</h5>
+        <h5 className="mt-5">Project Followed</h5>
         {this.renderSpin()}
         <Row>
           {listItem.map((item, index) => {
@@ -376,9 +334,7 @@ class UserDashboard extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user.profile,
-    question: state.question,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 };
 

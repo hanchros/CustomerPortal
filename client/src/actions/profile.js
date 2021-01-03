@@ -1,12 +1,9 @@
 import { API_URL, errorMessage, createNotification } from "./index";
 import Client from "./api";
-import { message } from "antd";
 import {
   FETCH_FIELD_DATA,
   CREATE_FIELD_DATA,
   DELETE_FIELD_DATA,
-  ADMIN_SET_MENTOR,
-  ADMIN_SET_SUMMARY,
   ADMIN_UPDATE_FIELD
 } from "./types";
 
@@ -51,37 +48,6 @@ export function deleteFieldData(id) {
       });
     } catch (err) {
       createNotification("Delete Categories", errorMessage(err));
-    }
-  };
-}
-
-export function setMentor(mentor) {
-  const client = Client(true);
-  return async (dispatch) => {
-    try {
-      let res = await client.post(`${API_URL}/fields/set-mentor`, { mentor });
-      dispatch({
-        type: ADMIN_SET_MENTOR,
-        mentor: res.data.mentor,
-      });
-    } catch (err) {
-      createNotification("Update Mentor", errorMessage(err));
-    }
-  };
-}
-
-export function setSummary(summary) {
-  const client = Client(true);
-  return async (dispatch) => {
-    try {
-      let res = await client.post(`${API_URL}/fields/summary`, { summary });
-      dispatch({
-        type: ADMIN_SET_SUMMARY,
-        summary: res.data.summary,
-      });
-      message.success("Summary has been updated successfully!")
-    } catch (err) {
-      createNotification("Update Summary", errorMessage(err));
     }
   };
 }

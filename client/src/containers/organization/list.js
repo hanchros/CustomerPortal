@@ -4,9 +4,17 @@ import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
 import { Skeleton, Input, Button, Checkbox, Tag, Select, Popover } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
-import { FilterOutlined, CaretDownOutlined } from "@ant-design/icons";
-import { listOrganization, clearSearch } from "../../actions/organization";
-import { Header, Footer, CustomCard } from "../../components/template";
+import {
+  FilterOutlined,
+  CaretDownOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
+import {
+  listOrganization,
+  clearSearch,
+  setCurrentOrganization,
+} from "../../actions/organization";
+import { Header, CustomCard } from "../../components/template";
 import ProjectAvatar from "../../assets/icon/challenge.png";
 import Spinner from "../../components/pages/spinner";
 import { createNotification } from "../../actions";
@@ -17,6 +25,7 @@ import {
   getOneFieldData,
   getFieldDataById,
 } from "../../utils/helper";
+import history from "../../history";
 
 const { Option } = Select;
 
@@ -47,7 +56,7 @@ class OrganizationList extends Component {
   onSearch = (value) => {
     if (value && value.length < 3) {
       createNotification(
-        `Search ${this.props.label.titleOrganization}`,
+        `Search Organization`,
         "Search text should be at least 3 in length"
       );
       this.setState({ searchStr: value });
@@ -101,6 +110,11 @@ class OrganizationList extends Component {
   onApplyFilter = () => {
     this.props.clearSearch();
     this.props.listOrganization(0, this.state);
+  };
+
+  onCreateOrganization = () => {
+    this.props.setCurrentOrganization({});
+    history.push("/org-profile");
   };
 
   mkContent = (name) => {
@@ -217,7 +231,7 @@ class OrganizationList extends Component {
   };
 
   render() {
-    const { organization, label, fieldData } = this.props;
+    const { organization, fieldData } = this.props;
     const orgs = organization.organizations;
     const { loading } = this.state;
     const cols = getOneFieldData(fieldData, "org_column");
@@ -229,7 +243,13 @@ class OrganizationList extends Component {
         <Header />
         <Container className="content">
           <div className="dashboard">
-            <h5>{label.titleOrganization}s</h5>
+            <div className="list-title-box">
+              <h5>Organizations</h5>
+              <Button type="primary" onClick={this.onCreateOrganization}>
+                <PlusCircleOutlined style={{ fontSize: "13px" }} />
+                Create Organization
+              </Button>
+            </div>
             <hr />
             {orgIntro && (
               <div
@@ -279,7 +299,6 @@ class OrganizationList extends Component {
             </InfiniteScroll>
           </div>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }
@@ -290,11 +309,11 @@ function mapStateToProps(state) {
     organization: state.organization,
     user: state.user,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 }
 
 export default connect(mapStateToProps, {
   listOrganization,
   clearSearch,
+  setCurrentOrganization,
 })(OrganizationList);

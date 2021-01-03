@@ -111,7 +111,6 @@ class HelpDoc extends React.Component {
               deleteHelpDoc={deleteHelpDoc}
               hideModal={this.hideModal}
               setLoading={this.setLoading}
-              label={this.props.label}
             />
           </Modal>
         )}
@@ -121,7 +120,7 @@ class HelpDoc extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { helpdocs: state.helpdoc.helpdocs, label: state.label };
+  return { helpdocs: state.helpdoc.helpdocs };
 }
 
 export default connect(mapStateToProps, {

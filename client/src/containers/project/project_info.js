@@ -9,11 +9,8 @@ import {
   joinProject,
   leaveProject,
 } from "../../actions/project";
-import { setCurrentGallery } from "../../actions/gallery";
-import { createTeamChat } from "../../actions/message";
 import ProjectAvatar from "../../assets/icon/challenge.png";
 import UserAvatar from "../../assets/img/user-avatar.png";
-import history from "../../history";
 import EditProject from "./project-edit";
 import ShareProject from "./project-share";
 import Tags from "../../components/pages/tags";
@@ -54,18 +51,6 @@ class ProjectInfo extends React.Component {
     return false;
   };
 
-  checkHaveTeamChat = () => {
-    const { curProj, message } = this.props;
-    let conversations = message.conversations;
-
-    for (let cv of conversations) {
-      if (cv.project && cv.project === curProj._id) {
-        return true;
-      }
-    }
-    return false;
-  };
-
   checkIsTeamMember = () => {
     const { project, user } = this.props;
     const participants = project.participants;
@@ -75,15 +60,6 @@ class ProjectInfo extends React.Component {
       }
     }
     return false;
-  };
-
-  onCreateGallery = () => {
-    const { curProj, setCurrentGallery, toggleEditGallery } = this.props;
-    let gallery = {
-      project: curProj._id,
-    };
-    setCurrentGallery(gallery);
-    toggleEditGallery();
   };
 
   onEditProject = () => {
@@ -106,27 +82,16 @@ class ProjectInfo extends React.Component {
   };
 
   render() {
-    const {
-      curProj,
-      isCreator,
-      gallery,
-      toggleEditGallery,
-      togglePreview,
-      isAdmin,
-      user,
-      loginMode,
-      fieldData,
-      label,
-    } = this.props;
+    const { curProj, isCreator, isAdmin, user, fieldData } = this.props;
     if (!curProj.likes) curProj.likes = [];
     let creator = curProj.participant ? curProj.participant.profile : {};
-    const isVoter = loginMode === 0 && curProj.likes.includes(user._id);
+    const isVoter = curProj.likes.includes(user._id);
 
     const menu = (
       <Menu>
         <Menu.Item>
           <Link to="#" onClick={this.onEditProject}>
-            Edit {label.titleProject}
+            Edit Project
           </Link>
         </Menu.Item>
         {(isCreator || isAdmin) && (
@@ -189,7 +154,7 @@ class ProjectInfo extends React.Component {
             <p>{curProj.short_description}</p>
             {curProj.challenge && (
               <p className="produced-by">
-                Addressing {label.titleChallenge} -{" "}
+                Addressing Challenge -{" "}
                 <Link
                   className="challenge-link"
                   to={`/challenge/${curProj.challenge._id}`}
@@ -221,86 +186,19 @@ class ProjectInfo extends React.Component {
               <span> {curProj.likes.length}</span>
             </p>
 
-            {!this.checkFollowProject() && !isCreator && loginMode === 0 && (
+            {!this.checkFollowProject() && !isCreator && (
               <div>
                 <Popconfirm
-                  title={`By following the ${label.project} you will be sharing your email with the ${label.project} creator. Follow ${label.project}?`}
+                  title={`By following the project you will be sharing your email with the project creator. Follow project?`}
                   onConfirm={this.joinProject}
                   okText="Yes"
                   cancelText="No"
                 >
-                  <button className="hk_button mt-4">
-                    Follow {label.titleProject}
-                  </button>
+                  <button className="hk_button mt-4">Follow Project</button>
                 </Popconfirm>
               </div>
             )}
             <div className="project-unfollow">
-              {isCreator && !this.checkHaveTeamChat() && (
-                <Button
-                  color="primary"
-                  size="sm"
-                  onClick={() =>
-                    this.props.createTeamChat(curProj.name, curProj._id)
-                  }
-                >
-                  Create Team Chat
-                </Button>
-              )}
-              {/* {gallery.currentGallery._id && (
-                <Button
-                  color="link"
-                  size="sm"
-                  className="mr-auto"
-                  onClick={() =>
-                    history.push(`/gallery/${gallery.currentGallery._id}`)
-                  }
-                >
-                  GALLERY
-                </Button>
-              )} */}
-              {isCreator && gallery.currentGallery._id && (
-                <Button
-                  outline
-                  color="primary"
-                  size="sm"
-                  className="mr-auto"
-                  onClick={togglePreview}
-                >
-                  Preview {label.titleGallery}
-                </Button>
-              )}
-              {isCreator && gallery.currentGallery._id && (
-                <Button
-                  outline
-                  color="primary"
-                  size="sm"
-                  onClick={toggleEditGallery}
-                >
-                  Edit {label.titleGallery}
-                </Button>
-              )}
-              {isCreator && !gallery.currentGallery._id && (
-                <Button
-                  outline
-                  color="primary"
-                  size="sm"
-                  onClick={this.onCreateGallery}
-                >
-                  Create {label.titleGallery}
-                </Button>
-              )}
-              {this.checkHaveTeamChat() &&
-                (isCreator || this.checkIsTeamMember()) && (
-                  <Button
-                    outline
-                    color="primary"
-                    size="sm"
-                    onClick={() => history.push("/message")}
-                  >
-                    TEAM CHAT
-                  </Button>
-                )}
               {this.checkFollowProject() && (
                 <Button
                   outline
@@ -308,13 +206,13 @@ class ProjectInfo extends React.Component {
                   size="sm"
                   onClick={this.leaveProject}
                 >
-                  Leave {label.titleProject}
+                  Leave Project
                 </Button>
               )}
             </div>
           </div>
           <Modal
-            title={`${label.titleProject} Profile`}
+            title={`$Project Profile`}
             visible={this.state.visible}
             width={800}
             footer={false}
@@ -337,12 +235,8 @@ const mapStateToProps = (state) => {
   return {
     user: state.user.profile,
     project: state.project,
-    message: state.message,
-    gallery: state.gallery,
     isAdmin: state.user.isAdmin,
-    loginMode: state.auth.loginMode,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 };
 
@@ -350,6 +244,4 @@ export default connect(mapStateToProps, {
   getParticipant,
   joinProject,
   leaveProject,
-  createTeamChat,
-  setCurrentGallery,
 })(ProjectInfo);

@@ -13,7 +13,6 @@ const CreateForm = ({
   avatarURL,
   curProject,
   fieldData,
-  label,
 }) => {
   const [tags, setTags] = useState(curProject.tags || []);
 
@@ -51,15 +50,11 @@ const CreateForm = ({
             rules={[
               {
                 required: true,
-                message: `Please input the ${label.project} name!`,
+                message: `Please input the project name!`,
               },
             ]}
           >
-            <Input
-              type="text"
-              className="name"
-              placeholder={`${label.titleProject} Name`}
-            />
+            <Input type="text" className="name" placeholder={`Project Name`} />
           </Form.Item>
         </Col>
         <Col md={12}>
@@ -68,7 +63,7 @@ const CreateForm = ({
             rules={[
               {
                 required: true,
-                message: `Please input the ${label.project} short description!`,
+                message: `Please input the project short description!`,
               },
             ]}
           >
@@ -88,7 +83,7 @@ const CreateForm = ({
         <Col md={12}>
           <Form.Item name="contact_detail">
             <Input.TextArea
-              placeholder={`How would you like potential ${label.project} team members contact you?`}
+              placeholder={`How would you like potential project team members contact you?`}
               rows={3}
             />
           </Form.Item>

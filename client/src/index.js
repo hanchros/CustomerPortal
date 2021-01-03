@@ -20,6 +20,7 @@ import "antd/dist/antd.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "suneditor/dist/css/suneditor.min.css";
 import { configureSocket } from "./utils/socket";
+import 'rc-color-picker/assets/index.css';
 
 // Initialize Google Analytics
 // ReactGA.initialize("UA-000000-01");

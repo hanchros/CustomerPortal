@@ -7,7 +7,7 @@ const sendgrid = require("../config/sendgrid");
 exports.listAdminUsers = async (req, res, next) => {
   try {
     let users = await User.find({ role: { $ne: ROLE_BLOCK } }).select(
-      "_id email profile verified usertype role"
+      "_id email profile verified role"
     );
     return res.status(201).json({
       participants: users,
@@ -89,24 +89,8 @@ exports.getAdminEmailTemplates = (req, res, next) => {
       ),
     });
     result.push({
-      title: "Organization Email Verification",
-      html: sendgrid.orgEVFactory(
-        "organization@mail.com",
-        "Integra",
-        "e494a9ddff8488aa372df18cb884252d"
-      ),
-    });
-    result.push({
       title: "Participant Reset Password",
       html: sendgrid.userFPFactory("e494a9ddff8488aa372df18cb884252d"),
-    });
-    result.push({
-      title: "Organization Reset Password",
-      html: sendgrid.orgFPFactory("e494a9ddff8488aa372df18cb884252d"),
-    });
-    result.push({
-      title: "You have unread messages",
-      html: sendgrid.messageFactory("Sergey", "Mike", "Here is sample message"),
     });
     result.push({
       title: "New Notification",
@@ -118,22 +102,16 @@ exports.getAdminEmailTemplates = (req, res, next) => {
       ),
     });
     result.push({
-      title: "New Contact",
-      html: sendgrid.galleryContactFactory(
-        "123456789",
-        "I would like to support team",
-        "Integra Gallery"
-      ),
-    });
-    result.push({
-      title: "New Challenge Created",
-      html: sendgrid.createCHLFactory(
-        { org_name: "Integra" },
-        {
-          challenge_name: "Test Challenge",
-          short_description: "This is short description of Test Challenge",
-        }
-      ),
+      title: "Invite Email",
+      html: sendgrid.inviteFactory({
+        first_name: "Sergey",
+        last_name: "Rubezhin",
+        email: "test@gmail.com",
+        organization: "MYZ",
+        creator: "Integra Team",
+        content:
+          '<p>​&nbsp;&nbsp;&nbsp;&nbsp;</p><p><span style="font-size: 16px;"><strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">&nbsp;&nbsp;&nbsp;&nbsp;Congratulations</span></strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">!&nbsp;</span></span></p><p><span style="font-size: 16px;"><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">&nbsp;&nbsp;&nbsp;&nbsp;You have just experienced blockchain “</span><strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">smart document</span></strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">” technology that&nbsp;allows &nbsp;&nbsp;&nbsp;&nbsp;ordinary documents to to processed automatically by almost any software.</span></span><strong></strong><br></p>',
+      }),
     });
     return res.status(200).json({ templates: result });
   } catch (err) {

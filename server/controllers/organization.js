@@ -1,11 +1,19 @@
 const Organization = require("../models/organization");
-const crypto = require("crypto");
-const setOrgInfo = require("../helpers").setOrgInfo;
 const sendgrid = require("../config/sendgrid");
-const Token = require("../models/token");
 const User = require("../models/user");
-const Challenge = require("../models/challenge");
-const Project = require("../models/project");
+
+exports.createOrganization = async (req, res, next) => {
+  try {
+    const orgValues = Object.assign(req.body, { creator: req.user._id });
+    const org = new Organization(orgValues);
+    let org_result = await org.save();
+    res.status(201).json({
+      organization: org_result,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
 
 exports.updateOrganization = async (req, res, next) => {
   const id = req.body._id;
@@ -13,9 +21,8 @@ exports.updateOrganization = async (req, res, next) => {
   try {
     await Organization.findByIdAndUpdate(id, req.body);
     let org = await Organization.findById(id);
-    let orgInfo = setOrgInfo(org);
     res.status(201).json({
-      organization: orgInfo,
+      organization: org,
     });
   } catch (err) {
     return next(err);
@@ -96,7 +103,7 @@ exports.listSimpleOrgs = async (req, res, next) => {
   try {
     let organizations = await Organization.find({})
       .sort("org_name")
-      .select("_id authorized_email org_name")
+      .select("_id, org_name")
       .skip(curNum);
     res.status(201).json({
       organizations: organizations,
@@ -117,41 +124,6 @@ exports.deleteOrganization = (req, res, next) => {
   });
 };
 
-exports.forgotPassword = function (req, res, next) {
-  const email = req.body.email;
-
-  Organization.findOne({ authorized_email: email }, (err, existingOrg) => {
-    // If user is not found, return error
-    if (err || existingOrg == null) {
-      res.status(422).json({
-        error:
-          "Your request could not be processed with the email. Please try again.",
-      });
-      return next(err);
-    }
-
-    // If user is found, generate and save resetToken
-    var token = new Token({
-      _userId: existingOrg._id,
-      token: crypto.randomBytes(16).toString("hex"),
-      mode: "organization",
-    });
-
-    token.save((err) => {
-      // If error in saving token, return it
-      if (err) {
-        return next(err);
-      }
-
-      sendgrid.orgForgotPasword(email, token.token);
-
-      return res.status(200).json({
-        message: "Please check your email for the link to reset your password.",
-      });
-    });
-  });
-};
-
 exports.adminOrgReports = async (req, res, next) => {
   try {
     let organizations = await Organization.find({});
@@ -160,22 +132,11 @@ exports.adminOrgReports = async (req, res, next) => {
       let members = await User.where({
         "profile.org": org._id,
       }).countDocuments();
-      let challenges = await Challenge.find({ organization: org._id });
-      let projects = 0;
-      for (let chl of challenges) {
-        let ps = await Project.where({ challenge: chl._id }).countDocuments();
-        projects += ps;
-      }
-
       let newOrg = {
         id: org._id,
         logo: org._doc.logo,
-        name: org._doc.org_name,
-        authroized_email: org._doc.authorized_email,
-        contact_email: org._doc.contact_email,
+        org_name: org._doc.org_name,
         participants: members,
-        challenges: challenges.length,
-        projects,
       };
       result.push(newOrg);
     }
@@ -198,9 +159,7 @@ exports.adminOrgWithUsers = async (req, res, next) => {
       if (!users) users = [];
       let newOrg = {
         id: org._id,
-        name: org._doc.org_name,
-        authroized_email: org._doc.authorized_email,
-        contact_email: org._doc.contact_email,
+        org_name: org._doc.org_name,
         participants: users,
       };
       result.push(newOrg);
@@ -234,29 +193,6 @@ exports.contactOrg = async (req, res, next) => {
       req.body.gallery
     );
     res.status(201).json({ message: "Contact submitted successfully" });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.adminListUnverifiedOrganizations = async (req, res, next) => {
-  try {
-    let organizations = await Organization.find({ verified: { $ne: true} });
-    return res.status(201).json({
-      organizations,
-    });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.adminVerifyOrganization = async (req, res, next) => {
-  try {
-    await Organization.findByIdAndUpdate(req.params.id, {
-      verified: true,
-    });
-    let organization = await Organization.findById(req.params.id);
-    res.send({ organization });
   } catch (err) {
     return next(err);
   }

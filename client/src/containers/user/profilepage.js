@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Header } from "../../components/template";
 import { listSimpleOrg } from "../../actions/organization";
 import { updateProfile } from "../../actions/auth";
 import { getFieldData } from "../../utils/helper";
 import ProfileForm from "./profile-form";
 import history from "../../history";
-import HomeHOC from "../../components/template/home-hoc";
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -29,15 +29,16 @@ class ProfilePage extends Component {
   };
 
   render = () => {
-    const { user, organization, fieldData, label } = this.props;
+    const { user, organization, fieldData } = this.props;
     let profile = user.profile || {};
     profile.email = user.email;
     const roles = getFieldData(fieldData, "user_role");
 
     return (
-      <HomeHOC>
+      <React.Fragment>
+        <Header />
         <div className="container ">
-        <div className="main-background-title">Create a user profile</div>
+          <h1 className="mt-5 mb-4 center">Participant Profile</h1>
           <ProfileForm
             onSubmit={this.onUpdateProfile}
             profile={profile}
@@ -46,10 +47,9 @@ class ProfilePage extends Component {
             avatarURL={this.state.avatarURL || profile.photo}
             roles={roles}
             fieldData={fieldData}
-            label={label}
           />
         </div>
-      </HomeHOC>
+      </React.Fragment>
     );
   };
 }
@@ -59,7 +59,6 @@ function mapStateToProps(state) {
     user: state.user.profile,
     organization: state.organization,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 }
 

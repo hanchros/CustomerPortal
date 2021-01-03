@@ -1,58 +1,53 @@
 import { API_URL, createNotification, errorMessage } from "./index";
 import Client from "./api";
-import { message } from "antd";
+import { FETCH_USER, UNAUTH_USER } from "./types";
+import history from "../history";
+import cookie from "react-cookies";
 
-export function restrictUser(userId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.post(`${API_URL}/user/restrict/${userId}`);
-      message.success("User is restricted successfully");
-      return res.data.user;
-    } catch (err) {
-      createNotification("Restrict User", errorMessage(err));
-    }
+export function fetchUser(uid) {
+  const client = Client(true);
+  return function (dispatch) {
+    client
+      .get(`${API_URL}/user/${uid}`)
+      .then((response) => {
+        dispatch({
+          type: FETCH_USER,
+          payload: response.data.user,
+        });
+      })
+      .catch((err) => console.log(err));
   };
 }
 
-export function blockUser(userId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.post(`${API_URL}/user/block/${userId}`);
-      message.success("User is blocked successfully");
-      return res.data.user;
-    } catch (err) {
-      createNotification("Block User", errorMessage(err));
-    }
+export function updateUserProfile(data) {
+  const client = Client(true);
+  return function (dispatch) {
+    client
+      .post(`${API_URL}/user`, {
+        data,
+      })
+      .then((response) => {
+        dispatch({
+          type: FETCH_USER,
+          payload: response.data.user,
+        });
+      })
+      .catch((err) => createNotification("Update Profile", errorMessage(err)));
   };
 }
 
-export function reportUser(userId, text) {
-  return async (dispatch) => {
+export function deleteUser(uid) {
+  return function (dispatch) {
     const client = Client(true);
-    try {
-      let res = await client.post(`${API_URL}/report/participant/${userId}`, {
-        text,
-      });
-      message.success("User reported successfully");
-      return res.data.report;
-    } catch (err) {
-      createNotification("Report User", errorMessage(err));
-    }
-  };
-}
-
-export function resolveUserReport(reportId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.put(`${API_URL}/report/${reportId}`);
-      message.success("User report resoved successfully");
-      return res.data.report;
-    } catch (err) {
-      createNotification("Resolve Report", errorMessage(err));
-    }
+    client
+      .post(`${API_URL}/user/block/${uid}`)
+      .then((response) => {
+        dispatch({ type: UNAUTH_USER, payload: "" });
+        cookie.remove("token", { path: "/" });
+        cookie.remove("user", { path: "/" });
+        history.push(`/`);
+      })
+      .catch((err) => createNotification("Delete Profile", errorMessage(err)));
   };
 }
 

@@ -2,17 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Button, Row, Col } from "reactstrap";
-import { Header, Footer } from "../../components/template";
-import {
-  Avatar,
-  List,
-  Card,
-  Skeleton,
-  Result,
-  Input,
-  Modal,
-  message,
-} from "antd";
+import { Header } from "../../components/template";
+import { Avatar, List, Card, Skeleton, Result } from "antd";
 import {
   getProject,
   getParticipant,
@@ -22,18 +13,9 @@ import {
   upvoteProject,
 } from "../../actions/project";
 import { listComment } from "../../actions/comment";
-import { startConversation, fetchOneConversation } from "../../actions/message";
-import {
-  getProjectGallery,
-  createGallery,
-  updateGallery,
-} from "../../actions/gallery";
 import UserAvatar from "../../assets/img/user-avatar.png";
 import ProjectInfo from "./project_info";
 import Comments from "../../components/project/comment";
-import GalleryForm from "../../components/gallery/create_form";
-import PreviewGallery from "../gallery/preview_gallery";
-import history from "../../history";
 
 const { Meta } = Card;
 
@@ -44,30 +26,18 @@ class Project extends Component {
 
     this.state = {
       loading: false,
-      showEditor: false,
       curComment: {},
-      visible: false,
-      chatText: "",
       chosenParticipantId: "",
-      editGallery: false,
-      preview: false,
     };
   }
 
   componentDidMount = async () => {
-    const {
-      getProject,
-      getParticipant,
-      listComment,
-      match,
-      getProjectGallery,
-    } = this.props;
+    const { getProject, getParticipant, listComment, match } = this.props;
     this._isMounted = true;
     this.setState({ loading: true });
     await getProject(match.params.id);
     await getParticipant(match.params.id);
     await listComment(match.params.id);
-    await getProjectGallery(match.params.id);
     if (!this._isMounted) return;
     this.setState({ loading: false });
   };
@@ -94,129 +64,38 @@ class Project extends Component {
     await getParticipant(project.project._id);
   };
 
-  haveChat = (participantId) => {
-    let conversations = this.props.message.conversations;
-    for (let cv of conversations) {
-      if (cv.participants.length > 2) continue;
-      let filters = cv.participants.filter((pt) => pt._id === participantId);
-      if (filters.length > 0) return true;
-    }
-    return false;
-  };
-
   upvoteProject = async (vote) => {
-    const { upvoteProject, getProject, match, loginMode } = this.props;
-    if (loginMode !== 0) {
-      message.warn(
-        `Only participants can upvote the ${this.props.label.project}`
-      );
-      return;
-    }
+    const { upvoteProject, getProject, match } = this.props;
     await upvoteProject(match.params.id, vote);
     await getProject(match.params.id);
   };
 
-  toggleModal = async (ptId) => {
-    if (ptId && this.haveChat(ptId)) {
-      await this.props.fetchOneConversation(ptId);
-      history.push("/message");
-      return;
-    }
-    this.setState({ visible: !this.state.visible, chosenParticipantId: ptId });
-  };
-
-  onChangeChat = (e) => {
-    this.setState({ chatText: e.target.value });
-  };
-
-  handleOk = () => {
-    const { chatText, chosenParticipantId } = this.state;
-    if (!chatText || !chosenParticipantId) return;
-    this.props.startConversation({
-      recipient: chosenParticipantId,
-      composedMessage: chatText,
-    });
-    this.toggleModal();
-  };
-
-  toggleEditGallery = () => {
-    if (this.props.user.role === "Restrict") {
-      message.warn(`You are not allowed to create ${this.props.label.gallery}`);
-      return;
-    }
-    this.setState({ editGallery: !this.state.editGallery });
-  };
-
-  togglePreview = () => {
-    this.setState({ preview: !this.state.preview });
-  };
-
   render = () => {
-    const { chatText, visible, loading, editGallery, preview } = this.state;
-    const {
-      project,
-      user,
-      auth,
-      gallery,
-      createGallery,
-      updateGallery,
-      fieldData,
-      label,
-    } = this.props;
+    const { loading } = this.state;
+    const { project, user } = this.props;
     let isCreator =
       project.project.participant &&
-      project.project.participant._id === user._id &&
-      auth.loginMode === 0;
-
-    if (preview) return <PreviewGallery togglePreview={this.togglePreview} />;
+      project.project.participant._id === user._id;
 
     return (
       <React.Fragment>
         <Header />
         <Container className="content">
-          {editGallery && (
-            <GalleryForm
-              toggleEditGallery={this.toggleEditGallery}
-              gallery={gallery.currentGallery}
-              createGallery={createGallery}
-              updateGallery={updateGallery}
-              fieldData={fieldData}
-              label={label}
-            />
-          )}
-          {!editGallery && (
-            <div className="user-dashboard list-view">
-              {!loading && (
-                <ProjectInfo
-                  toggleEditGallery={this.toggleEditGallery}
-                  togglePreview={this.togglePreview}
-                  curProj={project.project}
-                  isCreator={isCreator}
-                  projectId={this.props.match.params.id}
-                  upvoteProject={this.upvoteProject}
-                />
-              )}
-              {this.renderInvitation()}
-              {!loading && <Comments projectId={this.props.match.params.id} />}
-              {this.renderTeamMembers(isCreator)}
-              {this.renderParticipants(isCreator)}
-            </div>
-          )}
-          <Modal
-            title={`Open Chat room with ${label.titleParticipant}`}
-            visible={visible}
-            onOk={this.handleOk}
-            onCancel={this.toggleModal}
-          >
-            <Input.TextArea
-              rows={2}
-              onChange={this.onChangeChat}
-              value={chatText}
-              placeholder="Message"
-            />
-          </Modal>
+          <div className="user-dashboard list-view">
+            {!loading && (
+              <ProjectInfo
+                curProj={project.project}
+                isCreator={isCreator}
+                projectId={this.props.match.params.id}
+                upvoteProject={this.upvoteProject}
+              />
+            )}
+            {this.renderInvitation()}
+            {!loading && <Comments projectId={this.props.match.params.id} />}
+            {this.renderTeamMembers(isCreator)}
+            {this.renderParticipants(isCreator)}
+          </div>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   };
@@ -233,7 +112,7 @@ class Project extends Component {
             className="mt-4"
             status="success"
             title="You are Invited"
-            subTitle={`Congratulation! You are invited to our ${this.props.label.project} team - ${project.name}`}
+            subTitle={`Congratulation! You are invited to our project team - ${project.name}`}
             extra={[
               <Button
                 color="primary"
@@ -268,7 +147,7 @@ class Project extends Component {
     if (loading) return this.renderLoading(loading);
     return (
       <React.Fragment>
-        <h5 className="mt-5">{this.props.label.titleProject} Team members</h5>
+        <h5 className="mt-5">Project Team members</h5>
         <List
           itemLayout="horizontal"
           dataSource={listItem}
@@ -292,18 +171,6 @@ class Project extends Component {
                   }`
                 }
               />
-              <div className="project-invite">
-                {isCreator && (
-                  <Button
-                    outline
-                    color="primary"
-                    size="sm"
-                    onClick={() => this.toggleModal(item.participant._id)}
-                  >
-                    Message
-                  </Button>
-                )}
-              </div>
             </Card>
           )}
         />
@@ -319,7 +186,7 @@ class Project extends Component {
     if (loading) return this.renderLoading(loading);
     return (
       <React.Fragment>
-        <h5 className="mt-5">{this.props.label.titleProject} Followed by</h5>
+        <h5 className="mt-5">Project Followed by</h5>
         <List
           itemLayout="horizontal"
           dataSource={listItem}
@@ -385,16 +252,6 @@ class Project extends Component {
                     Add Team
                   </Button>
                 )}
-                {isCreator && (
-                  <Button
-                    outline
-                    color="primary"
-                    size="sm"
-                    onClick={() => this.toggleModal(item.participant._id)}
-                  >
-                    Message
-                  </Button>
-                )}
               </div>
             </Card>
           )}
@@ -418,11 +275,7 @@ const mapStateToProps = (state) => {
     isAdmin: state.user.isAdmin,
     auth: state.auth,
     project: state.project,
-    message: state.message,
-    gallery: state.gallery,
     fieldData: state.profile.fieldData,
-    loginMode: state.auth.loginMode,
-    label: state.label,
   };
 };
 
@@ -431,12 +284,7 @@ export default connect(mapStateToProps, {
   getParticipant,
   inviteProjectTeam,
   acceptInviteTeam,
-  startConversation,
   cancelInviteProjectTeam,
   listComment,
-  getProjectGallery,
-  createGallery,
-  updateGallery,
-  fetchOneConversation,
   upvoteProject,
 })(Project);

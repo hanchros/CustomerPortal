@@ -35,7 +35,7 @@ class UserEdit extends Component {
   };
 
   render = () => {
-    const { admin, organization, fieldData, label } = this.props;
+    const { admin, organization, fieldData } = this.props;
     const { avatarURL, loading } = this.state;
     let profile = admin.participant.profile || {};
     profile.email = admin.participant.email;
@@ -54,7 +54,6 @@ class UserEdit extends Component {
             avatarURL={avatarURL || profile.photo}
             roles={roles}
             fieldData={fieldData}
-            label={label}
           />
         )}
       </div>
@@ -67,7 +66,6 @@ function mapStateToProps(state) {
     admin: state.admin,
     organization: state.organization,
     fieldData: state.profile.fieldData,
-    label: state.label,
   };
 }
 

@@ -1,54 +1,62 @@
+import { createNotification, API_URL, errorMessage } from "./index";
 import {
-  getData,
-  deleteData,
-  errorHandler,
-  createNotification,
-  API_URL,
-  errorMessage,
-} from "./index";
-import axios from "axios";
-import {
-  ORGANIZATION_ERROR,
   FETCH_ORGANIZATION,
   FETCH_ORGANIZATIONLIST,
-  DELETE_ORGANIZATION,
   SET_CURRENT_ORGANIZATION,
-  AUTH_ORGANIZATION,
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
 } from "./types";
 import Client from "./api";
+import history from "../history";
+
+export function createOrganization(values) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/organization`, values);
+      history.push("/organizations");
+    } catch (err) {
+      createNotification("Create Organization", errorMessage(err));
+    }
+  };
+}
 
 export function updateOrganization(orgData) {
-  const url = "/organization";
-  return (dispatch) => {
-    axios
-      .put(API_URL + url, orgData)
-      .then((response) => {
-        dispatch({
-          type: AUTH_ORGANIZATION,
-          organization: response.data.organization,
-        });
-      })
-      .catch((error) => {
-        errorHandler(dispatch, error.response, ORGANIZATION_ERROR);
-      });
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.put(`${API_URL}/organization`, orgData);
+      history.push("/organizations");
+    } catch (err) {
+      createNotification("Update Organization", errorMessage(err));
+    }
   };
 }
 
 export function getOrganization(org_id) {
-  if (!org_id) return
-  const url = `/organization/${org_id}`;
-  return (dispatch) =>
-    getData(FETCH_ORGANIZATION, ORGANIZATION_ERROR, false, url, dispatch);
+  const client = Client();
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/organization/${org_id}`);
+      dispatch({
+        type: FETCH_ORGANIZATION,
+        organization: res.data.organization,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 }
 
 export function listOrganization(count, filters) {
   return async (dispatch) => {
     const client = Client(true);
     try {
-      let res = await client.post(`${API_URL}/organization/list/${count}`, filters);
+      let res = await client.post(
+        `${API_URL}/organization/list/${count}`,
+        filters
+      );
       dispatch({
         type: FETCH_ORGANIZATIONLIST,
         organizations: res.data.organizations,
@@ -73,9 +81,14 @@ export function listSimpleOrg() {
 }
 
 export function deleteOrganization(org_id) {
-  const url = `/organization/${org_id}`;
-  return (dispatch) =>
-    deleteData(DELETE_ORGANIZATION, ORGANIZATION_ERROR, false, url, dispatch);
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      await client.delete(`${API_URL}/organization/${org_id}`);
+    } catch (err) {
+      createNotification("Delete Project", errorMessage(err));
+    }
+  };
 }
 
 export function setCurrentOrganization(org) {

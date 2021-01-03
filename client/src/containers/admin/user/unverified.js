@@ -43,7 +43,6 @@ class Participants extends Component {
   };
 
   render() {
-    const { label } = this.props;
     const { loading, participants } = this.state;
     const { SearchBar } = Search;
     const { ExportCSVButton } = CSVExport;
@@ -120,7 +119,7 @@ class Participants extends Component {
       },
       {
         dataField: "org_name",
-        text: label.titleOrganization,
+        text: "Organization",
       },
       {
         dataField: "phone",
@@ -141,7 +140,7 @@ class Participants extends Component {
       <div className="content-admin">
         <Row>
           <Col className="flex">
-            <h5 className="mr-auto">Unverified {label.titleParticipant}</h5>
+            <h5 className="mr-auto">Unverified Participant</h5>
           </Col>
         </Row>
         <Row>
@@ -198,7 +197,6 @@ function mapStateToProps(state) {
   return {
     admin: state.admin,
     isSuper: state.user.isSuper,
-    label: state.label,
   };
 }
 

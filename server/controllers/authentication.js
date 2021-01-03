@@ -7,8 +7,6 @@ const getRole = require("../helpers").getRole;
 const config = require("../config/main");
 const Token = require("../models/token");
 const Organization = require("../models/organization");
-const setOrgInfo = require("../helpers").setOrgInfo;
-const FieldData = require("../models/fielddata");
 
 // Generate JWT
 // TO-DO Add issuer and audience
@@ -26,52 +24,30 @@ exports.login = async (req, res, next) => {
   const password = req.body.password;
   try {
     let user = await User.findOne({ email });
-    if (user) {
-      user.comparePassword(password, (err, isMatch) => {
-        if (err || !isMatch) {
-          return res.status(401).json({ error: "Password mismatch" });
-        }
-        const userInfo = setUserInfo(user);
-        if (!userInfo.verified) {
-          return res
-            .status(422)
-            .send({ error: "Your account is not verified yet" });
-        }
-        let result = {
-          token: `JWT ${generateToken(userInfo)}`,
-          user: userInfo,
-        };
-        if (getRole(userInfo.role) === 3) {
-          return res
-            .status(422)
-            .send({ error: "Your account is not authorized" });
-        }
-        return res.status(200).json(result);
-      });
-    } else {
-      let org = await Organization.findOne({ authorized_email: email });
-      if (!org) {
-        return res
-          .status(401)
-          .json({ error: "No user or organization with the email" });
-      }
-      org.comparePassword(password, (err, isMatch) => {
-        if (err || !isMatch) {
-          return res.status(401).json({ error: "Password mismatch" });
-        }
-        let orgInfo = setOrgInfo(org);
-        if (!orgInfo.verified) {
-          return res
-            .status(422)
-            .send({ error: "Your account is not verified yet" });
-        }
-        let result = {
-          token: `JWT ${generateToken(orgInfo)}`,
-          organization: orgInfo,
-        };
-        return res.status(201).json(result);
-      });
+    if (!user) {
+      return res.status(401).json({ error: "No user with the email" });
     }
+    user.comparePassword(password, (err, isMatch) => {
+      if (err || !isMatch) {
+        return res.status(401).json({ error: "Password mismatch" });
+      }
+      const userInfo = setUserInfo(user);
+      if (!userInfo.verified) {
+        return res
+          .status(422)
+          .send({ error: "Your account is not verified yet" });
+      }
+      let result = {
+        token: `JWT ${generateToken(userInfo)}`,
+        user: userInfo,
+      };
+      if (getRole(userInfo.role) === 3) {
+        return res
+          .status(422)
+          .send({ error: "Your account is not authorized" });
+      }
+      return res.status(200).json(result);
+    });
   } catch (err) {
     return next(err);
   }
@@ -89,76 +65,31 @@ exports.participantRegister = async function (req, res, next) {
 
   try {
     let users = await User.find({ email });
-    let orgs = await Organization.find({ authorized_email: email });
-    if (users.length > 0 || orgs.length > 0) {
+    if (users.length > 0) {
       return res
         .status(422)
         .send({ error: "That email address is already in use." });
     }
-    let show_ev = await FieldData.findOne({ field: "show_ev" });
     const user = new User({
       email,
       password,
       profile: { first_name, last_name },
       usertype,
-      verified: show_ev.value ? false : true,
+      verified: false,
     });
     const usr = await user.save();
     const userInfo = setUserInfo(usr);
-    if (show_ev.value) {
-      const token = new Token({
-        _userId: userInfo._id,
-        token: crypto.randomBytes(16).toString("hex"),
-      });
-      token.save();
-      sendgrid.userEmailVerification(
-        userInfo.email,
-        `${userInfo.profile.first_name} ${userInfo.profile.last_name} `,
-        token.token
-      );
-    }
-    return res.status(201).json({ user: userInfo });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.orgRegister = async function (req, res, next) {
-  const email = req.body.email;
-  const name = req.body.name;
-  const password = req.body.password;
-
-  try {
-    let users = await User.find({ email });
-    let orgs = await Organization.find({ authorized_email: email });
-    if (users.length > 0 || orgs.length > 0) {
-      return res
-        .status(422)
-        .send({ error: "That email address is already in use." });
-    }
-    let show_ev = await FieldData.findOne({ field: "show_ev" });
-    const org = new Organization({
-      org_name: name,
-      authorized_email: email,
-      authorized_password: password,
-      verified: show_ev.value ? false : true,
+    const token = new Token({
+      _userId: userInfo._id,
+      token: crypto.randomBytes(16).toString("hex"),
     });
-    const newOrg = await org.save();
-    const orgInfo = setOrgInfo(newOrg);
-    if (show_ev.value) {
-      const token = new Token({
-        _userId: orgInfo._id,
-        token: crypto.randomBytes(16).toString("hex"),
-        mode: "organization",
-      });
-      token.save();
-      sendgrid.orgEmailVerification(
-        orgInfo.authorized_email,
-        orgInfo.org_name,
-        token.token
-      );
-    }
-    return res.status(201).json({ organization: orgInfo });
+    token.save();
+    sendgrid.userEmailVerification(
+      userInfo.email,
+      `${userInfo.profile.first_name} ${userInfo.profile.last_name} `,
+      token.token
+    );
+    return res.status(201).json({ user: userInfo });
   } catch (err) {
     return next(err);
   }
@@ -174,12 +105,8 @@ exports.confirmEmail = async (req, res, next) => {
       });
       return;
     }
-    let result;
-    if (t.mode === "user") {
-      result = await User.findById(t._userId);
-    } else {
-      result = await Organization.findById(t._userId);
-    }
+    let result = await User.findById(t._userId);
+
     if (!result) {
       res.status(201).json({
         message: "Invalid token for email verification",
@@ -248,19 +175,7 @@ exports.forgotPassword = async (req, res, next) => {
         message: "Please check your email for the link to reset your password.",
       });
     }
-    let org = await Organization.findOne({ authorized_email: email });
-    if (org) {
-      let token = new Token({
-        _userId: org._id,
-        token: crypto.randomBytes(16).toString("hex"),
-        mode: "organization",
-      });
-      token = await token.save();
-      sendgrid.orgForgotPasword(email, token.token);
-      return res.status(200).json({
-        message: "Please check your email for the link to reset your password.",
-      });
-    }
+
     return res.status(422).json({
       error:
         "Your request could not be processed with the email. Please try again.",
@@ -282,41 +197,22 @@ exports.verifyToken = function (req, res, next) {
           "Your token has expired. Please attempt to reset your password again.",
       });
     }
-    if (token.mode === "user") {
-      User.findById(token._userId, (err, user) => {
+    User.findById(token._userId, (err, user) => {
+      if (err) {
+        return next(err);
+      }
+      user.password = req.body.password;
+      user.save((err) => {
         if (err) {
           return next(err);
+        } else {
+          return res.status(200).json({
+            message:
+              "Password changed successfully. Please login with your new password.",
+          });
         }
-        user.password = req.body.password;
-        user.save((err) => {
-          if (err) {
-            return next(err);
-          } else {
-            return res.status(200).json({
-              message:
-                "Password changed successfully. Please login with your new password.",
-            });
-          }
-        });
       });
-    } else {
-      Organization.findById(token._userId, (err, org) => {
-        if (err) {
-          return next(err);
-        }
-        org.authorized_password = req.body.password;
-        org.save((err) => {
-          if (err) {
-            return next(err);
-          } else {
-            return res.status(200).json({
-              message:
-                "Password changed successfully. Please login with your new password.",
-            });
-          }
-        });
-      });
-    }
+    });
   });
 };
 
@@ -355,11 +251,15 @@ exports.resendVerification = function (req, res, next) {
 
 exports.sendInvite = async (req, res, next) => {
   try {
-    const email = req.body.email;
-    const file = req.file;
-    sendgrid.inviteMail(email, file.originalname)
+    const org = await Organization.findById(req.body.organization);
+    const values = Object.assign(req.body, {
+      organization: org.org_name,
+      creator: `${req.user.profile.first_name} ${req.user.profile.last_name}`,
+    });
+    sendgrid.inviteMail(values);
+    const result = sendgrid.inviteFactory(values);
     return res.status(200).json({
-      message: "file sent success",
+      content: result,
     });
   } catch (err) {
     return next(err);

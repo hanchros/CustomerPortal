@@ -22,52 +22,12 @@ exports.userEmailVerification = function userEmailVerification(
   });
 };
 
-exports.orgEmailVerification = function orgEmailVerification(
-  recipient,
-  name,
-  token
-) {
-  const msg = {
-    to: recipient,
-    from: "events@dev.com",
-    subject: "Organization Email Verification",
-    html: orgEVFactory(recipient, name, token),
-  };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
-};
-
 exports.userForgotPasword = function userForgotPasword(recipient, token) {
   const msg = {
     to: recipient,
     from: "events@dev.com",
     subject: "Participant Reset Password",
     html: userFPFactory(token),
-  };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
-};
-
-exports.orgForgotPasword = function orgForgotPasword(recipient, token) {
-  const msg = {
-    to: recipient,
-    from: "events@dev.com",
-    subject: "Organization Reset Password",
-    html: orgFPFactory(token),
-  };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
-};
-
-exports.newMessage = function newMessage(name, sender, content, email) {
-  const msg = {
-    to: email,
-    from: "events@dev.com",
-    subject: "You have unread messages",
-    html: messageFactory(name, sender, content),
   };
   sgMail.send(msg).catch((err) => {
     console.log(err);
@@ -92,54 +52,12 @@ exports.newNotification = function newNotification(
   });
 };
 
-exports.newContactProject = function newContactProject(
-  toEmail,
-  fromEmail,
-  phone,
-  content,
-  gallery
-) {
+exports.inviteMail = function inviteMail(values) {
   const msg = {
-    to: toEmail,
-    from: fromEmail,
-    subject: "New Contact",
-    html: galleryContactFactory(phone, content, gallery),
-  };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
-};
-
-exports.challegeCreateMail = function challegeCreateMail(org, challenge) {
-  if (!org.authorized_email) return;
-  const msg = {
-    to: org.authorized_email,
-    from: "events@dev.com",
-    subject: "New Challenge Created",
-    html: createCHLFactory(org, challenge),
-  };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
-};
-
-exports.inviteMail = function inviteMail(recipient, filename) {
-  pathToAttachment = `${__dirname}/../uploads/${filename}`;
-  attachment = fs.readFileSync(pathToAttachment).toString("base64");
-
-  const msg = {
-    to: recipient,
+    to: values.email,
     from: "events@dev.com",
     subject: "You are invited",
-    html: inviteFactory(),
-    attachments: [
-      {
-        content: attachment,
-        filename: filename,
-        type: "application/pdf",
-        disposition: "attachment",
-      },
-    ],
+    html: inviteFactory(values),
   };
   sgMail.send(msg).catch((err) => {
     console.log(err);
@@ -156,39 +74,10 @@ function userEVFactory(recipient, name, token) {
   return text;
 }
 
-function orgEVFactory(recipient, name, token) {
-  const link = `${mainURL}/email-verify/organization/${token}`;
-  const mailData = { recipient, name, link };
-  const template = fs.readFileSync("template/OrgEV.html", {
-    encoding: "utf-8",
-  });
-  var text = ejs.render(template, mailData);
-  return text;
-}
-
 function userFPFactory(token) {
   const link = `${mainURL}/reset-password/user/${token}`;
   const mailData = { link };
   const template = fs.readFileSync("template/UserFP.html", {
-    encoding: "utf-8",
-  });
-  var text = ejs.render(template, mailData);
-  return text;
-}
-
-function orgFPFactory(token) {
-  const link = `${mainURL}/reset-password/organization/${token}`;
-  const mailData = { link };
-  const template = fs.readFileSync("template/OrgFP.html", {
-    encoding: "utf-8",
-  });
-  var text = ejs.render(template, mailData);
-  return text;
-}
-
-function messageFactory(name, sender, content) {
-  const mailData = { name, sender, content };
-  const template = fs.readFileSync("template/Message.html", {
     encoding: "utf-8",
   });
   var text = ejs.render(template, mailData);
@@ -204,32 +93,9 @@ function notificationFactory(title, content, senderName, senderPhoto) {
   return text;
 }
 
-function galleryContactFactory(phone, content, gallery) {
-  const mailData = { phone, content, gallery };
-  const template = fs.readFileSync("template/GalleryContact.html", {
-    encoding: "utf-8",
-  });
-  var text = ejs.render(template, mailData);
-  return text;
-}
-
-function createCHLFactory(org, challenge) {
-  // const link = `${mainURL}/email-verify/user/${token}`;
-  const mailData = {
-    org: org.org_name,
-    name: challenge.challenge_name,
-    description: challenge.short_description,
-  };
-  const template = fs.readFileSync("template/CreateChallenge.html", {
-    encoding: "utf-8",
-  });
-  var text = ejs.render(template, mailData);
-  return text;
-}
-
-function inviteFactory() {
-  const link = `${mainURL}/register-form`;
-  const mailData = { link };
+function inviteFactory(values) {
+  const link = `${mainURL}/email-invite`;
+  const mailData = Object.assign(values, { link });
   const template = fs.readFileSync("template/Invite.html", {
     encoding: "utf-8",
   });
@@ -238,11 +104,6 @@ function inviteFactory() {
 }
 
 exports.userEVFactory = userEVFactory;
-exports.orgEVFactory = orgEVFactory;
 exports.userFPFactory = userFPFactory;
-exports.createCHLFactory = createCHLFactory;
-exports.orgFPFactory = orgFPFactory;
-exports.messageFactory = messageFactory;
 exports.notificationFactory = notificationFactory;
-exports.galleryContactFactory = galleryContactFactory;
 exports.inviteFactory = inviteFactory;

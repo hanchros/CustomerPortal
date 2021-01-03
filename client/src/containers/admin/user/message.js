@@ -62,13 +62,12 @@ class Message extends Component {
 
   render() {
     const { mode, messageTxt, title } = this.state;
-    const { label } = this.props;
     return (
       <div className="content-admin">
         <Container>
           <Row>
             <Col className="flex">
-              <h5 className="mr-auto">All {label.titleParticipant}</h5>
+              <h5 className="mr-auto">All Participants</h5>
             </Col>
           </Row>
           <Row>
@@ -79,14 +78,10 @@ class Message extends Component {
                 value={mode}
               >
                 <Radio value={"participants"} checked>
-                  All {label.titleParticipant}
+                  All Participants
                 </Radio>
-                <Radio value={"project_creators"}>
-                  {label.titleProject} Owners
-                </Radio>
-                <Radio value={"organizations"}>
-                  {label.titleOrganization}
-                </Radio>
+                <Radio value={"project_creators"}>Project Owners</Radio>
+                <Radio value={"organizations"}>Organization</Radio>
               </Radio.Group>
             </Col>
           </Row>
@@ -119,7 +114,7 @@ class Message extends Component {
 }
 
 function mapStateToProps(state) {
-  return { admin: state.admin, label: state.label };
+  return { admin: state.admin };
 }
 
 export default connect(mapStateToProps, {

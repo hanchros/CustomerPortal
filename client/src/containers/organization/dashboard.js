@@ -6,13 +6,8 @@ import {
   getOrganization,
   setCurrentOrganization,
 } from "../../actions/organization";
-import {
-  listChallenge,
-  createChallenge,
-  updateChallenge,
-} from "../../actions/challenge";
 import { orgUsers } from "../../actions/auth";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 
 class Organization extends Component {
   state = {
@@ -27,7 +22,6 @@ class Organization extends Component {
       match,
       organization,
       getOrganization,
-      listChallenge,
       setCurrentOrganization,
       orgUsers,
     } = this.props;
@@ -45,20 +39,11 @@ class Organization extends Component {
       getOrganization(id);
     }
     const users = await orgUsers(id);
-    listChallenge(id);
     this.setState({ loading: false, users });
   };
 
-  onClickChallenge = (challenge) => {
-    this.setState({ isCreate: true, curChallenge: challenge });
-  };
-
-  hideChallengePage = () => {
-    this.setState({ isCreate: false });
-  };
-
   render() {
-    const { organization, label } = this.props;
+    const { organization } = this.props;
     const { loading, users } = this.state;
     let curOrg = organization.currentOrganization;
     if (!curOrg) {
@@ -66,9 +51,8 @@ class Organization extends Component {
         <React.Fragment>
           <Header />
           <div className="content container">
-            <h5>No {label.organization} with this id</h5>
+            <h5>No organization with this id</h5>
           </div>
-          <Footer />
         </React.Fragment>
       );
     }
@@ -76,18 +60,10 @@ class Organization extends Component {
       <React.Fragment>
         <Header logo={curOrg.logo} />
         <div className="content container">
-          {!loading && (
-            <Homepage
-              users={users}
-              onClickCreate={this.handleCreate}
-              onClickChallenge={this.onClickChallenge}
-              name={curOrg.org_name}
-            />
-          )}
+          {!loading && <Homepage users={users} name={curOrg.org_name} />}
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
         </div>
-        <Footer />
       </React.Fragment>
     );
   }
@@ -96,16 +72,11 @@ class Organization extends Component {
 function mapStateToProps(state) {
   return {
     organization: state.organization,
-    challenge: state.challenge,
-    label: state.label,
   };
 }
 
 export default connect(mapStateToProps, {
   getOrganization,
   setCurrentOrganization,
-  listChallenge,
-  createChallenge,
-  updateChallenge,
   orgUsers,
 })(Organization);

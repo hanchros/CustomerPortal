@@ -2,7 +2,6 @@ import { API_URL, createNotification, errorMessage } from "./index";
 import {
   FETCH_ADMIN_PARTICIPANTS,
   FETCH_PROJECT_CREATORS,
-  FETCH_REPORTS,
   UPDATE_ROLE,
   FETCH_ADMIN_PARTICIPANT,
 } from "./types";
@@ -45,21 +44,6 @@ export function listAdminProjectCreators() {
   };
 }
 
-export function listReports() {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/report/list`);
-      dispatch({
-        type: FETCH_REPORTS,
-        reports: processReports(res.data.reports),
-      });
-    } catch (err) {
-      createNotification("List Reports", errorMessage(err));
-    }
-  };
-}
-
 export function updateRole(userid, role) {
   return async (dispatch) => {
     const client = Client(true);
@@ -71,21 +55,6 @@ export function updateRole(userid, role) {
       });
     } catch (err) {
       createNotification("Update Role", errorMessage(err));
-    }
-  };
-}
-
-export function keyCheck(values) {
-  return async (dispatch) => {
-    const client = Client();
-    try {
-      let res = await client.post(`${API_URL}/admin/keycheck`, values);
-      if (res.data.msg) {
-        createNotification("Check Key", res.data.msg);
-      }
-      return res.data.result;
-    } catch (err) {
-      createNotification("Check Key", errorMessage(err));
     }
   };
 }
@@ -168,31 +137,6 @@ export function adminVerifyParticipant(userId) {
   };
 }
 
-export function adminUnverifiedOrganizations() {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/organization/unverified/list`);
-      return res.data.organizations;
-    } catch (err) {
-      console.log(err)
-    }
-  };
-}
-
-export function adminVerifyOrganization(orgId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.post(`${API_URL}/organization/unverified/${orgId}`);
-      message.success("Organization is verified successfully");
-      return res.data.organization;
-    } catch (err) {
-      createNotification("Verify Organization", errorMessage(err));
-    }
-  };
-}
-
 function processParticipants(participants) {
   if (!participants || participants.length === 0) return [];
   let result = [],
@@ -238,24 +182,3 @@ function processCreators(participants) {
   return result;
 }
 
-function processReports(reports) {
-  if (!reports || reports.length === 0) return [];
-  let result = [],
-    k = 0;
-  for (let rp of reports) {
-    result.push({
-      id: k,
-      _id: rp._id,
-      author_photo: rp.author.profile.photo,
-      author_name: `${rp.author.profile.first_name} ${rp.author.profile.last_name}`,
-      author_id: rp.author._id,
-      target_photo: rp.target.profile.photo,
-      target_name: `${rp.target.profile.first_name} ${rp.target.profile.last_name}`,
-      target_id: rp.target._id,
-      resolved: rp.resolved,
-      text: rp.text,
-    });
-    k++;
-  }
-  return result;
-}

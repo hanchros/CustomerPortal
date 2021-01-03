@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Container } from "reactstrap";
 import { Input, message } from "antd";
-import { Header, Footer } from "../../components/template";
+import { Header } from "../../components/template";
 import { Link } from "react-router-dom";
 import { FileTextOutlined } from "@ant-design/icons";
 import history from "../../history";
@@ -50,7 +50,6 @@ class Help extends Component {
             ))}
           </Row>
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }
