@@ -15,7 +15,7 @@
     width: 70vw;
     position: absolute;
     top: -40vw;
-    opacity: 0.3;
+    opacity: 0.2;
   }
 
   .home-footer {
@@ -107,6 +107,16 @@
     background: $purple-blue;
     text-decoration: unset;
   }
+}
+
+.invite-file-zone {
+  width: 90vw;
+  max-width: 1000px;
+  text-align: center;
+  background: $blue;
+  color: white;
+  padding: 60px 0;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

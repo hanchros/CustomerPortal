@@ -53,11 +53,22 @@ exports.newNotification = function newNotification(
 };
 
 exports.inviteMail = function inviteMail(values) {
+  pathToAttachment = `${__dirname}/../uploads/test.pdf`;
+  attachment = fs.readFileSync(pathToAttachment).toString("base64");
+
   const msg = {
     to: values.email,
     from: "events@dev.com",
     subject: "You are invited",
     html: inviteFactory(values),
+    attachments: [
+      {
+        content: attachment,
+        filename: "test.pdf",
+        type: "application/pdf",
+        disposition: "attachment",
+      },
+    ],
   };
   sgMail.send(msg).catch((err) => {
     console.log(err);

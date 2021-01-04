@@ -12,7 +12,7 @@ import HomePage from "./containers/home";
 // Import intro pages
 import IntegraSpace from "./containers/intro/integra-space";
 import InvitePage from "./containers/intro/invite";
-import InviteHomePage from "./containers/home/invite-home";
+import InviteHomePage from "./containers/home/invite";
 
 // Import organization pages
 import Organization from "./containers/organization/dashboard";
