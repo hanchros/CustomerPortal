@@ -35,7 +35,7 @@ class AdminDashboard extends Component {
 
   componentDidMount() {
     if (!this.props.isAdmin) {
-      history.push("/user-dashboard");
+      history.push("/dashboard");
       return;
     }
   }

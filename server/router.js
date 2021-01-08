@@ -4,10 +4,14 @@ const OrganizationController = require("./controllers/organization");
 const FieldDataController = require("./controllers/fielddata");
 const ProjectController = require("./controllers/project");
 const ProjectMemberController = require("./controllers/projectmember");
+const ProjectOrgController = require("./controllers/projectorg");
 const CommentController = require("./controllers/comment");
 const AdminController = require("./controllers/admin");
 const NotificationController = require("./controllers/notification");
 const HelpDocController = require("./controllers/helpdoc");
+const InviteRequestController = require("./controllers/inviterequest")
+const TemplateController = require("./controllers/template");
+
 var multer  = require('multer')
 const express = require("express");
 const passport = require("passport");
@@ -34,10 +38,13 @@ module.exports = function (app) {
     organizationRoutes = express.Router(),
     projectRoutes = express.Router(),
     projectMemberRoutes = express.Router(),
+    projectOrgRoutes = express.Router(),
     commentRoutes = express.Router(),
     adminRoutes = express.Router(),
     notificationRoutes = express.Router(),
     helpdocRoutes = express.Router(),
+    inviteRequestRoutes = express.Router(),
+    templateRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -47,6 +54,8 @@ module.exports = function (app) {
   apiRoutes.use("/auth", authRoutes);
   // Participant Registration route
   authRoutes.post("/user-register", AuthenticationController.participantRegister);
+  // Participant Registration by invite route
+  authRoutes.post("/invite-register", AuthenticationController.inviteRegister);
   // Login route
   authRoutes.post("/login", AuthenticationController.login);
   // Password reset request route (generate/send token)
@@ -65,8 +74,6 @@ module.exports = function (app) {
   authRoutes.post("/verify", AuthenticationController.confirmEmail);
   // Resend verification route
   authRoutes.post("/resend", AuthenticationController.resendVerification);
-  // send invitation route
-  authRoutes.post("/send-invite", requireAuth, AuthenticationController.sendInvite);
 
 
   //= ========================
@@ -99,7 +106,7 @@ module.exports = function (app) {
   //= ========================
   apiRoutes.use("/organization", organizationRoutes);
   // Create organization route
-  organizationRoutes.post("/", requireAuth, OrganizationController.createOrganization);
+  organizationRoutes.post("/", OrganizationController.createOrganization);
   // Get organization route
   organizationRoutes.get("/:org_id", OrganizationController.getOrganization);
   // Update organization route
@@ -125,26 +132,27 @@ module.exports = function (app) {
   // Project Routes
   //= ========================
   apiRoutes.use("/project", projectRoutes);
+
+  // List project by user route
+  projectRoutes.get("/", requireAuth, ProjectController.listProject);
   // Get project route
   projectRoutes.get("/:projectId", ProjectController.getProject);
   // Create project route
-  projectRoutes.post("/", ProjectController.createProject);
+  projectRoutes.post("/", requireAuth, ProjectController.createProject);
   // Update project route
-  projectRoutes.put("/", ProjectController.updateProject);
-  // List project route
-  projectRoutes.post("/list/:count", ProjectController.listProject);
+  projectRoutes.put("/", requireAuth, ProjectController.updateProject);
   // Delete project route
   projectRoutes.delete("/:projectId", ProjectController.deleteProject);
   // List creator project route
   projectRoutes.get("/participant/:participantId", ProjectController.listProjectByCreator)
   // Contact project creator route
   projectRoutes.post("/contact/:id", ProjectController.contactCreator);
-  // Update project sharer route
-  projectRoutes.post("/share/:id", ProjectController.updateProjectSharers);
   // Vote project route
   projectRoutes.post("/upvote/:id", requireAuth, ProjectController.voteProject);
   // Admin project list route
   projectRoutes.get("/admin/list", ProjectController.listAllProject);
+  // send orginvitation route
+  projectRoutes.post("/send-invite", requireAuth, ProjectController.sendInvite);
 
 
   //= ========================
@@ -171,18 +179,24 @@ module.exports = function (app) {
   projectMemberRoutes.get("/project/:userId", ProjectMemberController.listProject);
   // Get participants by project route
   projectMemberRoutes.get("/participant/:projectId", requireAuth, ProjectMemberController.listParticipant);
-  // Get public participants by project route
-  projectMemberRoutes.get("/pub-participant/:projectId", ProjectMemberController.listPublicParticipant);
   // Join project route
   projectMemberRoutes.post("/:projectId", requireAuth, ProjectMemberController.joinProject);
   // Leave project route
   projectMemberRoutes.delete("/:projectId", requireAuth, ProjectMemberController.leaveProject);
-  // Invite participant to project route
-  projectMemberRoutes.post("/invite/:projectId", requireAuth, ProjectMemberController.inviteParticipant);
-  // Accept Invitation project team route
-  projectMemberRoutes.post("/invite-accept/:pmId", requireAuth, ProjectMemberController.acceptInviteTeam);
-  // Cancel invite participant to project route
-  projectMemberRoutes.post("/invite-cancel/:projectId", requireAuth, ProjectMemberController.cancelInviteParticipant);
+
+
+  //= ========================
+  // ProjectOrg Routes
+  //= ========================
+  apiRoutes.use("/projectorg", projectOrgRoutes);
+  // Get projects by org route
+  projectOrgRoutes.get("/project/:orgId", ProjectOrgController.listProject);
+  // Get orgs by project route
+  projectOrgRoutes.get("/org/:projectId", ProjectOrgController.listOrganization);
+  // Join project route
+  projectOrgRoutes.post("/:projectId", requireAuth, ProjectOrgController.joinProject);
+  // Leave project route
+  projectOrgRoutes.delete("/:projectId", requireAuth, ProjectOrgController.leaveProject);
 
 
   //= ========================
@@ -246,6 +260,31 @@ module.exports = function (app) {
   // delete help document route
   helpdocRoutes.delete("/delete/:id", requireAuth, HelpDocController.deleteHelpDoc);
 
+  
+  //= ========================
+  // InviteRequest Routes
+  //= ========================
+  apiRoutes.use("/invite", inviteRequestRoutes);
+  // create invite request route
+  inviteRequestRoutes.post("/", InviteRequestController.createInviteRequest);
+  // List invite requests route
+  inviteRequestRoutes.get("/", requireAuth, InviteRequestController.listInviteRequest);
+  // resolve invite request route
+  inviteRequestRoutes.put("/:id", requireAuth, InviteRequestController.resolveInviteRequest);
+
+
+  //= ========================
+  // Template Routes
+  //= ========================
+  apiRoutes.use("/templates", templateRoutes);
+  // create template route
+  templateRoutes.post("/", requireAuth, TemplateController.createTemplate);
+  // List template route
+  templateRoutes.get("/", requireAuth, TemplateController.listTemplate);
+  // update template route
+  templateRoutes.put("/", requireAuth, TemplateController.updateTemplate);
+  // Get template route
+  templateRoutes.get("/:id", requireAuth, TemplateController.getTemplate);
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

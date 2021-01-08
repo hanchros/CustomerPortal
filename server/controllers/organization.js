@@ -4,8 +4,7 @@ const User = require("../models/user");
 
 exports.createOrganization = async (req, res, next) => {
   try {
-    const orgValues = Object.assign(req.body, { creator: req.user._id });
-    const org = new Organization(orgValues);
+    const org = new Organization(req.body);
     let org_result = await org.save();
     res.status(201).json({
       organization: org_result,

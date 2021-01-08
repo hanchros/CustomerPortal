@@ -7,6 +7,7 @@ const getRole = require("../helpers").getRole;
 const config = require("../config/main");
 const Token = require("../models/token");
 const Organization = require("../models/organization");
+const ProjectMember = require("../models/projectmember");
 
 // Generate JWT
 // TO-DO Add issuer and audience
@@ -61,7 +62,6 @@ exports.participantRegister = async function (req, res, next) {
   const first_name = req.body.first_name;
   const last_name = req.body.last_name;
   const password = req.body.password;
-  const usertype = req.body.usertype;
 
   try {
     let users = await User.find({ email });
@@ -74,7 +74,6 @@ exports.participantRegister = async function (req, res, next) {
       email,
       password,
       profile: { first_name, last_name },
-      usertype,
       verified: false,
     });
     const usr = await user.save();
@@ -89,6 +88,47 @@ exports.participantRegister = async function (req, res, next) {
       `${userInfo.profile.first_name} ${userInfo.profile.last_name} `,
       token.token
     );
+    return res.status(201).json({ user: userInfo });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.inviteRegister = async function (req, res, next) {
+  const email = req.body.email;
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name;
+  const password = req.body.password;
+  const org_name = req.body.organization || "";
+  const photo = req.body.photo;
+  const phone = req.body.phone;
+  const project_id = req.body.project_id;
+  const project_role = req.body.project_role;
+  const role = req.body.role;
+
+  try {
+    let users = await User.find({ email });
+    if (users.length > 0) {
+      return res
+        .status(422)
+        .send({ error: "That email address is already in use." });
+    }
+    const orgEx = await Organization.findOne({ org_name });
+    const org = orgEx ? orgEx._id : null;
+    const user = new User({
+      email,
+      password,
+      profile: { first_name, last_name, org, org_name, photo, phone, role },
+      verified: true,
+    });
+    const usr = await user.save();
+    const userInfo = setUserInfo(usr);
+    const pm = new ProjectMember({
+      participant: usr._id,
+      project: project_id,
+      role: project_role || "member",
+    });
+    pm.save();
     return res.status(201).json({ user: userInfo });
   } catch (err) {
     return next(err);
@@ -247,21 +287,4 @@ exports.resendVerification = function (req, res, next) {
       sendgrid.userEmailVerification(email, name, token.token);
     }
   });
-};
-
-exports.sendInvite = async (req, res, next) => {
-  try {
-    const org = await Organization.findById(req.body.organization);
-    const values = Object.assign(req.body, {
-      organization: org.org_name,
-      creator: `${req.user.profile.first_name} ${req.user.profile.last_name}`,
-    });
-    sendgrid.inviteMail(values);
-    const result = sendgrid.inviteFactory(values);
-    return res.status(200).json({
-      content: result,
-    });
-  } catch (err) {
-    return next(err);
-  }
 };

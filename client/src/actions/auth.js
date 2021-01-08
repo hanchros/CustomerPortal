@@ -7,10 +7,10 @@ import {
   FETCH_USER,
   FETCH_USER_LIST,
   FETCH_USER_SEARCH_LIST,
+  SET_PDF_INVITE_DATA,
 } from "./types";
 import history from "../history";
 import Client from "./api";
-import { message } from "antd";
 
 //= ===============================
 // Authentication actions
@@ -28,7 +28,7 @@ export function loginUser({ email, password }) {
       cookie.save("user", user, { path: "/" });
       dispatch({ type: AUTH_USER });
       dispatch({ type: FETCH_USER, payload: user });
-      history.push("/user-dashboard");
+      history.push("/dashboard");
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));
     }
@@ -58,6 +58,22 @@ export function registerUser(values) {
   };
 }
 
+export function registerInvitedUser(values) {
+  return async (dispatch) => {
+    const client = Client();
+    try {
+      const response = await client.post(
+        `${API_URL}/auth/invite-register`,
+        values
+      );
+      dispatch({ type: FETCH_USER, payload: response.data.user });
+      return ;
+    } catch (err) {
+      createNotification("Register Failed", errorMessage(err));
+    }
+  };
+}
+
 export function dropRegFile(file) {
   var formData = new FormData();
   formData.append("file", file);
@@ -72,6 +88,10 @@ export function dropRegFile(file) {
           },
         }
       );
+      dispatch({
+        type: SET_PDF_INVITE_DATA,
+        pdfData: res.data.result,
+      });
       return {
         data: res.data,
         success: true,
@@ -100,19 +120,6 @@ export function confirmEmail({ token, mode }) {
       return message;
     } catch (error) {
       createNotification("Confirm Email", errorMessage(error));
-    }
-  };
-}
-
-export function sendInvite(values) {
-  const client = Client(true);
-  return async (dispatch) => {
-    try {
-      const res = await client.post(`${API_URL}/auth/send-invite`, values);
-      message.success("Invitation sent successfully!");
-      return res.data.content;
-    } catch (error) {
-      createNotification("Send Invitation", errorMessage(error));
     }
   };
 }

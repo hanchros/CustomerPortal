@@ -1,10 +1,10 @@
 const ProjectMember = require("../models/projectmember");
-const utils = require("./util");
 
 exports.joinProject = (req, res, next) => {
   const pm = new ProjectMember({
     participant: req.user._id,
     project: req.params.projectId,
+    role: req.body.role,
   });
   pm.save((err, pr) => {
     if (err) {
@@ -45,7 +45,7 @@ exports.listProject = (req, res, next) => {
 
 exports.listParticipant = (req, res, next) => {
   ProjectMember.find({ project: req.params.projectId })
-    .populate("participant")
+    .populate({ path: "participant", select: "_id email profile" })
     .populate("project")
     .sort({ createdAt: "desc" })
     .exec((err, pms) => {
@@ -55,101 +55,8 @@ exports.listParticipant = (req, res, next) => {
       let participants = [];
       pms.map((pm) => {
         if (!pm.participant) return;
-        if (
-          !req.user ||
-          !utils.compareIds(pm.project.participant, req.user._id)
-        ) {
-          pm.participant.email = "";
-        }
-        pm.participant.password = "";
-        pm.project = null;
         participants.push(pm);
       });
       res.status(201).json({ participants });
     });
-};
-
-exports.listPublicParticipant = (req, res, next) => {
-  ProjectMember.find({ project: req.params.projectId })
-    .populate("participant")
-    .sort({ createdAt: "desc" })
-    .exec((err, pms) => {
-      if (err) {
-        return next(err);
-      }
-      let participants = [];
-      pms.map((pm) => {
-        if (!pm.participant) return;
-        pm.participant.email = "";
-        pm.participant.password = "";
-        participants.push(pm);
-      });
-      res.status(201).json({ participants });
-    });
-};
-
-exports.inviteParticipant = async (req, res, next) => {
-  try {
-    let pm = await ProjectMember.findOne({
-      project: req.params.projectId,
-      participant: req.body.participant,
-    });
-    if (!pm) return;
-    pm.pending = true;
-    await pm.save();
-    res.status(201).json({ pm });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.cancelInviteParticipant = async (req, res, next) => {
-  try {
-    let pm = await ProjectMember.findOne({
-      project: req.params.projectId,
-      participant: req.body.participant,
-    });
-    if (!pm) return;
-    pm.pending = false;
-    await pm.save();
-    res.status(201).json({ pm });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.acceptInviteTeam = async (req, res, next) => {
-  try {
-    let pm = await ProjectMember.findById(req.params.pmId);
-    if (!pm) return;
-    pm.member = req.body.accept;
-    pm.pending = false;
-    await pm.save();
-    res.status(201).json({ pm });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-// clean tool
-exports.cleanProjectMember = async () => {
-  try {
-    let list = await ProjectMember.find({});
-    let i = 0;
-    for (let pm of list) {
-      let fr = list.filter(
-        (item) =>
-          item.participant.equals(pm.participant) &&
-          item.project.equals(pm.project)
-      );
-      if (fr && fr.length > 1) {
-        await ProjectMember.deleteOne({ _id: pm._id });
-        console.log("removed item", i);
-        i++;
-      }
-    }
-    console.log("removing ended");
-  } catch (err) {
-    console.log("err---", err);
-  }
 };

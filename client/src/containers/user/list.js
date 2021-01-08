@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import { FilterOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { listAllParticipants, clearSearch } from "../../actions/auth";
 import { Header, CustomCard } from "../../components/template";
-import Spinner from "../../components/pages/spinner";
+import { GrowSpinner } from "../../components/pages/spinner";
 import UserAvatar from "../../assets/img/user-avatar.png";
 import {
   getFieldData,
@@ -246,7 +246,7 @@ class UserList extends Component {
               className="row"
               loadMore={this.loadMore}
               hasMore={users.length < user.total - 1}
-              loader={<Spinner key={users.length} />}
+              loader={<GrowSpinner key={users.length} />}
             >
               {users.map((item, index) => {
                 return (

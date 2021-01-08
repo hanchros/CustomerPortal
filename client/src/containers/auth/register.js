@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Spinner } from "reactstrap";
-import { Form, Input, message, Row, Col, Modal, Button } from "antd";
+import { Form, Input, message, Row, Col } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
-import { registerUser, dropRegFile } from "../../actions/auth";
+import { registerUser } from "../../actions/auth";
 import { Link } from "react-router-dom";
 import HomeHOC from "../../components/template/home-hoc";
-import { FileDrop } from "react-file-drop";
 
-const SignupForm = ({ onSubmit, pdfData }) => {
+const SignupForm = ({ onSubmit }) => {
   const onFinish = (values) => {
     if (values.password !== values.conf_password) {
       message.error("password confirmation doesn't match!");
@@ -19,12 +17,7 @@ const SignupForm = ({ onSubmit, pdfData }) => {
   };
 
   return (
-    <Form
-      name="register"
-      className="register-form"
-      onFinish={onFinish}
-      initialValues={{ ...pdfData }}
-    >
+    <Form name="register" className="register-form mt-5" onFinish={onFinish}>
       <Row gutter={30}>
         <Col md={12} sm={24}>
           <Form.Item
@@ -114,76 +107,16 @@ const SignupForm = ({ onSubmit, pdfData }) => {
 };
 
 class Register extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      pdfData: {},
-      fileReading: false,
-      showModal: false,
-      isShowPDFData: false,
-    };
-  }
-
   onSubmit = (values) => {
     const { registerUser } = this.props;
-    values.usertype = "participant";
     registerUser(values);
   };
 
-  handleDropFile = async (files, e) => {
-    if (!files || files.length === 0) return;
-    this.setState({ fileReading: true, showModal: true });
-    const res = await this.props.dropRegFile(files[0]);
-    if (!res.data.result) {
-      message.error("Invalid file format!");
-      this.setState({ showModal: false, fileReading: false });
-      return;
-    }
-    this.setState({ pdfData: res.data.result, fileReading: false });
-  };
-
-  showPDFData = () => {
-    this.setState({ isShowPDFData: true, showModal: false });
-  };
-
   render() {
-    const { fileReading, pdfData, showModal, isShowPDFData } = this.state;
     return (
       <HomeHOC>
         <div className="main-background-title">REGISTRATION</div>
-        <FileDrop onDrop={this.handleDropFile}>
-          {!isShowPDFData && (
-            <SignupForm onSubmit={this.onSubmit} pdfData={{}} />
-          )}
-          {isShowPDFData && (
-            <SignupForm onSubmit={this.onSubmit} pdfData={pdfData} />
-          )}
-          <Modal
-            title={null}
-            visible={showModal}
-            width={300}
-            footer={false}
-            closable={false}
-            centered
-            className={`fileread-modal ${fileReading && "transparent"}`}
-          >
-            {fileReading && (
-              <Spinner
-                color="primary"
-                style={{ width: "3rem", height: "3rem" }}
-              />
-            )}
-            {!fileReading && (
-              <React.Fragment>
-                <p>Document has been authenticated by Integra</p>
-                <Button type="link" onClick={this.showPDFData}>
-                  IMPORT AUTHENTICATED DATA
-                </Button>
-              </React.Fragment>
-            )}
-          </Modal>
-        </FileDrop>
+        <SignupForm onSubmit={this.onSubmit} />
       </HomeHOC>
     );
   }
@@ -193,6 +126,4 @@ function mapStateToProps(state) {
   return {};
 }
 
-export default connect(mapStateToProps, { registerUser, dropRegFile })(
-  Register
-);
+export default connect(mapStateToProps, { registerUser })(Register);

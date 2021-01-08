@@ -43,7 +43,7 @@ body {
     padding: 10px 5%;
   }
   nav a:hover {
-    color: $gray-200 !important;
+    color: $gray-400 !important;
   }
   nav a {
     color: white !important;
@@ -86,15 +86,13 @@ body {
 }
 
 .content {
-  padding: 40px;
+  padding-top: 70px;
   min-height: calc(100vh - 73px);
   margin: 0 auto;
-  .summary {
-    color: white !important;
-    &:hover {
-      text-decoration: none !important;
-      color: $gray-400 !important;
-    }
+  padding-bottom: 45px;
+
+  p {
+    font-size: 1.2rem;
   }
 
   .ant-page-header {
@@ -177,7 +175,7 @@ body {
 
 @media screen and (max-width: 768px) {
   .content {
-    padding: 30px !important;
+    padding-top: 40px !important;
   }
   h3 {
     font-size: 1.4rem !important;
@@ -209,5 +207,17 @@ body {
     -ms-flex: 0 0 100%;
     flex: 0 0 100% !important;
     max-width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-nav .navbar-expand-md .navbar-nav .nav-link {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .main-nav .navbar-expand-md .navbar-nav .nav-link.notif {
+    padding-right: 0;
+    padding-left: 0;
   }
 }

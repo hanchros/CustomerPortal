@@ -8,14 +8,12 @@ import {
   FETCH_ADMIN_ORG_LIST,
 } from "./types";
 import Client from "./api";
-import history from "../history";
 
 export function createOrganization(values) {
   return async (dispatch) => {
     const client = Client(true);
     try {
       await client.post(`${API_URL}/organization`, values);
-      history.push("/organizations");
     } catch (err) {
       createNotification("Create Organization", errorMessage(err));
     }
@@ -27,7 +25,6 @@ export function updateOrganization(orgData) {
     const client = Client(true);
     try {
       await client.put(`${API_URL}/organization`, orgData);
-      history.push("/organizations");
     } catch (err) {
       createNotification("Update Organization", errorMessage(err));
     }

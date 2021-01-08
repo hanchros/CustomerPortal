@@ -25,7 +25,7 @@ class ProfilePage extends Component {
     delete profile.organization;
     delete profile.org_input;
     await this.props.updateProfile({ profile });
-    history.push("/user-dashboard");
+    history.push("/dashboard");
   };
 
   render = () => {

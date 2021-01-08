@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Row, Col, Container } from "reactstrap";
 import { Avatar, Skeleton } from "antd";
-import { getProjectsByUser, listProjectByCreator } from "../../actions/project";
+import { listProjectByCreator } from "../../actions/project";
 import { getUser } from "../../actions/auth";
 import { Header, CustomCard } from "../../components/template";
 import sampleUrl from "../../assets/img/user-avatar.png";
@@ -25,9 +25,10 @@ class UserDashboard extends Component {
   componentDidMount = async () => {
     this.setState({ loading: true });
     const userId = this.props.match.params.id;
-    const { getProjectsByUser, listProjectByCreator, getUser } = this.props;
+    const { listProjectByCreator, getUser } = this.props;
 
-    const joinProjects = await getProjectsByUser(userId);
+    // const joinProjects = await getProjectsByUser(userId);
+    const joinProjects = []
     const createdProjects = await listProjectByCreator(userId);
     const user = await getUser(userId);
     this.setState({
@@ -235,7 +236,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getProjectsByUser,
   listProjectByCreator,
   getUser,
 })(UserDashboard);

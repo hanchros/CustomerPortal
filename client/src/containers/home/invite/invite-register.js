@@ -3,6 +3,9 @@ import { connect } from "react-redux";
 import { Form, Input, Col, Row, message, Select } from "antd";
 import Avatar from "../../../components/template/upload";
 import { getFieldData } from "../../../utils/helper";
+import { registerInvitedUser } from "../../../actions/auth";
+import { ModalSpinner } from "../../../components/pages/spinner";
+import history from "../../../history";
 
 const InviteRegisterForm = ({
   onSubmit,
@@ -11,14 +14,16 @@ const InviteRegisterForm = ({
   avatarURL,
   userRoles,
 }) => {
-  const onFinish = (values) => {
-    if (values.password !== values.conf_password) {
+  const onFinish = (value) => {
+    if (value.password !== value.conf_password) {
       message.error("password confirmation doesn't match!");
       return;
     }
-    values.photo = avatarURL;
-    values.organization = values.organization || null
-    onSubmit(values);
+    value.photo = avatarURL;
+    value.organization = value.organization || null;
+    value.project_id = values.project_id
+    value.project_role = values.project_role
+    onSubmit(value);
   };
 
   return (
@@ -58,9 +63,11 @@ const InviteRegisterForm = ({
       >
         <Input size="large" placeholder="Last Name" />
       </Form.Item>
-      <Form.Item name="organization">
-        <Input size="large" placeholder="Organization Name" disabled />
-      </Form.Item>
+      {values.organization && (
+        <Form.Item name="organization">
+          <Input size="large" placeholder="Organization Name" disabled />
+        </Form.Item>
+      )}
       <Form.Item
         name="email"
         rules={[
@@ -144,12 +151,16 @@ const InviteRegisterForm = ({
 class InviteRegister extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { avatarURL: "" };
+    this.state = { avatarURL: "", loading: false };
   }
 
-  onSubmitRegister = (values) => {
-    console.log(values);
-    this.props.goNext();
+  onSubmitRegister = async (values) => {
+    const { registerInvitedUser, pdfData } = this.props;
+    this.setState({ loading: true });
+    await registerInvitedUser(values);
+    this.setState({ loading: false });
+    if (pdfData.project_name) this.props.goNext();
+    else history.push("/login");
   };
 
   setAvatar = (url) => {
@@ -169,6 +180,7 @@ class InviteRegister extends React.Component {
           avatarURL={this.state.avatarURL}
           userRoles={userRoles}
         />
+        <ModalSpinner visible={this.state.loading} />
       </React.Fragment>
     );
   }
@@ -180,4 +192,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {})(InviteRegister);
+export default connect(mapStateToProps, { registerInvitedUser })(
+  InviteRegister
+);

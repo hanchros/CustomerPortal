@@ -16,7 +16,6 @@ import { ExclamationCircleOutlined, BellOutlined } from "@ant-design/icons";
 import { deleteUser } from "../../actions/user";
 import { Link } from "react-router-dom";
 import sampleUrl from "../../assets/img/user-avatar.png";
-import logoUrl from "../../assets/img/home-logo.png";
 
 const { confirm } = Modal;
 
@@ -49,16 +48,7 @@ class HeaderTemplate extends Component {
   };
 
   render = () => {
-    const {
-      authenticated,
-      currentUser,
-      logo,
-      notification,
-      isAdmin,
-    } = this.props;
-    let centerLogo =
-      logo ||
-      "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+    const { authenticated, currentUser, notification, isAdmin } = this.props;
 
     return (
       <React.Fragment>
@@ -69,51 +59,45 @@ class HeaderTemplate extends Component {
             color="transparent"
             expand="md"
           >
-            <Link className="navbar-brand" to={"/user-dashboard"}>
-              <img src={logoUrl} height="43" alt="logo" />
+            <Link className="navbar-brand" to={"/dashboard"}>
+              {/* <img src={logoUrl} height="43" alt="logo" /> */}
+              HOME
             </Link>
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={"/user-dashboard"}>
-                      Dashboard
-                    </Link>
-                  </NavItem>
-                )}
-                {authenticated && (
-                  <NavItem>
-                    <Link className="nav-link" to="/organizations">
-                      Organizations
-                    </Link>
-                  </NavItem>
-                )}
-                {authenticated && (
-                  <NavItem>
-                    <Link className="nav-link" to="/participants">
-                      Participants
-                    </Link>
-                  </NavItem>
-                )}
-                {authenticated && (
-                  <NavItem>
                     <Link className="nav-link" to="/projects">
-                      Projects
+                      MY PROJECTS
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/invite">
-                      Invite Users
+                    <Link className="nav-link" to="/messages">
+                      MESSAGES
+                    </Link>
+                  </NavItem>
+                )}
+                {authenticated && (
+                  <NavItem>
+                    <Link className="nav-link" to="/techhub">
+                      TECH HUB
+                    </Link>
+                  </NavItem>
+                )}
+                {authenticated && (
+                  <NavItem>
+                    <Link className="nav-link" to="/learn">
+                      LEARN
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && isAdmin && (
                   <NavItem>
                     <Link className="nav-link" to="/admin">
-                      Admin
+                      ADMIN
                     </Link>
                   </NavItem>
                 )}
@@ -121,7 +105,7 @@ class HeaderTemplate extends Component {
               <Nav navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/notification">
+                    <Link className="nav-link notif" to="/notification">
                       <div
                         className="mr-2"
                         style={{
@@ -194,11 +178,6 @@ class HeaderTemplate extends Component {
               </Nav>
             </Collapse>
           </Navbar>
-          {this.props.logo && (
-            <div className="page-logo pt-4 pb-4 text-center">
-              <img src={centerLogo} height="50px" alt="logo" />
-            </div>
-          )}
         </div>
       </React.Fragment>
     );

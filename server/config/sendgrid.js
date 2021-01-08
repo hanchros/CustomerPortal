@@ -52,8 +52,8 @@ exports.newNotification = function newNotification(
   });
 };
 
-exports.inviteMail = function inviteMail(values) {
-  pathToAttachment = `${__dirname}/../uploads/test.pdf`;
+exports.inviteMail = function inviteMail(values, filename) {
+  pathToAttachment = `${__dirname}/../uploads/${filename}`;
   attachment = fs.readFileSync(pathToAttachment).toString("base64");
 
   const msg = {
@@ -64,7 +64,7 @@ exports.inviteMail = function inviteMail(values) {
     attachments: [
       {
         content: attachment,
-        filename: "test.pdf",
+        filename: filename,
         type: "application/pdf",
         disposition: "attachment",
       },
@@ -107,9 +107,16 @@ function notificationFactory(title, content, senderName, senderPhoto) {
 function inviteFactory(values) {
   const link = `${mainURL}/email-invite`;
   const mailData = Object.assign(values, { link });
-  const template = fs.readFileSync("template/Invite.html", {
-    encoding: "utf-8",
-  });
+  let template;
+  if (values.organization) {
+    template = fs.readFileSync("template/OrgInvite.html", {
+      encoding: "utf-8",
+    });
+  } else {
+    template = fs.readFileSync("template/TeamInvite.html", {
+      encoding: "utf-8",
+    });
+  }
   var text = ejs.render(template, mailData);
   return text;
 }

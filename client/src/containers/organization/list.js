@@ -16,7 +16,7 @@ import {
 } from "../../actions/organization";
 import { Header, CustomCard } from "../../components/template";
 import ProjectAvatar from "../../assets/icon/challenge.png";
-import Spinner from "../../components/pages/spinner";
+import { GrowSpinner } from "../../components/pages/spinner";
 import { createNotification } from "../../actions";
 import {
   getFieldData,
@@ -267,7 +267,7 @@ class OrganizationList extends Component {
               className="row"
               loadMore={this.loadMore}
               hasMore={orgs.length < organization.total - 1}
-              loader={<Spinner key={orgs.length} />}
+              loader={<GrowSpinner key={orgs.length} />}
             >
               {orgs.map((item, index) => {
                 let ptps = item.participants || 0;

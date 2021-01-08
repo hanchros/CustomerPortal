@@ -1,16 +1,3 @@
-.project-user {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  img {
-    border-radius: 50%;
-    height: 30px;
-    width: 30px;
-    margin-left: 10px;
-  }
-}
-
 .comment {
   .ant-collapse-content {
     background-color: #ddeeff !important;
@@ -19,28 +6,161 @@
   }
 }
 
-.project-unfollow {
+.template-lesson {
   width: 100%;
-  display: flex;
-  justify-content: flex-end;
+  text-align: right;
+  padding: 20px 10px;
+}
+
+.template-btn {
+  width: 250px;
+}
+
+.create-tech-box {
+  border: 1px solid #eee;
+  padding: 20px;
+}
+
+.template-listitem {
+  align-items: flex-start !important;
+  .template-listitem-body {
+    border: 1px solid $blue;
+    margin-right: 20px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    color: inherit;
+    width: 100%;
+
+    &:hover {
+      text-decoration: none;
+      box-shadow: 1px 1px 5px #ccc;
+    }
+  }
   button {
-    margin: 2px;
+    width: 160px;
   }
 }
 
-.homepage-card .project-invite {
-  position: absolute;
+.template-name-box {
+  border: 1px solid $blue;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.template-desc-box {
+  border: 1px solid $blue;
+  padding: 10px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  min-height: 41vh;
+}
+
+.template-tech-box {
+  border: 1px solid $blue;
+  padding: 10px;
+  margin-top: 40px;
+  min-height: 22vh;
+}
+
+.project-list {
+  .ant-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ant-list-item-meta-title {
+    font-size: 20px;
+  }
+
+  .ant-list-item-meta-description {
+    font-size: 16px;
+  }
+
+  .ant-list-item {
+    padding: 12px 10px;
+    align-items: flex-start;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 1px 1px 5px $gray-500;
+    }
+  }
+
+  .ant-list-item-action a {
+    font-size: 15px;
+    color: #555;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.project-detail-head {
   display: flex;
-  right: 30px;
-  top: 25px;
-  z-index: 100;
+  img {
+    width: 100px;
+    height: auto;
+    margin-right: 20px;
+  }
+  .project-detail-headerbox {
+    border: 1px solid $blue;
+    padding: 10px;
+    width: 100%;
+    min-height: 14vh;
+    margin-bottom: 20px;
+  }
+}
+
+.project-detail-desc {
+  border: 1px solid $blue;
+  padding: 10px;
+  width: 100%;
+  min-height: 25vh;
+  margin-bottom: 20px;
+}
+
+.project-detail-clients {
+  border: 1px solid $blue;
+  padding: 10px;
+  width: 100%;
+  min-height: 21vh;
+  margin-bottom: 20px;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 1px 1px 5px $gray-500;
+  }
+}
+
+.project-org-box {
+  display: flex;
+  margin-bottom: 40px;
+  img {
+    width: 120px;
+    height: auto;
+    margin-right: 20px;
+  }
+}
+
+.project-general-box {
+  border: 1px solid $blue;
+  padding: 10px;
+  width: 100%;
+  min-height: 50px;
+}
+
+.invite-org {
+  width: 200px;
 }
 
 @media screen and (max-width: 768px) {
-  .homepage-card .project-invite {
-    position: relative;
-    right: 0px;
-    top: 10px;
+  .template-btn {
+    width: 200px;
+  }
+  .project-org-box {
+    img {
+      width: 80px;
+    }
   }
 }
 
@@ -48,72 +168,8 @@
   background-color: white;
 }
 
-.project-editor {
-  padding: 0 !important;
-  .ql-toolbar.ql-snow {
-    border: 0;
-    border-bottom: 1px solid #ccc;
-  }
-  .ql-container.ql-snow {
-    border: 0;
-  }
-}
-
-.produced-by {
-  font-size: 14px;
-  .challenge-link {
-    font-weight: 600;
-    &:hover {
-      text-decoration: underline !important;
-    }
-  }
-}
-
-.project-header {
-  display: flex;
-  justify-content: space-between;
-
-  .btn-project-access {
-    font-size: 30px !important;
-    padding: 0 !important;
-    color: black !important;
-  }
-}
-
 .ant-dropdown-menu-item {
   a:hover {
     text-decoration: none !important;
-  }
-}
-
-.demo-option-label-item {
-  img {
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-  }
-}
-
-.project-share-select {
-  display: flex;
-
-  .ant-select {
-    margin-top: 10px;
-  }
-  button {
-    margin-top: 10px;
-    width: 120px;
-  }
-}
-
-.btn-footer-group {
-  display: flex;
-  justify-content: center;
-  
-}
-
-@media screen and (max-width: 768px) {
-  .project-share-select {
-    flex-direction: column;
   }
 }

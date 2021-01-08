@@ -21,20 +21,21 @@ import OrgProfile from "./containers/organization/profile";
 // Import project pages
 import Projectslist from "./containers/project/list";
 import Project from "./containers/project/project";
+import SelectTemplate from "./containers/project/select-template";
+import TemplatePage from "./containers/template";
 
 // Import authentication related pages
 import Register from "./containers/auth/register";
-import RegisterConfirm from "./containers/auth/register-confirm";
+// import RegisterConfirm from "./containers/auth/register-confirm";
 import Login from "./containers/auth/login";
 import Logout from "./containers/auth/logout";
 import ForgotPassword from "./containers/auth/forgot_password";
 import ResetPassword from "./containers/auth/reset_password";
 import Resend from "./containers/auth/resend";
 import ConfirmEmail from "./containers/auth/confirm-email";
-import SendInvite from "./containers/auth/invite";
 
 // Import user related Pages
-import UserDashboard from "./containers/user/dashboard";
+import Dashboard from "./containers/dashboard";
 import Participant from "./containers/user/user";
 import Profile from "./containers/user/profilepage";
 import ParticipantsList from "./containers/user/list";
@@ -76,8 +77,7 @@ class Routes extends React.Component {
           <Route path="/invitation" component={InvitePage} />
           <Route path="/email-invite" component={InviteHomePage} />
 
-          <Route path="/register" component={RegisterConfirm} />
-          <Route path="/register-form" component={Register} />
+          <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <Route path="/forgot-password/:mode" component={ForgotPassword} />
@@ -88,9 +88,8 @@ class Routes extends React.Component {
           <Route path="/resend" component={Resend} />
           <Route path="/email-verify/:mode/:token" component={ConfirmEmail} />
           <Route path="/profile" component={RequireAuth(Profile)} />
-          <Route path="/invite" component={RequireAuth(SendInvite)} />
 
-          <Route path="/user-dashboard" component={UserDashboard} />
+          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
 
           <Route path="/organizations" component={OrganizationList} />
           <Route
@@ -104,6 +103,12 @@ class Routes extends React.Component {
 
           <Route path="/projects" component={Projectslist} />
           <Route path="/project/:id" component={RequireAuth(Project)} />
+          <Route
+            path="/select-template"
+            component={RequireAuth(SelectTemplate)}
+          />
+
+          <Route path="/template/:id" component={RequireAuth(TemplatePage)} />
 
           <Route path="/admin" component={RequireAuth(AdminDashboard)} />
           <Route path="/notification" component={RequireAuth(Notification)} />

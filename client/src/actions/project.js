@@ -3,8 +3,10 @@ import {
   FETCH_PROJECT_LIST,
   FETCH_PROJECT,
   FETCH_PROJECT_PARTICIPANTS,
-  FETCH_PROJECT_SEARCH_LIST,
   FETCH_PROJECT_DETAIL_LIST,
+  CREATE_PROJECT,
+  UPDATE_PROJECT,
+  FETCH_PROJECT_ORGANIZATIONS,
 } from "./types";
 import axios from "axios";
 import Client from "./api";
@@ -18,7 +20,10 @@ export function createProject(project) {
   return async (dispatch) => {
     try {
       let res = await client.post(`${API_URL}/project`, project);
-      return res.data.project;
+      dispatch({
+        type: CREATE_PROJECT,
+        project: res.data.project,
+      });
     } catch (err) {
       createNotification("Create Project", errorMessage(err));
     }
@@ -30,22 +35,24 @@ export function updateProject(project) {
   return async (dispatch) => {
     try {
       let res = await client.put(`${API_URL}/project`, project);
-      return res.data.project;
+      dispatch({
+        type: UPDATE_PROJECT,
+        project: res.data.project,
+      });
     } catch (err) {
       createNotification("Update Project", errorMessage(err));
     }
   };
 }
 
-export function listProjects(count, filters) {
+export function listProjects() {
   return async (dispatch) => {
     const client = Client(true);
     try {
-      let res = await client.post(`${API_URL}/project/list/${count}`, filters);
+      let res = await client.get(`${API_URL}/project`);
       dispatch({
         type: FETCH_PROJECT_LIST,
         projects: res.data.projects,
-        total: res.data.total,
       });
     } catch (err) {
       console.log(err);
@@ -68,9 +75,10 @@ export function upvoteProject(id, vote) {
 }
 
 export function getProject(projectId) {
+  const client = Client(true);
   return async (dispatch) => {
     try {
-      let res = await axios.get(`${API_URL}/project/${projectId}`);
+      let res = await client.get(`${API_URL}/project/${projectId}`);
       dispatch({ type: FETCH_PROJECT, project: res.data.project });
       return res.data.project || {};
     } catch (err) {
@@ -91,41 +99,12 @@ export function deleteProject(projid) {
   };
 }
 
-export function getProjectsByUser(userId) {
-  const client = Client();
-  return async (dispatch) => {
-    try {
-      let res = await client.get(`${API_URL}/projectmember/project/${userId}`);
-      return res.data.projects;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
 export function getParticipant(projectId) {
   return async (dispatch) => {
     const client = Client(true);
     try {
       let res = await client.get(
         `${API_URL}/projectmember/participant/${projectId}`
-      );
-      dispatch({
-        type: FETCH_PROJECT_PARTICIPANTS,
-        participants: res.data.participants,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
-export function getPublicParticipant(projectId) {
-  return async (dispatch) => {
-    const client = Client();
-    try {
-      let res = await client.get(
-        `${API_URL}/projectmember/pub-participant/${projectId}`
       );
       dispatch({
         type: FETCH_PROJECT_PARTICIPANTS,
@@ -150,6 +129,21 @@ export function joinProject(projectId) {
   };
 }
 
+export function joinOrgProject(projectId, orgId) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      let res = await client.post(`${API_URL}/projectorg/${projectId}`, {
+        organization: orgId,
+      });
+      message.success("Organization is joining this project.");
+      return res.data.projectOrg;
+    } catch (err) {
+      createNotification("Follow Project", errorMessage(err));
+    }
+  };
+}
+
 export function leaveProject(projectId) {
   return async (dispatch) => {
     try {
@@ -158,6 +152,21 @@ export function leaveProject(projectId) {
       message.info("You are leaving this project.");
     } catch (err) {
       createNotification("Follow Project", errorMessage(err));
+    }
+  };
+}
+
+export function listOrgByProject(projectId) {
+  return async (dispatch) => {
+    const client = Client();
+    try {
+      let res = await client.get(`${API_URL}/projectorg/org/${projectId}`);
+      dispatch({
+        type: FETCH_PROJECT_ORGANIZATIONS,
+        organizations: res.data.organizations,
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 }
@@ -171,74 +180,6 @@ export function listProjectByCreator(participantId) {
       return res.data.projects;
     } catch (err) {
       console.log(err);
-    }
-  };
-}
-
-export function searchProject(text) {
-  return async (dispatch) => {
-    if (text.length < 3) {
-      createNotification(
-        "Search Project",
-        "Search text should be at least 3 in length"
-      );
-      return;
-    }
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/search/project/${text}`);
-      dispatch({
-        type: FETCH_PROJECT_SEARCH_LIST,
-        projects: res.data.projects,
-        searchTxt: text,
-      });
-    } catch (err) {
-      createNotification("Search Project", errorMessage(err));
-    }
-  };
-}
-
-export function clearSearch() {
-  return (dispatch) => {
-    dispatch({ type: FETCH_PROJECT_SEARCH_LIST, projects: [] });
-  };
-}
-
-export function inviteProjectTeam(projectId, participantId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      await client.post(`${API_URL}/projectmember/invite/${projectId}`, {
-        participant: participantId,
-      });
-    } catch (err) {
-      createNotification("Invite Project", errorMessage(err));
-    }
-  };
-}
-
-export function acceptInviteTeam(pmId, accept) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      await client.post(`${API_URL}/projectmember/invite-accept/${pmId}`, {
-        accept,
-      });
-    } catch (err) {
-      createNotification("Accept Invitation project team", errorMessage(err));
-    }
-  };
-}
-
-export function cancelInviteProjectTeam(projectId, participantId) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      await client.post(`${API_URL}/projectmember/invite-cancel/${projectId}`, {
-        participant: participantId,
-      });
-    } catch (err) {
-      createNotification("Invite Project", errorMessage(err));
     }
   };
 }
@@ -278,19 +219,14 @@ export function listProjectDetails() {
   };
 }
 
-export function shareProject(sharers, id) {
+export function sendInvite(values) {
+  const client = Client(true);
   return async (dispatch) => {
-    const client = Client(true);
     try {
-      const res = await client.post(`${API_URL}/project/share/${id}`, {
-        sharers,
-      });
-      message.success(
-        "Project has been shared for this participants successfully"
-      );
-      return res.data.project;
-    } catch (err) {
-      createNotification("Share Project", errorMessage(err));
+      await client.post(`${API_URL}/project/send-invite`, values);
+      message.success("Invitation sent successfully!");
+    } catch (error) {
+      createNotification("Send Invitation", errorMessage(error));
     }
   };
 }

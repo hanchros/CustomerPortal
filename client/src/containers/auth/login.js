@@ -78,7 +78,7 @@ const LoginForm = ({ onSubmit }) => {
 class Login extends Component {
   componentDidMount() {
     if (this.props.authenticated) {
-      history.push("/user-dashboard");
+      history.push("/dashboard");
       return;
     }
   }

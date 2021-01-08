@@ -18,11 +18,9 @@ const ProjectMemberSchema = new Schema(
       ref: "Project",
       required: true,
     },
-    member: {
-      type: Boolean,
-    },
-    pending: {
-      type: Boolean,
+    role: {
+      type: String,
+      required: true,
     },
   },
   {

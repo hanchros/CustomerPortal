@@ -123,18 +123,18 @@
   margin-bottom: 0 !important;
 }
 
+.register-form {
+  width: 100%;
+  max-width: 800px;
+}
+
+.login-form {
+  margin-top: 100px;
+  width: 100%;
+  max-width: 500px;
+}
+
 .home-child {
-  .register-form {
-    width: 100%;
-    max-width: 800px;
-  }
-
-  .login-form {
-    margin-top: 100px;
-    width: 100%;
-    max-width: 500px;
-  }
-
   .login-options {
     display: flex;
     justify-content: space-between;
@@ -213,6 +213,28 @@
   background: transparent;
   box-shadow: none;
 }
+
+.project-box {
+  width: 100%;
+
+  .register-project-view {
+    display: flex;
+    border: 1px solid $blue;
+    padding: 10px;
+    width: 100%;
+    img {
+      width: 150px;
+      margin-right: 20px;
+    }
+  }
+
+  .project-org-createbox {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 600px;
+  }
+}
+
 
 @media screen and (max-width: 768px) {
   .register-modal {

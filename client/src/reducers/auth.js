@@ -1,7 +1,8 @@
-import { AUTH_USER, UNAUTH_USER } from "../actions/types";
+import { AUTH_USER, UNAUTH_USER, SET_PDF_INVITE_DATA } from "../actions/types";
 
 const INITIAL_STATE = {
   authenticated: false,
+  pdfData: {},
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -10,6 +11,8 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, authenticated: true };
     case UNAUTH_USER:
       return { ...state, authenticated: false };
+    case SET_PDF_INVITE_DATA:
+      return { ...state, pdfData: action.pdfData };
     default:
       return state;
   }

@@ -1,14 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Spinner } from "reactstrap";
-import { message, Modal } from "antd";
+import { message } from "antd";
 import HomeHOC from "../../../components/template/home-hoc";
 import { FileDrop } from "react-file-drop";
+import { ModalSpinner } from "../../../components/pages/spinner";
 import { dropRegFile } from "../../../actions/auth";
 import RequestInvite from "./request-invite";
 import InviteRegister from "./invite-register";
 import ProjectRegister from "./project-register";
+import InviteComplete from "./invite-complete";
 
 class InviteHomePage extends React.Component {
   constructor() {
@@ -31,6 +32,10 @@ class InviteHomePage extends React.Component {
 
   onRegisterProject = () => {
     this.setState({ step: 4 });
+  };
+
+  onCompleteInvite = () => {
+    this.setState({ step: 5 });
   };
 
   handleDropFile = async (files, e) => {
@@ -75,17 +80,7 @@ class InviteHomePage extends React.Component {
           Request an invitation​
         </Link>
       </div>
-      <Modal
-        title={null}
-        visible={this.state.fileReading}
-        width={300}
-        footer={false}
-        closable={false}
-        centered
-        className={"fileread-modal transparent"}
-      >
-        <Spinner color="primary" style={{ width: "3rem", height: "3rem" }} />
-      </Modal>
+      <ModalSpinner visible={this.state.fileReading} />
     </React.Fragment>
   );
 
@@ -99,7 +94,8 @@ class InviteHomePage extends React.Component {
         {step === 3 && (
           <InviteRegister goNext={this.onRegisterProject} pdfData={pdfData} />
         )}
-        {step === 4 && <ProjectRegister goBack={this.onBegin} />}
+        {step === 4 && <ProjectRegister goBack={this.onCompleteInvite} />}
+        {step === 5 && <InviteComplete />}
       </HomeHOC>
     );
   }

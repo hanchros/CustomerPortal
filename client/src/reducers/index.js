@@ -7,6 +7,7 @@ import projectReducer from "./project";
 import notificationReducer from "./notification";
 import adminReducer from "./admin";
 import helpdocReducer from "./helpdoc";
+import templateReducer from "./template";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   notification: notificationReducer,
   admin: adminReducer,
   helpdoc: helpdocReducer,
+  template: templateReducer,
 });
 
 export default rootReducer;

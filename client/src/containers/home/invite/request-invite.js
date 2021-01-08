@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Form, Input } from "antd";
 import { Link } from "react-router-dom";
+import { createInviteRequest } from "../../../actions/invite";
+import { ModalSpinner } from "../../../components/pages/spinner";
 
 const RequestInviteForm = ({ onSubmit, sent }) => {
   const onFinish = (values) => {
@@ -62,27 +64,28 @@ class RequestInvite extends React.Component {
 
     this.state = {
       sent: false,
+      loading: false,
     };
   }
 
-  onRequestInvite = (values) => {
-    console.log(values);
-    this.setState({ sent: true });
+  onRequestInvite = async (values) => {
+    this.setState({ loading: true });
+    await this.props.createInviteRequest(values);
+    this.setState({ sent: true, loading: false });
   };
 
   render() {
+    const { sent, loading } = this.state;
     return (
       <React.Fragment>
         <div className="main-background-title">REQUEST INVITE</div>
-        <RequestInviteForm
-          onSubmit={this.onRequestInvite}
-          sent={this.state.sent}
-        />
+        <RequestInviteForm onSubmit={this.onRequestInvite} sent={sent} />
         <div className="home-btn-group mt-big">
           <Link to="#" className="main-btn" onClick={this.props.goNext}>
             Next
           </Link>
         </div>
+        <ModalSpinner visible={loading} />
       </React.Fragment>
     );
   }
@@ -92,4 +95,4 @@ function mapStateToProps(state) {
   return {};
 }
 
-export default connect(mapStateToProps, {})(RequestInvite);
+export default connect(mapStateToProps, { createInviteRequest })(RequestInvite);

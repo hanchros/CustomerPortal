@@ -13,11 +13,6 @@ const ProjectSchema = new Schema(
       ref: "User",
       required: true,
     },
-    organization: {
-      type: Schema.Types.ObjectId,
-      ref: "Organization",
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -28,15 +23,25 @@ const ProjectSchema = new Schema(
     logo: {
       type: String,
     },
-    short_description: {
+    objective: {
       type: String,
       required: true,
     },
-    contact_detail: {
+    status: {
       type: String,
+      default: "In Progress",
     },
-    tags: [{ type: Schema.Types.ObjectId, ref: "FieldData" }],
-    sharers: { type: [String] },
+    technologies: [
+      {
+        application: { type: String, required: true },
+        organization: { type: String, required: true },
+        description: { type: String },
+      },
+    ],
+    template: {
+      type: Schema.Types.ObjectId,
+      ref: "Template",
+    },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {

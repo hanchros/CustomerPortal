@@ -1,15 +1,27 @@
 const Project = require("../models/project");
 const sendgrid = require("../config/sendgrid");
 const Notification = require("../models/notification");
+const ProjectMember = require("../models/projectmember");
+const axios = require("axios");
+const fs = require("fs");
+const FormData = require("form-data");
 
-exports.createProject = (req, res, next) => {
-  const project = new Project(req.body);
-  project.save((err, pr) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({ project: pr });
-  });
+exports.createProject = async (req, res, next) => {
+  try {
+    const project = new Project(req.body);
+    const pr = await project.save();
+    const pm = new ProjectMember({
+      participant: req.user._id,
+      project: pr._id,
+      role: "Creator",
+    });
+    await pm.save();
+    return res.status(201).json({
+      project: pr,
+    });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.updateProject = (req, res, next) => {
@@ -30,11 +42,6 @@ exports.updateProject = (req, res, next) => {
 
 exports.voteProject = async (req, res, next) => {
   const vote = req.body.vote;
-  if (!req.user || !req.user.email) {
-    return res
-      .status(401)
-      .json({ error: "Only participants can upvote project" });
-  }
   try {
     let project = await Project.findById(req.params.id);
     let likes = project.likes;
@@ -54,7 +61,10 @@ exports.voteProject = async (req, res, next) => {
 
 exports.getProject = (req, res, next) => {
   Project.findById(req.params.projectId)
-    .populate("participant")
+    .populate({
+      path: "participant",
+      select: "_id profile",
+    })
     .exec((err, project) => {
       if (err) {
         return next(err);
@@ -65,49 +75,16 @@ exports.getProject = (req, res, next) => {
 };
 
 exports.listProject = async (req, res, next) => {
-  let curNum = parseInt(req.params.count) || 0;
   try {
-    let sortFilter = req.body.filter_sort || "";
-    let searchStr = req.body.searchStr || "";
-    delete req.body.loading;
-    delete req.body.searchStr;
-    delete req.body.filter_sort;
-
-    let filter = {};
-    let tags = [];
-    for (let k of Object.keys(req.body)) {
-      if (req.body[k] && req.body[k].length > 0) {
-        tags = [...tags, ...req.body[k]];
-      }
-    }
-    if (tags.length > 0) filter["tags"] = { $all: tags };
-    if (searchStr.length > 2)
-      filter["$or"] = [
-        { name: { $regex: searchStr, $options: "i" } },
-        { description: { $regex: searchStr, $options: "i" } },
-        { short_description: { $regex: searchStr, $options: "i" } },
-      ];
-    let sort = { createdAt: -1 };
-    switch (sortFilter) {
-      case "A-Z":
-        sort = { name: 1 };
-        break;
-      case "Z-A":
-        sort = { name: -1 };
-        break;
-      case "Oldest-Newest":
-        sort = { createdAt: 1 };
-        break;
-      default:
-        sort = sort;
-    }
-
-    let total = await Project.find(filter).countDocuments();
-    let projects = await Project.find(filter).sort(sort).skip(curNum).limit(16);
-    return res.status(201).json({
-      projects,
-      total,
+    const pms = await ProjectMember.find({ participant: req.user._id })
+      .populate("project")
+      .sort({ createdAt: "desc" });
+    let projects = [];
+    pms.map((pm) => {
+      if (!pm.project) return;
+      projects.push(pm.project);
     });
+    res.status(201).json({ projects });
   } catch (err) {
     return next(err);
   }
@@ -131,18 +108,6 @@ exports.listProjectByCreator = (req, res, next) => {
       }
       res.status(201).json({ projects });
     });
-};
-
-exports.updateProjectSharers = async (req, res, next) => {
-  try {
-    await Project.findByIdAndUpdate(req.params.id, {
-      sharers: req.body.sharers,
-    });
-    let project = await Project.findById(req.params.id);
-    res.send({ project });
-  } catch (err) {
-    return next(err);
-  }
 };
 
 exports.contactCreator = async (req, res, next) => {
@@ -178,12 +143,9 @@ exports.contactCreator = async (req, res, next) => {
 // for admin
 exports.listAllProject = async (req, res, next) => {
   try {
-    let projects = await Project.find({}).populate("organization");
+    let projects = await Project.find({});
     let result = [];
     for (let proj of projects) {
-      if (!proj.organization) proj.organization = {};
-      if (!proj.participant) proj.participant = { profile: {} };
-      let gallery_link = "";
       result.push({
         project_name: proj.name,
         project_creator: `${proj.participant.profile.first_name} ${proj.participant.profile.last_name}`,
@@ -197,6 +159,45 @@ exports.listAllProject = async (req, res, next) => {
     }
     return res.status(201).json({
       projects: result,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.sendInvite = async (req, res, next) => {
+  try {
+    const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
+    const sender_organization = req.user.profile.org_name;
+    const values = Object.assign(req.body, {
+      sender_name,
+      sender_organization,
+    });
+
+    const form = new FormData();
+    const pdfData = fs.readFileSync(`${__dirname}/../template/orginvite.pdf`);
+    form.append("file", pdfData);
+    form.append("data_form", JSON.stringify(values));
+    form.append("meta_form", JSON.stringify(values));
+    form.append("master_id", "123456789");
+
+    let response = await axios.post(
+      "http://integraapiproduction.azurewebsites.net/pdf",
+      form,
+      {
+        headers: form.getHeaders(),
+        responseType: "stream",
+      }
+    );
+    let filename = `${new Date().getTime().toString(36)}.pdf`;
+    let path = `${__dirname}/../uploads/${filename}`;
+    const writer = fs.createWriteStream(path);
+    response.data.pipe(writer);
+    writer.on("close", () => {
+      sendgrid.inviteMail(values, filename);
+    });
+    return res.status(200).json({
+      content: "success",
     });
   } catch (err) {
     return next(err);
