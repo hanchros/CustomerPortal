@@ -29,7 +29,6 @@ const UserSchema = new Schema(
       org: { type: Schema.Types.ObjectId, ref: "Organization" },
       org_name: { type: String },
       org_role: { type: String },
-      integra_id: { type: String },
       photo: { type: String },
       address: { type: String },
       country: { type: String },

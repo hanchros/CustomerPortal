@@ -74,7 +74,7 @@ const EditForm = ({ onUpdateOrg, org, orgTypes, onCancel }) => {
         <Input placeholder="Add social media" size="large" />
       </Form.Item>
       <Form.Item name="bio">
-        <Input.TextArea rows={3} size="large" placeholder="Bio" />
+        <Input.TextArea rows={5} size="large" placeholder="Bio" />
       </Form.Item>
       <div className="signup-btn">
         <Button type="primary" className="mr-3" htmlType="submit">

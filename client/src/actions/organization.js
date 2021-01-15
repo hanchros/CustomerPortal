@@ -39,13 +39,19 @@ export function updateOrganization(orgData) {
 
 export function getOrganization(org_id) {
   const client = Client();
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       let res = await client.get(`${API_URL}/organization/${org_id}`);
       dispatch({
         type: FETCH_ORGANIZATION,
         organization: res.data.organization,
       });
+      let user = getState().user.profile;
+      let org = res.data.organization;
+      if (org.creator && org.creator._id === user._id) {
+        dispatch({ type: SET_CURRENT_ORGANIZATION, organization: org });
+      }
+      return org;
     } catch (err) {
       console.log(err);
     }

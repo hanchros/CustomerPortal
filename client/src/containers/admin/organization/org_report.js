@@ -1,20 +1,33 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Card, CardBody } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import {
   listOrgReport,
   deleteOrganization,
 } from "../../../actions/organization";
-import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider, {
-  Search,
-  CSVExport,
-} from "react-bootstrap-table2-toolkit";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import { Skeleton, Modal } from "antd";
-import sampleUrl from "../../../assets/icon/challenge.png";
-import AdminAction from "../admin_action";
+import { SettingOutlined } from "@ant-design/icons";
+import {
+  Collapse,
+  Skeleton,
+  Tooltip,
+  Tag,
+  Input,
+  Modal,
+  Select,
+  message,
+  PageHeader,
+  Descriptions,
+  List,
+  Avatar,
+} from "antd";
+import { Link } from "react-router-dom";
+import ChallengeIcon from "../../../assets/icon/challenge.png";
+import UserIcon from "../../../assets/img/user-avatar.png";
 import OrgEdit from "./org-edit";
+import { getFieldData } from "../../../utils/helper";
+
+const { Panel } = Collapse;
+const { Search } = Input;
 
 class OrgReport extends Component {
   constructor(props) {
@@ -23,30 +36,22 @@ class OrgReport extends Component {
     this.state = {
       loading: false,
       visible: false,
-      orgid: "",
+      curOrg: {},
+      filterType: "",
+      searchTxt: "",
     };
   }
-
-  showModal = (orgid) => {
-    this.setState({
-      visible: true,
-      orgid,
-    });
-  };
 
   hideModal = () => {
     this.setState({
       visible: false,
-      orgid: "",
+      curOrg: {},
     });
   };
 
   componentDidMount = async () => {
-    const { organization, listOrgReport } = this.props;
-    if (
-      !organization.adminOrganizations ||
-      organization.adminOrganizations.length === 0
-    ) {
+    const { orgs, listOrgReport } = this.props;
+    if (!orgs || orgs.length === 0) {
       this.setState({ loading: true });
       await listOrgReport();
       this.setState({ loading: false });
@@ -58,175 +63,193 @@ class OrgReport extends Component {
     this.props.listOrgReport();
   };
 
-  render() {
-    const { organization } = this.props;
-    const organizations = organization.adminOrganizations || [];
-    const { loading, visible, orgid } = this.state;
+  onChangeFiltType = (tp) => {
+    this.setState({ filterType: tp });
+  };
 
-    const { SearchBar } = Search;
-    const { ExportCSVButton } = CSVExport;
-    const paginationOptions = {
-      paginationSize: 10,
-      pageStartIndex: 1,
-      firstPageText: "First",
-      prePageText: "Back",
-      nextPageText: "Next",
-      lastPageText: "Last",
-      nextPageTitle: "First page",
-      prePageTitle: "Pre page",
-      firstPageTitle: "Next page",
-      lastPageTitle: "Last page",
-      showTotal: true,
-      sizePerPageList: [
-        {
-          text: "5",
-          value: 5,
-        },
-        {
-          text: "10",
-          value: 10,
-        },
-        {
-          text: "20",
-          value: 20,
-        },
-        {
-          text: "100",
-          value: 100,
-        },
-      ],
-    };
+  onChangeSearch = (value) => {
+    this.setState({ searchTxt: value });
+  };
 
-    const photoFormatter = (cell, row) => {
-      return <img className="table-photo" src={cell || sampleUrl} alt="" />;
-    };
+  filterOrgs = () => {
+    const { searchTxt, filterType } = this.state;
+    const { orgs } = this.props;
+    if (searchTxt && searchTxt.length < 3) {
+      message.error("search text shouldn't be less than 3 in length");
+      return;
+    }
+    let filtOrgs = orgs || [];
+    if (filterType)
+      filtOrgs = orgs.filter((item) => item.org_type === filterType);
+    if (searchTxt) {
+      let strSch = searchTxt.toLowerCase();
+      filtOrgs = filtOrgs.filter((item) => {
+        if (item.org_name.toLowerCase().includes(strSch)) return true;
+        if (item.location.toLowerCase().includes(strSch)) return true;
+        if (item.bio.toLowerCase().includes(strSch)) return true;
+        return false;
+      });
+    }
+    return filtOrgs;
+  };
 
-    const creatorFormatter = (cell, row) => {
-      if (!cell || !cell._id) return "";
-      return `${cell.profile.first_name} ${cell.profile.last_name}`;
-    };
-
-    const adminFormatter = (cell, row) => {
-      return (
-        <AdminAction
-          onEdit={() => this.showModal(row._id)}
-          onDelete={() => this.deleteOrganization(row.id)}
-        />
-      );
-    };
-
-    const columns = [
-      {
-        dataField: "logo",
-        text: "Photo",
-        formatter: photoFormatter,
-      },
-      {
-        dataField: "org_name",
-        text: `Organization_Name`,
-      },
-      {
-        dataField: "_id",
-        text: "ID",
-      },
-      {
-        dataField: "org_type",
-        text: "Organization_Type",
-      },
-      {
-        dataField: "location",
-        text: "Location",
-      },
-      {
-        dataField: "social",
-        text: "Social_Link",
-      },
-      {
-        dataField: "members",
-        text: "Members",
-      },
-      {
-        dataField: "creator",
-        text: "Creator",
-        formatter: creatorFormatter,
-      },
-      {
-        dataField: "",
-        text: "Action",
-        formatter: adminFormatter,
-      },
-    ];
-
+  renderDocHeader = (org) => {
     return (
-      <React.Fragment>
-        <div className="content">
-          <Row>
-            <Col className="flex">
-              <h5 className="mr-auto">Organization</h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Skeleton active loading={loading} />
-              <Card>
-                <CardBody>
-                  <ToolkitProvider
-                    bootstrap4
-                    keyField="id"
-                    data={organizations}
-                    columns={columns}
-                    search
-                    exportCSV={{
-                      onlyExportFiltered: true,
-                      exportAll: false,
-                      fileName: "org-report.csv",
-                    }}
-                  >
-                    {(props) => (
-                      <React.Fragment>
-                        <Row>
-                          <Col className="flex">
-                            <SearchBar {...props.searchProps} />
-                          </Col>
-                          <Col className="text-right">
-                            <ExportCSVButton
-                              {...props.csvProps}
-                              className="btn btn-primary"
-                            >
-                              Export CSV
-                            </ExportCSVButton>
-                          </Col>
-                        </Row>
-                        <BootstrapTable
-                          {...props.baseProps}
-                          bordered={false}
-                          wrapperClasses={`table-responsive data-table-1 mb-1`}
-                          pagination={paginationFactory(paginationOptions)}
-                        />
-                      </React.Fragment>
-                    )}
-                  </ToolkitProvider>
-                </CardBody>
-              </Card>
-            </Col>
-            <Modal
-              title={`Organization Profile`}
-              visible={visible}
-              width={800}
-              footer={false}
-              onCancel={this.hideModal}
+      <span>
+        <b className="mr-5">{org.org_name}</b>
+        {org.org_type && <Tag color="green">{org.org_type}</Tag>}
+      </span>
+    );
+  };
+
+  genExtra = (org) => (
+    <Tooltip title="Edit">
+      <SettingOutlined
+        onClick={(event) => {
+          event.stopPropagation();
+          this.setState({
+            visible: true,
+            curOrg: org,
+          });
+        }}
+      />
+    </Tooltip>
+  );
+
+  renderContent = (org) => (
+    <Row>
+      <div style={{ flex: 1 }}></div>
+      <div className="image">
+        <img src={org.logo} alt="content" width="100%" />
+      </div>
+    </Row>
+  );
+
+  render() {
+    const { fieldData } = this.props;
+    const { loading, visible, curOrg } = this.state;
+    const orgTypes = getFieldData(fieldData, "org_type");
+    const filtOrgs = this.filterOrgs();
+    return (
+      <div className="container">
+        <Row>
+          <Col>
+            <h5 className="mr-auto">Organizations</h5>
+            <div className="article-filter-box">
+              <div>
+                <span className="ml-1">text:</span>
+                <br />
+                <Search
+                  placeholder="input search text"
+                  onSearch={this.onChangeSearch}
+                  style={{ width: 150 }}
+                  allowClear
+                />
+              </div>
+              <div>
+                <span className="ml-1">type:</span>
+                <br />
+                <Select
+                  placeholder="Organization Type​"
+                  style={{ width: 150 }}
+                  onChange={this.onChangeFiltType}
+                  allowClear
+                >
+                  {orgTypes.map((item) => {
+                    return (
+                      <Select.Option key={item._id} value={item.value}>
+                        {item.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Collapse accordion>
+          {filtOrgs.map((org) => (
+            <Panel
+              header={this.renderDocHeader(org)}
+              key={org._id}
+              extra={this.genExtra(org)}
             >
-              {orgid && <OrgEdit id={orgid} hideModal={this.hideModal} />}
-            </Modal>
-          </Row>
-        </div>
-      </React.Fragment>
+              <PageHeader
+                title={org.org_name}
+                className="site-page-header mb-4"
+              >
+                <Descriptions size="small" column={2}>
+                  <Descriptions.Item label="Organization Type">
+                    {org.org_type}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Location">
+                    {org.location}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Social">
+                    {org.social}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Creator">
+                    {org.creator &&
+                      `${org.creator.profile.first_name} ${org.creator.profile.last_name}`}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Bio" className="pt-4">
+                    {org.bio}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="">
+                    <div className="supadmin-org-logo">
+                      <img src={org.logo || ChallengeIcon} alt="" />
+                    </div>
+                  </Descriptions.Item>
+                </Descriptions>
+              </PageHeader>
+              <span>Users:</span>
+              <List
+                itemLayout="horizontal"
+                dataSource={org.members}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar src={item.profile.photo || UserIcon} />}
+                      title={
+                        <Link to="#">
+                          <b>
+                            {item.profile.first_name} {item.profile.first_name}
+                          </b>
+                        </Link>
+                      }
+                      description={`${item.profile.org_role || "member"} ${
+                        item.profile.country || ""
+                      }`}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Panel>
+          ))}
+        </Collapse>
+        <Skeleton active loading={loading} />
+        <Skeleton active loading={loading} />
+        {visible && (
+          <Modal
+            title={`Organization Profile`}
+            visible={visible}
+            width={800}
+            footer={false}
+            onCancel={this.hideModal}
+          >
+            {curOrg._id && <OrgEdit hideModal={this.hideModal} org={curOrg} />}
+          </Modal>
+        )}
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { organization: state.organization };
+  return {
+    orgs: state.organization.adminOrganizations,
+    fieldData: state.profile.fieldData,
+  };
 }
 
 export default connect(mapStateToProps, { listOrgReport, deleteOrganization })(

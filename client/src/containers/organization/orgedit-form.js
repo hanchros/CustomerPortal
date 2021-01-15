@@ -31,10 +31,6 @@ const OrgEditForm = ({
       onFinish={onFinish}
       initialValues={{ ...org }}
     >
-      <h5 className="mb-5">
-        You have a great responsibility to create a profile for your
-        organization (you can always change it later)​
-      </h5>
       <Row className="mb-4">
         <Col sm={6}>
           <Input size="large" disabled placeholder="Upload Logo" />
@@ -123,7 +119,7 @@ const OrgEditForm = ({
       <Row>
         <Col sm={12}>
           <Form.Item name="bio">
-            <Input.TextArea rows={3} size="large" placeholder="Bio" />
+            <Input.TextArea rows={5} size="large" placeholder="Bio" />
           </Form.Item>
         </Col>
       </Row>

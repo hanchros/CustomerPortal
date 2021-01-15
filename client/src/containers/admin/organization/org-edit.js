@@ -7,22 +7,14 @@ import {
 } from "../../../actions/organization";
 import { getFieldData } from "../../../utils/helper";
 import OrgEditForm from "../../organization/orgedit-form";
-import { Skeleton } from "antd";
 
 class EditOrg extends Component {
   constructor(props) {
     super(props);
     this.state = {
       avatarURL: "",
-      loading: false,
     };
   }
-
-  componentDidMount = async () => {
-    this.setState({ loading: true });
-    await this.props.getOrganization(this.props.id);
-    this.setState({ loading: false });
-  };
 
   setAvatar = (url) => {
     this.setState({ avatarURL: url });
@@ -35,26 +27,21 @@ class EditOrg extends Component {
   };
 
   render = () => {
-    const { fieldData, organization, id, hideModal } = this.props;
+    const { fieldData, org, hideModal } = this.props;
     const orgTypes = getFieldData(fieldData, "org_type");
-    const { avatarURL, loading } = this.state;
-    const org = organization.currentOrganization;
+    const { avatarURL } = this.state;
 
     return (
       <div className="login-page">
-        <Skeleton active loading={loading} />
-        <Skeleton active loading={loading} />
-        {!loading && org._id === id && (
-          <OrgEditForm
-            onSubmit={this.updateOrg}
-            orgTypes={orgTypes}
-            setAvatar={this.setAvatar}
-            avatarURL={avatarURL || org.logo}
-            org={org}
-            fieldData={fieldData}
-            onCancel={hideModal}
-          />
-        )}
+        <OrgEditForm
+          onSubmit={this.updateOrg}
+          orgTypes={orgTypes}
+          setAvatar={this.setAvatar}
+          avatarURL={avatarURL || org.logo}
+          org={org}
+          fieldData={fieldData}
+          onCancel={hideModal}
+        />
       </div>
     );
   };

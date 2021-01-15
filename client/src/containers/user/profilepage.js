@@ -38,7 +38,7 @@ class ProfilePage extends Component {
       <React.Fragment>
         <Header />
         <div className="container ">
-          <h1 className="mt-5 mb-4 center">Participant Profile</h1>
+          <h1 className="mt-5 mb-4 center">My Profile</h1>
           <ProfileForm
             onSubmit={this.onUpdateProfile}
             profile={profile}

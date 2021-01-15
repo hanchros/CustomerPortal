@@ -226,9 +226,9 @@ exports.adminOrgReports = async (req, res, next) => {
     });
     let result = [];
     for (let org of organizations) {
-      let members = await User.where({
+      let members = await User.find({
         "profile.org": org._id,
-      }).countDocuments();
+      }, "_id profile");
       result.push(Object.assign({ members, id: org._id }, org._doc));
     }
     res.status(201).json({

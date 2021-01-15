@@ -57,12 +57,17 @@ export default function (state = INITIAL_STATE, action) {
       }
       return { ...state, organizations: state.organizations };
     case SET_CURRENT_ORGANIZATION:
-    case FETCH_ORGANIZATION:
       org = action.organization;
       if (!org.profile) org.profile = {};
       return {
         ...state,
         currentOrganization: org,
+      };
+    case FETCH_ORGANIZATION:
+      org = action.organization;
+      if (!org.profile) org.profile = {};
+      return {
+        ...state,
         orgSettings: {
           primary_color: org.profile.primary_color || org_consts.primary_color,
           secondary_color:
