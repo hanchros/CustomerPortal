@@ -35,7 +35,7 @@ class EditOrg extends Component {
   };
 
   render = () => {
-    const { fieldData, organization, id } = this.props;
+    const { fieldData, organization, id, hideModal } = this.props;
     const orgTypes = getFieldData(fieldData, "org_type");
     const { avatarURL, loading } = this.state;
     const org = organization.currentOrganization;
@@ -52,6 +52,7 @@ class EditOrg extends Component {
             avatarURL={avatarURL || org.logo}
             org={org}
             fieldData={fieldData}
+            onCancel={hideModal}
           />
         )}
       </div>

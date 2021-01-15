@@ -92,15 +92,15 @@ exports.getAdminEmailTemplates = (req, res, next) => {
       title: "Participant Reset Password",
       html: sendgrid.userFPFactory("e494a9ddff8488aa372df18cb884252d"),
     });
-    result.push({
-      title: "New Notification",
-      html: sendgrid.notificationFactory(
-        "Group Chat Invitation",
-        "You are invited to team chat",
-        "Mike",
-        "https://hackathon-fourthsector.s3.us-east-2.amazonaws.com/a6d1e651-8198-46a4-a57d-669bd12ba96c.png"
-      ),
-    });
+    // result.push({
+    //   title: "New Notification",
+    //   html: sendgrid.notificationFactory(
+    //     "Group Chat Invitation",
+    //     "You are invited to team chat",
+    //     "Mike",
+    //     "https://hackathon-fourthsector.s3.us-east-2.amazonaws.com/a6d1e651-8198-46a4-a57d-669bd12ba96c.png"
+    //   ),
+    // });
     result.push({
       title: "Invite Email",
       html: sendgrid.inviteFactory({
@@ -108,9 +108,18 @@ exports.getAdminEmailTemplates = (req, res, next) => {
         last_name: "Rubezhin",
         email: "test@gmail.com",
         organization: "MYZ",
-        creator: "Integra Team",
-        content:
-          '<p>​&nbsp;&nbsp;&nbsp;&nbsp;</p><p><span style="font-size: 16px;"><strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">&nbsp;&nbsp;&nbsp;&nbsp;Congratulations</span></strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">!&nbsp;</span></span></p><p><span style="font-size: 16px;"><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">&nbsp;&nbsp;&nbsp;&nbsp;You have just experienced blockchain “</span><strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">smart document</span></strong><span style="margin: 0px; padding: 0px; user-select: text; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; vertical-align: 1.03333px; line-height: 0px; position: relative;">” technology that&nbsp;allows &nbsp;&nbsp;&nbsp;&nbsp;ordinary documents to to processed automatically by almost any software.</span></span><strong></strong><br></p>',
+        sender_name: "Mike Rinow"
+      }),
+    });
+    result.push({
+      title: "Organization Invite Member Email",
+      html: sendgrid.inviteOrgMemberFactory({
+        first_name: "Sergey",
+        last_name: "Rubezhin",
+        encode_email: "bXl6c29mdGRldjJAZ21haWwuY29t",
+        org_id: "e494a9ddff8488aa372df18cb884252d",
+        organization: "IntegraLedger",
+        sender_name: "Mike Rinow"
       }),
     });
     return res.status(200).json({ templates: result });

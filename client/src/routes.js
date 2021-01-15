@@ -17,6 +17,7 @@ import InviteHomePage from "./containers/home/invite";
 // Import organization pages
 import Organization from "./containers/organization/dashboard";
 import OrgProfile from "./containers/organization/profile";
+import OrgInviteMember from "./containers/home/invite/org-invite";
 
 // Import project pages
 import Projectslist from "./containers/project/list";
@@ -24,9 +25,13 @@ import Project from "./containers/project/project";
 import SelectTemplate from "./containers/project/select-template";
 import TemplatePage from "./containers/template";
 
+// Import techhub pages
+import Techhub from "./containers/techhub/techhub";
+import LearnHub from "./containers/techhub/learn";
+
 // Import authentication related pages
-import Register from "./containers/auth/register";
-// import RegisterConfirm from "./containers/auth/register-confirm";
+// import Register from "./containers/auth/register";
+import RegisterConfirm from "./containers/auth/register-confirm";
 import Login from "./containers/auth/login";
 import Logout from "./containers/auth/logout";
 import ForgotPassword from "./containers/auth/forgot_password";
@@ -35,7 +40,7 @@ import Resend from "./containers/auth/resend";
 import ConfirmEmail from "./containers/auth/confirm-email";
 
 // Import user related Pages
-import Dashboard from "./containers/dashboard";
+// import Dashboard from "./containers/dashboard";
 import Participant from "./containers/user/user";
 import Profile from "./containers/user/profilepage";
 import ParticipantsList from "./containers/user/list";
@@ -56,16 +61,16 @@ import HelpSearch from "./containers/help/search";
 // Import higher order components
 import RequireAuth from "./containers/auth/require_auth";
 import { protectedTest } from "./actions/auth";
-import { fetchNotifications } from "./actions/notification";
 import { listFieldData } from "./actions/profile";
-import { listHelpDoc } from "./actions/help";
+import { listArticle } from "./actions/article";
+import { listGlobalTemplate } from "./actions/template";
 
 class Routes extends React.Component {
   componentDidMount = async () => {
     await this.props.protectedTest();
-    this.props.fetchNotifications();
     this.props.listFieldData();
-    this.props.listHelpDoc();
+    this.props.listArticle();
+    this.props.listGlobalTemplate();
   };
 
   render() {
@@ -76,8 +81,12 @@ class Routes extends React.Component {
           <Route path="/integraspace" component={IntegraSpace} />
           <Route path="/invitation" component={InvitePage} />
           <Route path="/email-invite" component={InviteHomePage} />
+          <Route
+            path="/org-invite/:org_id/:email"
+            component={OrgInviteMember}
+          />
 
-          <Route path="/register" component={Register} />
+          <Route path="/register" component={RegisterConfirm} />
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <Route path="/forgot-password/:mode" component={ForgotPassword} />
@@ -89,7 +98,7 @@ class Routes extends React.Component {
           <Route path="/email-verify/:mode/:token" component={ConfirmEmail} />
           <Route path="/profile" component={RequireAuth(Profile)} />
 
-          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
+          {/* <Route path="/dashboard" component={RequireAuth(Dashboard)} /> */}
 
           <Route path="/organizations" component={OrganizationList} />
           <Route
@@ -101,7 +110,7 @@ class Routes extends React.Component {
           <Route path="/participants" component={ParticipantsList} />
           <Route path="/participant/:id" component={Participant} />
 
-          <Route path="/projects" component={Projectslist} />
+          <Route path="/dashboard" component={RequireAuth(Projectslist)} />
           <Route path="/project/:id" component={RequireAuth(Project)} />
           <Route
             path="/select-template"
@@ -109,6 +118,9 @@ class Routes extends React.Component {
           />
 
           <Route path="/template/:id" component={RequireAuth(TemplatePage)} />
+
+          <Route path="/techhub" component={RequireAuth(Techhub)} />
+          <Route path="/learnhub" component={RequireAuth(LearnHub)} />
 
           <Route path="/admin" component={RequireAuth(AdminDashboard)} />
           <Route path="/notification" component={RequireAuth(Notification)} />
@@ -135,7 +147,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   protectedTest,
-  fetchNotifications,
   listFieldData,
-  listHelpDoc,
+  listArticle,
+  listGlobalTemplate,
 })(Routes);

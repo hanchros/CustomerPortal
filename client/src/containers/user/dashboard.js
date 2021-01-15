@@ -9,7 +9,7 @@ import {
   listProjectByCreator,
   getParticipant,
 } from "../../actions/project";
-import { Header, CustomCard } from "../../components/template";
+import { Header, CustomCard, Footer } from "../../components/template";
 import sampleUrl from "../../assets/img/user-avatar.png";
 import ProjectAvatar from "../../assets/icon/challenge.png";
 import CreateForm from "../../components/project/create_project";
@@ -114,6 +114,7 @@ class UserDashboard extends Component {
             </div>
           )}
         </Container>
+        <Footer />
       </React.Fragment>
     );
   };

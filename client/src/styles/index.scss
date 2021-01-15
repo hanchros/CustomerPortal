@@ -14,7 +14,15 @@
 @import "../assets/fonts/Poppins-Black.ttf";
 @import "./help.scss";
 @import "./message.scss";
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap");
+@import "./techhub.scss";
+@import "./article.scss";
+@import "../assets/fonts/Poppins-Black.ttf";
+
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins"),
+    url(../assets/fonts/Poppins-Regular.ttf) format("opentype");
+}
 
 body {
   margin: 0;
@@ -30,14 +38,14 @@ body {
   height: 100vh;
   overflow-y: auto;
   color: #333;
-  font-family: "Roboto";
+  font-family: "Poppins";
 }
 
 .main-nav {
   // text-transform: uppercase;
   width: 100%;
   z-index: 100;
-  background-color: $blue-2;
+  // background-color: $blue-2;
 
   .container-nav {
     padding: 10px 5%;
@@ -45,19 +53,30 @@ body {
   nav a:hover {
     color: $gray-400 !important;
   }
-  nav a {
-    color: white !important;
-  }
+  // nav a {
+  //   color: white !important;
+  // }
 
+  .navbar-light .navbar-nav .nav-link {
+    color: inherit;
+  }
   button a {
-    color: gray !important;
+    color: inherit;
   }
   button a:hover {
     color: black !important;
   }
 
+  .navbar-brand {
+    img {
+      height: 35px;
+      width: auto;
+    }
+  }
+
   .nav-link .ant-badge {
-    color: white !important;
+    color: inherit;
+    // color: white !important;
   }
   & .page-logo {
     h3 {
@@ -87,12 +106,12 @@ body {
 
 .content {
   padding-top: 70px;
-  min-height: calc(100vh - 73px);
+  min-height: calc(100vh - 123px);
   margin: 0 auto;
   padding-bottom: 45px;
 
   p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .ant-page-header {
@@ -112,43 +131,13 @@ body {
   }
 }
 
-.footer {
-  padding: 20px;
-  background-color: $blue-2;
-  color: white;
-
-  .container {
-    display: flex;
-    justify-content: space-between;
-  }
-  .footer-poweredby {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    span {
-      font-size: 12px;
-    }
-    img {
-      height: 40px;
-      margin-left: -5px;
-    }
-  }
-
-  .footer-address {
-    font-size: 14px;
-    line-height: 22px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  .footer-list {
-    text-align: right;
-  }
-
-  .footer-link {
-    color: white;
-    font-size: 14px;
+.footer-box {
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+  img {
+    height: 40px;
+    width: auto;
   }
 }
 

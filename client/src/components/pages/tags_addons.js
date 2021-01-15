@@ -1,26 +1,73 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
-import { Tag } from "antd";
+import { Button, Tag, Form, Input, Popover } from "antd";
 import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import {
   getFieldData,
   getTargetFieldName,
   getTargetLabelFromSection,
-  sortByValue
 } from "../../utils/helper";
+import { createFieldData } from "../../actions/profile";
+
+const AddTagForm = ({ name, createTag, hideForm }) => {
+  const onFinish = async (values) => {
+    await createTag({ field: name, value: values.field_value });
+    hideForm();
+  };
+  return (
+    <Form name="create-article" onFinish={onFinish}>
+      <Form.Item
+        name="field_value"
+        rules={[
+          {
+            required: true,
+            message: "Please input the tag name!",
+          },
+        ]}
+      >
+        <Input type="text" placeholder="Tag name" />
+      </Form.Item>
+      <Button type="primary" htmlType="submit" size="small">
+        Submit
+      </Button>
+    </Form>
+  );
+};
 
 class ListProperty extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tagIds: props.tags,
+      tagIds: props.tags || [],
+      fixedTagId: "",
+      visible: false,
     };
   }
 
-  updateTags = () => {
+  componentDidMount = () => {
+    const { fixedTag, prefix, fieldData } = this.props;
     const { tagIds } = this.state;
-    this.props.updateTags({ tags: tagIds });
+    const namelist = getTargetFieldName(prefix, fieldData);
+    let fId = "";
+    for (let name of namelist) {
+      let filters = fieldData.filter(
+        (item) =>
+          item.value.toLowerCase() === fixedTag.toLowerCase() &&
+          item.field === name
+      );
+      if (filters.length > 0) {
+        fId = filters[0]._id;
+        this.setState({ fixedTagId: fId });
+        break;
+      }
+    }
+    if (fId && tagIds.indexOf(fId) === -1) {
+      let newTagIds = [fId, ...tagIds];
+      this.setState({ tagIds: newTagIds });
+      this.props.updateTags(newTagIds);
+    }
   };
 
   handleOnClickTag = (tag) => {
@@ -30,16 +77,29 @@ class ListProperty extends Component {
       tagIds.push(tag._id);
       this.setState({ tagIds });
     }
+    this.props.updateTags(tagIds);
   };
 
   handleOnRemoveTag = (tag) => {
-    let tagIds = this.state.tagIds;
+    const { tagIds, fixedTagId } = this.state;
+    if (tag._id === fixedTagId) return;
     for (let i = tagIds.length - 1; i >= 0; i--) {
       if (tagIds[i] === tag._id) {
         tagIds.splice(i, 1);
       }
     }
     this.setState({ tagIds });
+    this.props.updateTags(tagIds);
+  };
+
+  hide = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleVisibleChange = (visible) => {
+    this.setState({ visible });
   };
 
   render = () => {
@@ -59,8 +119,8 @@ class ListProperty extends Component {
   };
 
   renderTags = (name, i) => {
-    const { tagIds } = this.state;
-    const { fieldData, prefix } = this.props;
+    const { tagIds, fixedTagId } = this.state;
+    const { fieldData, prefix, createFieldData } = this.props;
     let taglist = [];
     for (let tagId of tagIds) {
       let filters = fieldData.filter(
@@ -70,7 +130,6 @@ class ListProperty extends Component {
     }
     const label = getTargetLabelFromSection(prefix, name);
     const originTagList = getFieldData(fieldData, name);
-    taglist = sortByValue(taglist)
 
     return (
       <React.Fragment key={i}>
@@ -80,7 +139,9 @@ class ListProperty extends Component {
             taglist.map((item) => {
               return (
                 <Tag
-                  className="site-tag-check mt-1"
+                  className={`site-tag-check mt-1 ${
+                    item._id === fixedTagId && "fixed"
+                  }`}
                   onClick={() => this.handleOnRemoveTag(item)}
                   key={item._id}
                 >
@@ -107,10 +168,35 @@ class ListProperty extends Component {
                 </Tag>
               );
             })}
+          <Popover
+            content={
+              <AddTagForm
+                name={name}
+                createTag={createFieldData}
+                hideForm={this.hide}
+              />
+            }
+            title="Add Tag"
+            trigger="click"
+            visible={this.state.visible}
+            onVisibleChange={this.handleVisibleChange}
+          >
+            <Button size="small" type="primary" className="mt-1 ml-3">
+              Add
+            </Button>
+          </Popover>
         </Row>
       </React.Fragment>
     );
   };
 }
 
-export default ListProperty;
+function mapStateToProps(state) {
+  return {
+    fieldData: state.profile.fieldData,
+  };
+}
+
+export default connect(mapStateToProps, {
+  createFieldData,
+})(ListProperty);

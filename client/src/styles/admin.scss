@@ -157,7 +157,99 @@
   color: $blue-3 !important;
 }
 
+.admin-main {
+  padding-bottom: 50px;
+}
+
+.admin-org-box {
+  padding-top: 20px;
+  .ant-page-header {
+    background-color: inherit;
+  }
+  .org-form {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .org-bio-box {
+    border: 1px solid $blue;
+    padding: 10px;
+  }
+  .color-picker-box {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .admin-org-toggle {
+    display: flex;
+    p:nth-child(2) {
+      margin-left: 50px;
+    }
+  }
+  .admin-org-template {
+    &:hover {
+      box-shadow: 1px 1px 3px #aaa;
+    }
+    .ant-list-item-meta {
+      cursor: pointer;
+    }
+    .ant-avatar-circle {
+      width: 60px;
+      height: 60px;
+      margin-top: 5px;
+    }
+    .ant-list-item-meta-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .ant-list-item-meta-description {
+      color: #555;
+      font-size: 15px;
+    }
+  }
+
+  .admin-org-userlogo {
+    width: 150px;
+    height: auto;
+  }
+  .admin-org-rolebox {
+    margin-left: 20px;
+  }
+  .admin-org-headerbox {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 24px;
+  }
+}
+
+.article-filter-box {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+}
+
+.react-player {
+  background: white;
+  width: 90% !important;
+  max-width: 820px !important;
+  height: 480px !important;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 10px;
+  margin: auto;
+}
+
 @media screen and (max-width: 768px) {
+  .react-player {
+    width: 100% !important;
+    height: 270px !important;
+    background: transparent;
+    box-shadow: unset;
+    padding: 0px;
+  }
   .admin-list-column {
     flex-direction: column;
 

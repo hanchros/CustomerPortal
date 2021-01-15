@@ -34,12 +34,13 @@ class ProjectRegister extends React.Component {
   onGoNext = () => {
     const { auth, user, goBack } = this.props;
     const { avatarURL, webaddr } = this.state;
-    if (auth.pdfData.organization && !user.profile.org) {
+    if (auth.pdfData.organization && !user.profile.org._id) {
       this.props.createOrganization({
         org_name: auth.pdfData.organization,
         creator: user._id,
         social: webaddr,
         logo: avatarURL,
+        project: auth.pdfData.project_id,
       });
     }
     goBack();
@@ -67,7 +68,7 @@ class ProjectRegister extends React.Component {
               <span>{curProj.description}</span>
             </div>
           </div>
-          {pdfData.organization && !user.profile.org && (
+          {pdfData.organization && !user.profile.org._id && (
             <div className="project-org-createbox">
               <p>Please complete your organization details:</p>
               <span>Name:</span>

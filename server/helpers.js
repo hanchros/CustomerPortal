@@ -11,36 +11,9 @@ exports.setUserInfo = function setUserInfo(request) {
     _id: request._id,
     profile: request.profile,
     email: request.email,
-    usertype: request.usertype,
     role: request.role,
     verified: request.verified,
-    blockers: request.blockers,
   };
-};
-
-exports.setPublicUsers = (users) => {
-  if (!users || users.length === 0) return [];
-  let result = [];
-  for (let user of users) {
-    result.push({
-      _id: user._id,
-      profile: user.profile,
-    });
-  }
-  return result;
-};
-
-exports.setPrivateUsers = (users) => {
-  if (!users || users.length === 0) return [];
-  let result = [];
-  for (let user of users) {
-    result.push({
-      _id: user._id,
-      email: user.email,
-      profile: user.profile,
-    });
-  }
-  return result;
 };
 
 exports.getRole = function getRole(checkRole) {

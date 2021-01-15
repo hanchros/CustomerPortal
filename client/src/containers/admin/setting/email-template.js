@@ -24,8 +24,8 @@ class EmailTemplates extends React.Component {
   render() {
     const { templates, loading } = this.state;
     return (
-      <div className="content">
-        <h3>Email Templates</h3>
+      <div className="mt-4">
+        <h3 className="mt-4 mb-4">Email Templates</h3>
         <Skeleton active loading={loading} />
         <Skeleton active loading={loading} />
         <Skeleton active loading={loading} />

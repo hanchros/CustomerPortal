@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
@@ -30,6 +30,7 @@ class ProjectTech extends Component {
               </div>
             ))}
         </Container>
+        <Footer />
       </React.Fragment>
     );
   };

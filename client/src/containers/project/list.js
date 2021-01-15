@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Skeleton, List, Avatar } from "antd";
 import { listProjects } from "../../actions/project";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import ChallengeLogo from "../../assets/icon/challenge.png";
 import history from "../../history";
 
@@ -66,6 +66,7 @@ class ProjectList extends Component {
           />
           <Skeleton active loading={loading} />
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }

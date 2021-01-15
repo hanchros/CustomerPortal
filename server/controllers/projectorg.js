@@ -1,6 +1,18 @@
 const ProjectOrg = require("../models/projectorg");
 
-exports.joinProject = (req, res, next) => {
+exports.joinProject = async (req, res, next) => {
+  const pos = await ProjectOrg.find({
+    organization: req.body.organization,
+    project: req.params.projectId,
+  });
+  if (pos && pos.length > 0) {
+    return res
+      .status(422)
+      .send({
+        error: "The organization is already associated with the project",
+      });
+  }
+
   const po = new ProjectOrg({
     organization: req.body.organization,
     project: req.params.projectId,

@@ -8,7 +8,7 @@ const ProjectOrgController = require("./controllers/projectorg");
 const CommentController = require("./controllers/comment");
 const AdminController = require("./controllers/admin");
 const NotificationController = require("./controllers/notification");
-const HelpDocController = require("./controllers/helpdoc");
+const ArticleController = require("./controllers/article");
 const InviteRequestController = require("./controllers/inviterequest")
 const TemplateController = require("./controllers/template");
 
@@ -42,7 +42,7 @@ module.exports = function (app) {
     commentRoutes = express.Router(),
     adminRoutes = express.Router(),
     notificationRoutes = express.Router(),
-    helpdocRoutes = express.Router(),
+    articleRoutes = express.Router(),
     inviteRequestRoutes = express.Router(),
     templateRoutes = express.Router(),
     fieldDataRoutes = express.Router();
@@ -99,6 +99,8 @@ module.exports = function (app) {
   userRoutes.get("/unverified/list", requireAuth, UserController.adminListUnverifiedParticipants);
   // Verify user profile route
   userRoutes.post("/unverified/:id", requireAuth, UserController.adminVerifyParticipant);
+  // Get User by email route
+  userRoutes.post("/email/check", UserController.getUserByEmail);
 
 
   //= ========================
@@ -113,6 +115,18 @@ module.exports = function (app) {
   organizationRoutes.put("/", OrganizationController.updateOrganization);
   // List organization route
   organizationRoutes.post("/list/:count", OrganizationController.listOrganization);
+  // List organization user route
+  organizationRoutes.get("/users/:org_id", OrganizationController.getOrgUsers);
+  // Remove organization user route
+  organizationRoutes.delete("/users/:user_id", OrganizationController.removeUser);
+  // Add organization user route
+  organizationRoutes.post("/users/:user_id", OrganizationController.addUser);
+  // Update organization user role route
+  organizationRoutes.post("/role/:user_id", OrganizationController.changeUserOrgRole);    
+  // Send organization member invite route
+  organizationRoutes.post("/invite/user", OrganizationController.sendInviteOrgMember);         
+  // Accept organization member invite route
+  organizationRoutes.post("/invite/accept", OrganizationController.acceptInviteOrgMember);         
   // List simple organization route
   organizationRoutes.get("/list-simple/:count", OrganizationController.listSimpleOrgs);
   // Delete organization route
@@ -122,10 +136,9 @@ module.exports = function (app) {
   );
   // admin org report
   organizationRoutes.get("/admin/report", OrganizationController.adminOrgReports)
-  // admin org user report
-  organizationRoutes.get("/admin/user-report", OrganizationController.adminOrgWithUsers)
   // Contact organization route
   organizationRoutes.post("/contact/:id", OrganizationController.contactOrg);
+
   
 
   //= ========================
@@ -248,17 +261,17 @@ module.exports = function (app) {
 
 
   //= ========================
-  // HelpDoc Routes
+  // Article Routes
   //= ========================
-  apiRoutes.use("/help", helpdocRoutes);
+  apiRoutes.use("/articles", articleRoutes);
   // create help document route
-  helpdocRoutes.post("/create", requireAuth, HelpDocController.createHelpDoc);
+  articleRoutes.post("/", requireAuth, ArticleController.createArticle);
   // List help documents route
-  helpdocRoutes.get("/list", HelpDocController.listHelpDoc);
+  articleRoutes.get("/", ArticleController.listArticle);
   // update help document route
-  helpdocRoutes.post("/update", requireAuth, HelpDocController.updateHelpDoc);
+  articleRoutes.put("/", requireAuth, ArticleController.updateArticle);
   // delete help document route
-  helpdocRoutes.delete("/delete/:id", requireAuth, HelpDocController.deleteHelpDoc);
+  articleRoutes.delete("/:id", requireAuth, ArticleController.deleteArticle);
 
   
   //= ========================
@@ -279,12 +292,16 @@ module.exports = function (app) {
   apiRoutes.use("/templates", templateRoutes);
   // create template route
   templateRoutes.post("/", requireAuth, TemplateController.createTemplate);
-  // List template route
-  templateRoutes.get("/", requireAuth, TemplateController.listTemplate);
+  // List template by org route
+  templateRoutes.get("/list/org/:orgId", TemplateController.listTemplateByOrg);
+  // List global template route
+  templateRoutes.get("/list/global", TemplateController.listTemplateGlobal);
   // update template route
   templateRoutes.put("/", requireAuth, TemplateController.updateTemplate);
   // Get template route
   templateRoutes.get("/:id", requireAuth, TemplateController.getTemplate);
+  // Delete template route
+  templateRoutes.delete("/:id", requireAuth, TemplateController.deleteTemplate);
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

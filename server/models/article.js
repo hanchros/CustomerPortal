@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 //= ===============================
-// HelpDoc Schema
+//  Article Schema
 //= ===============================
-const HelpDocSchema = new Schema(
+const ArticleSchema = new Schema(
   {
     title: {
       type: String,
@@ -15,15 +15,20 @@ const HelpDocSchema = new Schema(
     content: {
       type: String,
     },
-    related: {
+    video: {
       type: String,
-      required: true,
     },
-    popular: { type: Boolean, default: false },
+    image: {
+      type: String,
+    },
+    tag: { type: Schema.Types.ObjectId, ref: "FieldData" },
+    topic: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("HelpDoc", HelpDocSchema);
+module.exports = mongoose.model(" Article", ArticleSchema);

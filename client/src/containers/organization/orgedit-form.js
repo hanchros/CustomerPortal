@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Input, Select, Button } from "antd";
 import { Col, Row } from "reactstrap";
 import Avatar from "../../components/template/upload";
-import ColorPicker from "rc-color-picker";
 import IconLinkedin from "../../assets/icon/linkedin.png";
 import IconFacebook from "../../assets/icon/facebook.png";
 import IconTwitter from "../../assets/icon/twitter.png";
@@ -15,18 +14,14 @@ const OrgEditForm = ({
   setAvatar,
   avatarURL,
   org,
+  userId,
 }) => {
-  const [color, setColor] = useState(org.color || "#000");
-
   const onFinish = (values) => {
     values._id = org._id || null;
     values.logo = avatarURL || "";
-    values.color = color;
+    values.creator = org.creator || userId || null;
+    values.profile = org.profile || {};
     onSubmit(values);
-  };
-
-  const onSelectColor = (colors) => {
-    setColor(colors.color);
   };
 
   return (
@@ -46,22 +41,6 @@ const OrgEditForm = ({
         </Col>
         <Col sm={6} className="center">
           <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
-        </Col>
-      </Row>
-      <Row className="mb-4">
-        <Col sm={6}>
-          <Input size="large" disabled placeholder="Choose your color pallet" />
-        </Col>
-        <Col sm={6} className="center">
-          <ColorPicker
-            color={color}
-            alpha={100}
-            onClose={onSelectColor}
-            placement="topLeft"
-            className="some-class"
-          >
-            <span className="rc-color-picker-trigger" />
-          </ColorPicker>
         </Col>
       </Row>
       <Row>
@@ -142,7 +121,7 @@ const OrgEditForm = ({
         </Col>
       </Row>
       <Row>
-        <Col sm={6}>
+        <Col sm={12}>
           <Form.Item name="bio">
             <Input.TextArea rows={3} size="large" placeholder="Bio" />
           </Form.Item>

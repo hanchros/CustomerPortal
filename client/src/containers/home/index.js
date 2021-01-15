@@ -4,7 +4,7 @@ import HomeHOC from "../../components/template/home-hoc";
 
 const HomePage = () => (
   <HomeHOC>
-    <div className="main-background-title mt-big">INTEGRA SPACE</div>
+    <div className="main-background-title mt-big">AUTOMATION PLACE</div>
     <div className="home-btn-group">
       <Link to="/login" className="main-btn">
         LOG IN
@@ -14,7 +14,7 @@ const HomePage = () => (
       </Link>
     </div>
     <p className="home-intro">
-      <Link to="/integraspace">What is Integra space?</Link>
+      <Link to="/integraspace">What is Automation Place?</Link>
     </p>
   </HomeHOC>
 );

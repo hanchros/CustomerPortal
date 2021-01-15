@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import { Skeleton, Row, Col } from "antd";
 import {
   getProject,
@@ -150,6 +150,7 @@ class Project extends Component {
             </button>
           )}
         </Container>
+        <Footer />
       </React.Fragment>
     );
   };

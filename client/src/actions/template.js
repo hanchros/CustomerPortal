@@ -2,18 +2,37 @@ import { API_URL, errorMessage, createNotification } from "./index";
 import Client from "./api";
 import {
   FETCH_TEMPLATE_LIST,
-  SET_CURRENT_TEMPLATE,
   CREATE_TEMPLATE,
   UPDATE_TEMPLATE,
+  DELETE_TEMPLATE,
+  FETCH_GLOBAL_TEMPLATE_LIST,
+  CREATE_GLOBAL_TEMPLATE,
+  UPDATE_GLOBAL_TEMPLATE,
 } from "./types";
 
-export function listTemplate() {
-  const client = Client(true);
+export function listOrgTemplate(orgId) {
+  const client = Client();
   return async (dispatch) => {
+    if (!orgId) return;
     try {
-      let res = await client.get(`${API_URL}/templates`);
+      let res = await client.get(`${API_URL}/templates/list/org/${orgId}`);
       dispatch({
         type: FETCH_TEMPLATE_LIST,
+        templates: res.data.templates,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function listGlobalTemplate() {
+  const client = Client();
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/templates/list/global`);
+      dispatch({
+        type: FETCH_GLOBAL_TEMPLATE_LIST,
         templates: res.data.templates,
       });
     } catch (err) {
@@ -27,8 +46,10 @@ export function createTemplate(values) {
   return async (dispatch) => {
     try {
       let res = await client.post(`${API_URL}/templates`, values);
+      let type = CREATE_TEMPLATE;
+      if (!values.creator) type = CREATE_GLOBAL_TEMPLATE;
       dispatch({
-        type: CREATE_TEMPLATE,
+        type,
         template: res.data.template,
       });
     } catch (err) {
@@ -42,8 +63,10 @@ export function updateTemplate(values) {
   return async (dispatch) => {
     try {
       let res = await client.put(`${API_URL}/templates`, values);
+      let type = UPDATE_TEMPLATE;
+      if (!values.creator) type = UPDATE_GLOBAL_TEMPLATE;
       dispatch({
-        type: UPDATE_TEMPLATE,
+        type,
         template: res.data.template,
       });
     } catch (err) {
@@ -64,11 +87,17 @@ export function getTemplate(id) {
   };
 }
 
-export function setCurrentTemplate(tp) {
-  return (dispatch) => {
-    dispatch({
-      type: SET_CURRENT_TEMPLATE,
-      template: tp,
-    });
+export function deleteTemplate(id) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      await client.delete(`${API_URL}/templates/${id}`);
+      dispatch({
+        type: DELETE_TEMPLATE,
+        id: id,
+      });
+    } catch (err) {
+      createNotification("Delete Template", errorMessage(err));
+    }
   };
 }

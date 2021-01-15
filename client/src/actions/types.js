@@ -21,6 +21,7 @@ export const FETCH_ORGANIZATION = "fetch_organization",
   UPDATE_ORGANIZATION = "update_organization",
   CREATE_ORGANIZATION = "create_organization",
   DELETE_ORGANIZATION = "delete_organization",
+  FETCH_ORG_USER_LIST = "fetch_org_user_list",
   FETCH_ORG_SEARCH_LIST = "fetch_org_seaerch_list",
   FETCH_SIMPLE_ORG = "fetch_simple_org",
   SET_CURRENT_ORGANIZATION = "set_current_organization";
@@ -52,12 +53,12 @@ export const FETCH_NOTIFICATIONS = "fetch_notifications",
   READ_ONE_NOTIFICATION = "read_one_notification";
 
 //= =====================
-// HelpDoc Actions
+// Article Actions
 //= =====================
-export const FETCH_HELPDOC_LIST = "fetch_helpdoc_list",
-  CREATE_HELPDOC = "create_helpdoc",
-  UPDATE_HELPDOC = "update_helpdoc",
-  DELETE_HELPDOC = "delete_helpdoc";
+export const FETCH_ARTICLE_LIST = "fetch_article_list",
+  CREATE_ARTICLE = "create_article",
+  UPDATE_ARTICLE = "update_article",
+  DELETE_ARTICLE = "delete_article";
 
 //= =====================
 // InviteRequest Actions
@@ -82,4 +83,8 @@ export const FETCH_ADMIN_PARTICIPANTS = "fetch_admin_participants",
 export const FETCH_TEMPLATE_LIST = "fetch_template_list",
   CREATE_TEMPLATE = "create_template",
   UPDATE_TEMPLATE = "update_template",
-  SET_CURRENT_TEMPLATE = "set_current_template";
+  DELETE_TEMPLATE = "delete_template",
+  FETCH_GLOBAL_TEMPLATE_LIST = "fetch_global_template_list",
+  CREATE_GLOBAL_TEMPLATE = "create_global_template",
+  UPDATE_GLOBAL_TEMPLATE = "update_global_template",
+  DELETE_GLOBAL_TEMPLATE = "delete_global_template";

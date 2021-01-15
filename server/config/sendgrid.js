@@ -2,6 +2,7 @@ const config = require("./main");
 const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
+const organization = require("../models/organization");
 
 sgMail.setApiKey(config.sendgridApiKey);
 const mainURL = "https://integrationcenter.z14.web.core.windows.net";
@@ -75,6 +76,18 @@ exports.inviteMail = function inviteMail(values, filename) {
   });
 };
 
+exports.inviteOrgMemberMail = function inviteOrgMemberMail(values) {
+  const msg = {
+    to: values.email,
+    from: "events@dev.com",
+    subject: "You are invited",
+    html: inviteOrgMemberFactory(values),
+  };
+  sgMail.send(msg).catch((err) => {
+    console.log(err);
+  });
+};
+
 function userEVFactory(recipient, name, token) {
   const link = `${mainURL}/email-verify/user/${token}`;
   const mailData = { recipient, name, link };
@@ -121,7 +134,19 @@ function inviteFactory(values) {
   return text;
 }
 
+function inviteOrgMemberFactory(values) {
+  const link = `${mainURL}/org-invite/${values.org_id}/${values.encode_email}`;
+  const mailData = Object.assign(values, { link });
+  const template = fs.readFileSync("template/OrgMemberInvite.html", {
+    encoding: "utf-8",
+  });
+
+  var text = ejs.render(template, mailData);
+  return text;
+}
+
 exports.userEVFactory = userEVFactory;
 exports.userFPFactory = userFPFactory;
 exports.notificationFactory = notificationFactory;
 exports.inviteFactory = inviteFactory;
+exports.inviteOrgMemberFactory = inviteOrgMemberFactory;

@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   total: 0,
   isAdmin: false,
   isSuper: false,
+  orgAdmin: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -20,7 +21,12 @@ export default function (state = INITIAL_STATE, action) {
       localStorage.setItem("userId", profile._id);
       let isAdmin = profile.role.includes("Admin");
       let isSuper = profile.role === "SAdmin";
-      return { ...state, profile, isAdmin, isSuper };
+      let orgAdmin = false;
+      if (profile.profile.org_role === "admin") {
+        orgAdmin = true;
+      }
+      profile.profile.org = profile.profile.org || {};
+      return { ...state, profile, isAdmin, isSuper, orgAdmin };
     case FETCH_USER_LIST:
       return {
         ...state,

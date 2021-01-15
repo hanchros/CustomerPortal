@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 import { Form, Input, Select, Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sendInvite } from "../../actions/project";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import { listSimpleOrg } from "../../actions/organization";
 import { ModalSpinner } from "../../components/pages/spinner";
 
@@ -152,6 +152,7 @@ class Invite extends Component {
           />
           <ModalSpinner visible={this.state.loading} />
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }

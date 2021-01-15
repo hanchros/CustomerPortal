@@ -8,13 +8,17 @@ import {
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
+  FETCH_ORG_USER_LIST,
 } from "../actions/types";
+import { org_consts } from "../constants/organization";
 
 const INITIAL_STATE = {
   simpleOrgs: [],
   organizations: [],
   adminOrganizations: [],
   currentOrganization: {},
+  orgSettings: org_consts,
+  users: [],
   searchTxt: "",
   total: 0,
 };
@@ -53,9 +57,26 @@ export default function (state = INITIAL_STATE, action) {
       }
       return { ...state, organizations: state.organizations };
     case SET_CURRENT_ORGANIZATION:
-      return { ...state, currentOrganization: action.organization };
     case FETCH_ORGANIZATION:
-      return { ...state, currentOrganization: action.payload.organization };
+      org = action.organization;
+      if (!org.profile) org.profile = {};
+      return {
+        ...state,
+        currentOrganization: org,
+        orgSettings: {
+          primary_color: org.profile.primary_color || org_consts.primary_color,
+          secondary_color:
+            org.profile.secondary_color || org_consts.secondary_color,
+          background_color:
+            org.profile.background_color || org_consts.background_color,
+          menufont_color:
+            org.profile.menufont_color || org_consts.menufont_color,
+          title_page: org.profile.title_page || org_consts.title_page,
+          title_page_description:
+            org.profile.title_page_description ||
+            org_consts.title_page_description,
+        },
+      };
     case FETCH_ORG_SEARCH_LIST:
       return {
         ...state,
@@ -68,6 +89,11 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         adminOrganizations: action.organizations,
+      };
+    case FETCH_ORG_USER_LIST:
+      return {
+        ...state,
+        users: action.users,
       };
     default:
       return state;

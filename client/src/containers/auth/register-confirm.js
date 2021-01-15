@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Input } from "antd";
 import HomeHOC from "../../components/template/home-hoc";
+import InviteRequest from "../home/invite/request-invite"
+import history from "../../history"
 
 class RegisterConfirm extends Component {
   state = {
@@ -23,17 +24,19 @@ class RegisterConfirm extends Component {
     console.log(email);
   };
 
+  goNext = () => {
+    history.push("/")
+  }
+
   renderInvConfirm = () => (
     <React.Fragment>
+      <div className="main-background-title">REGISTRATION</div>
       <p className="mt-5">
         Did you receive e-mail invitation to join a platform?​
       </p>
       <div className="register-btn-group">
         <Link to="#" className="main-btn" onClick={this.onClickHas}>
           Yes
-        </Link>
-        <Link to="/register-form" className="main-btn">
-          No
         </Link>
       </div>
       <Link className="resend-intro" to="/invitation">
@@ -43,38 +46,11 @@ class RegisterConfirm extends Component {
   );
 
   render() {
-    const { has_invitation, email } = this.state;
+    const { has_invitation } = this.state;
     return (
       <HomeHOC>
-        <div className="main-background-title">REGISTRATION</div>
-        {!has_invitation && this.renderInvConfirm()}
-        {has_invitation && (
-          <React.Fragment>
-            <p className="mt-5">Awesome!</p>
-            <div className="send-invite-email">
-              <p>
-                Please use a link in your invitation to register and join a
-                project you were invited in!​
-              </p>
-              <p className="mt-5">
-                Can’t find that e-mail? That’s ok, we can send it again ​
-              </p>
-              <div className="register-inv-send">
-                <Input
-                  size="large"
-                  type="email"
-                  onChange={this.onChangeEmail}
-                  value={email}
-                  placeholder="E-mail"
-                />
-                <button className="main-btn" onClick={this.onSubmitInvEmail}>
-                  Send
-                </button>
-              </div>
-            </div>
-            <p>Still don’t see it? Please check spam folder​</p>
-          </React.Fragment>
-        )}
+        {has_invitation && this.renderInvConfirm()}
+        {!has_invitation && <InviteRequest goNext={this.goNext}/>}
       </HomeHOC>
     );
   }

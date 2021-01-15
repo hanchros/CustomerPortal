@@ -19,10 +19,17 @@ const OrgSchema = new Schema(
     social: { type: String },
     logo: { type: String },
     bio: { type: String },
-    color: { type: String, default: "#000" },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    profile: {
+      primary_color: { type: String },
+      secondary_color: { type: String },
+      background_color: { type: String, default: "#fff" },
+      menufont_color: { type: String },
+      title_page: { type: String },
+      title_page_description: { type: String },
     },
   },
   {

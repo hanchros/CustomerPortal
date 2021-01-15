@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
-  ProjectOutlined,
+  GlobalOutlined,
   TeamOutlined,
   UserOutlined,
-  SettingOutlined,
+  ProfileOutlined,
+  SketchOutlined,
+  PicLeftOutlined,
+  UsergroupAddOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import { Header } from "../../components/template";
+import { getOrganization } from "../../actions/organization";
 import history from "../../history";
 import UserAll from "./user/all";
 import Creators from "./user/creators";
@@ -16,11 +21,15 @@ import Verify from "./user/unverified";
 import Constants from "./constants";
 import OrgAll from "./organization/org_report";
 import ProjectAll from "./project/project_report";
-import HelpDoc from "./help";
+import Article from "./article";
 import EmailTemplate from "./setting/email-template";
+import OrgBasics from "./org_admin/basic";
+import OrgBranding from "./org_admin/branding";
+import OrgTemplate from "./org_admin/template";
+import OrgUsers from "./org_admin/users";
+import SupTemplate from "./template";
 
 const { Content, Sider } = Layout;
-const { SubMenu } = Menu;
 
 class AdminDashboard extends Component {
   state = {
@@ -34,9 +43,13 @@ class AdminDashboard extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.isAdmin) {
+    const { isAdmin, orgAdmin, user, getOrganization } = this.props;
+    if (!isAdmin && !orgAdmin) {
       history.push("/dashboard");
       return;
+    }
+    if (orgAdmin) {
+      getOrganization(user.profile.org._id);
     }
   }
 
@@ -46,6 +59,7 @@ class AdminDashboard extends Component {
 
   render() {
     const { pageTitle, submenu } = this.state;
+    const { isAdmin, orgAdmin } = this.props;
     return (
       <React.Fragment>
         <Header />
@@ -56,75 +70,135 @@ class AdminDashboard extends Component {
             onCollapse={this.onCollapse}
           >
             <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-              <SubMenu
-                key="sub1"
-                title={
-                  <span>
-                    <UserOutlined />
-                    <span>Participant</span>
-                  </span>
-                }
-              >
-                <Menu.Item
-                  key="pt-all"
-                  onClick={() => this.switchPage("Participant", "All")}
-                >
-                  All
-                </Menu.Item>
-                <Menu.Item
-                  key="proj-own"
-                  onClick={() =>
-                    this.switchPage("Participant", "Project Owners")
+              {orgAdmin && (
+                <React.Fragment>
+                  <Menu.Item
+                    key="org-basic"
+                    onClick={() => this.switchPage("Organization", "Basics")}
+                  >
+                    <span>
+                      <ProfileOutlined />
+                      <span>Basics</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="org-branding"
+                    onClick={() => this.switchPage("Organization", "Branding")}
+                  >
+                    <span>
+                      <SketchOutlined />
+                      <span>Branding</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="org-templates"
+                    onClick={() => this.switchPage("Organization", "Templates")}
+                  >
+                    <span>
+                      <PicLeftOutlined />
+                      <span>Templates</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="org-users"
+                    onClick={() => this.switchPage("Organization", "Users")}
+                  >
+                    <span>
+                      <UsergroupAddOutlined />
+                      <span>Users</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="org-emails"
+                    onClick={() => this.switchPage("Organization", "Emails")}
+                  >
+                    <span>
+                      <MailOutlined />
+                      <span>Emails</span>
+                    </span>
+                  </Menu.Item>
+                </React.Fragment>
+              )}
+              {isAdmin && (
+                <React.Fragment>
+                  <Menu.Item
+                    key="articles"
+                    onClick={() => this.switchPage("Super", "Articles")}
+                  >
+                    <span>
+                      <ProfileOutlined />
+                      <span>Articles</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="sup-template"
+                    onClick={() => this.switchPage("Super", "Template")}
+                  >
+                    <span>
+                      <PicLeftOutlined />
+                      <span>Super Templates</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="org-all"
+                    onClick={() => this.switchPage("Super", "Organization")}
+                  >
+                    <span>
+                      <TeamOutlined />
+                      <span>Organizations</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="pt-all"
+                    onClick={() => this.switchPage("Super", "Users")}
+                  >
+                    <span>
+                      <UserOutlined />
+                      <span>Users</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="sup-emails"
+                    onClick={() => this.switchPage("Super", "Emails")}
+                  >
+                    <span>
+                      <MailOutlined />
+                      <span>Global Emails</span>
+                    </span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="sup-app"
+                    onClick={() => this.switchPage("Super", "Applications")}
+                  >
+                    <span>
+                      <GlobalOutlined />
+                      <span>Applications</span>
+                    </span>
+                  </Menu.Item>
+                </React.Fragment>
+              )}
+
+              {/* {isAdmin && (
+              )}
+              {isAdmin && (
+                <SubMenu
+                  key="sub4"
+                  title={
+                    <span>
+                      <ProjectOutlined />
+                      <span>Project</span>
+                    </span>
                   }
                 >
-                  Project Owners
-                </Menu.Item>
-                <Menu.Item
-                  key="pt-msg"
-                  onClick={() => this.switchPage("Participant", "Message")}
-                >
-                  Message
-                </Menu.Item>
-                <Menu.Item
-                  key="pt-vrf"
-                  onClick={() => this.switchPage("Participant", "Verify")}
-                >
-                  Unverified
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub2"
-                title={
-                  <span>
-                    <TeamOutlined />
-                    <span>Organization</span>
-                  </span>
-                }
-              >
-                <Menu.Item
-                  key="org-all"
-                  onClick={() => this.switchPage("Organization", "All")}
-                >
-                  All
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu
-                key="sub4"
-                title={
-                  <span>
-                    <ProjectOutlined />
-                    <span>Project</span>
-                  </span>
-                }
-              >
-                <Menu.Item
-                  key="prj-all"
-                  onClick={() => this.switchPage("Project", "All")}
-                >
-                  All
-                </Menu.Item>
-              </SubMenu>
-              {this.props.isSuper && (
+                  <Menu.Item
+                    key="prj-all"
+                    onClick={() => this.switchPage("Project", "All")}
+                  >
+                    All
+                  </Menu.Item>
+                </SubMenu>
+              )}
+              {isSuper && (
                 <SubMenu
                   key="sub6"
                   title={
@@ -140,20 +214,8 @@ class AdminDashboard extends Component {
                   >
                     Constants
                   </Menu.Item>
-                  <Menu.Item
-                    key="set-help"
-                    onClick={() => this.switchPage("Setting", "Help")}
-                  >
-                    Help Setting
-                  </Menu.Item>
-                  <Menu.Item
-                    key="email-template"
-                    onClick={() => this.switchPage("Setting", "Email")}
-                  >
-                    Email Templates
-                  </Menu.Item>
                 </SubMenu>
-              )}
+              )} */}
             </Menu>
           </Sider>
           <Layout className="site-layout">
@@ -174,7 +236,7 @@ class AdminDashboard extends Component {
     const { pageTitle, submenu } = this.state;
     let pageName = `${submenu} ${pageTitle}`;
     switch (pageName) {
-      case "Participant All":
+      case "Super Users":
         return <UserAll />;
       case "Participant Project Owners":
         return <Creators />;
@@ -182,15 +244,28 @@ class AdminDashboard extends Component {
         return <Message />;
       case "Participant Verify":
         return <Verify />;
-      case "Organization All":
+      case "Super Organization":
         return <OrgAll />;
       case "Project All":
         return <ProjectAll />;
       case "Setting Constants":
         return <Constants />;
-      case "Setting Help":
-        return <HelpDoc />;
+      case "Super Articles":
+        return <Article />;
+      case "Super Template":
+        return <SupTemplate />;
       case "Setting Email":
+        return <EmailTemplate />;
+      case "Organization Basics":
+        return <OrgBasics />;
+      case "Organization Branding":
+        return <OrgBranding />;
+      case "Organization Templates":
+        return <OrgTemplate />;
+      case "Organization Users":
+        return <OrgUsers />;
+      case "Super Emails":
+      case "Organization Emails":
         return <EmailTemplate />;
       default:
         return null;
@@ -203,7 +278,8 @@ const mapStateToProps = (state) => {
     user: state.user.profile,
     isAdmin: state.user.isAdmin,
     isSuper: state.user.isSuper,
+    orgAdmin: state.user.orgAdmin,
   };
 };
 
-export default connect(mapStateToProps, {})(AdminDashboard);
+export default connect(mapStateToProps, { getOrganization })(AdminDashboard);

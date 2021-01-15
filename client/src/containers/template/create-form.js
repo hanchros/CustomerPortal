@@ -4,21 +4,21 @@ import { Container } from "reactstrap";
 import { Form, Input } from "antd";
 import { createTemplate, updateTemplate } from "../../actions/template";
 import Technology from "./technology";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 
-const TemplateForm = ({
+export const TemplateForm = ({
   curTemplate,
   createTemplate,
   updateTemplate,
   goback,
-  user,
+  org,
 }) => {
   const [technologies, setTechnologies] = useState(
     curTemplate.technologies || []
   );
 
   const onFinish = async (values) => {
-    values.creator = user._id;
+    values.creator = org._id;
     values.technologies = technologies;
     if (curTemplate._id) {
       values._id = curTemplate._id;
@@ -87,7 +87,7 @@ class Template extends Component {
       createTemplate,
       updateTemplate,
       goback,
-      user,
+      organization,
     } = this.props;
     return (
       <React.Fragment>
@@ -104,9 +104,10 @@ class Template extends Component {
             createTemplate={createTemplate}
             updateTemplate={updateTemplate}
             goback={goback}
-            user={user}
+            org={organization.currentOrganization}
           />
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }
@@ -114,7 +115,7 @@ class Template extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.user.profile,
+    organization: state.organization,
     template: state.template,
   };
 }

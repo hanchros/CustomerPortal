@@ -52,7 +52,7 @@ class InviteHomePage extends React.Component {
 
   renderHome = () => (
     <React.Fragment>
-      <div className="main-background-title">INTEGRA SPACE</div>
+      <div className="main-background-title">AUTOMATION PLACE</div>
       <p className="home-intro mt-big">
         Explanation – address all friction and fears​
       </p>

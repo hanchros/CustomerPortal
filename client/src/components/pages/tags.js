@@ -4,7 +4,6 @@ import {
   getTargetFieldName,
   getTargetLabelFromSection,
   randomColor,
-  sortByValue,
 } from "../../utils/helper";
 
 class Tags extends React.Component {
@@ -12,16 +11,16 @@ class Tags extends React.Component {
     const { fieldData, prefix } = this.props;
     const namelist = getTargetFieldName(prefix, fieldData);
     return (
-      <div className="mt-3 mb-2">
+      <span>
         {namelist.map((name, i) => {
-          return this.renderTags(name, randomColor(i), i);
+          return this.renderTags(name, i);
         })}
-      </div>
+      </span>
     );
   }
 
-  renderTags = (name, color, i) => {
-    const { fieldData, tags, prefix } = this.props;
+  renderTags = (name, i) => {
+    const { fieldData, tags, prefix, withLavel } = this.props;
     let taglist = [];
     for (let tagId of tags) {
       let filters = fieldData.filter(
@@ -31,16 +30,15 @@ class Tags extends React.Component {
     }
     const label = getTargetLabelFromSection(prefix, name);
     if (taglist.length === 0) return null;
-    taglist = sortByValue(taglist);
     return (
-      <p style={{ marginBottom: "8px" }} key={i}>
-        <b>{label}:&nbsp;&nbsp;</b>
-        {taglist.map((tag) => (
-          <Tag key={tag._id} color={color} className="mr-2">
+      <span style={{ marginBottom: "8px" }} key={i}>
+        {withLavel && <b>{label}:&nbsp;&nbsp;</b>}
+        {taglist.map((tag, index) => (
+          <Tag key={tag._id} color={randomColor(index)} className="mr-2">
             {tag.value}
           </Tag>
         ))}
-      </p>
+      </span>
     );
   };
 }

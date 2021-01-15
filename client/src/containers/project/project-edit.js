@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Container } from "reactstrap";
 import { Form, Input } from "antd";
 import { updateProject, createProject } from "../../actions/project";
-import { Header, Upload } from "../../components/template";
+import { Header, Upload, Footer } from "../../components/template";
 import Technology from "../template/technology";
 
 const CreateForm = ({
@@ -134,6 +134,7 @@ class EditProject extends Component {
             template={template || {}}
           />
         </Container>
+        <Footer />
       </React.Fragment>
     );
   };

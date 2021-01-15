@@ -6,7 +6,7 @@ import profileReducer from "./profile";
 import projectReducer from "./project";
 import notificationReducer from "./notification";
 import adminReducer from "./admin";
-import helpdocReducer from "./helpdoc";
+import articleReducer from "./article";
 import templateReducer from "./template";
 
 const rootReducer = combineReducers({
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
   project: projectReducer,
   notification: notificationReducer,
   admin: adminReducer,
-  helpdoc: helpdocReducer,
+  article: articleReducer,
   template: templateReducer,
 });
 

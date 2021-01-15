@@ -395,7 +395,8 @@ a.card-link {
   }
 }
 
-.ant-collapse-content-box img {
-  max-width: 94%;
-  height: auto;
+.right-flex {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }

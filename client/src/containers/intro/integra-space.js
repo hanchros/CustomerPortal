@@ -4,9 +4,9 @@ import HomeHOC from "../../components/template/home-hoc";
 
 const IntegraSpace = () => (
   <HomeHOC>
-    <div className="main-background-title">What is INTEGRA SPACE?</div>
+    <div className="main-background-title">What is AUTOMATION PLACE?</div>
     <p className="mt-5">
-      Integra space is a platform where all kinds of organizations can easily
+      Automation place is a platform where all kinds of organizations can easily
       automate document exchange process.
       <br /> How it is possible?
       <br /> Integra ledger blockchain allows … bla bla

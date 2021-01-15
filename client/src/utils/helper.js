@@ -17,6 +17,14 @@ export const getFieldDataById = (fieldData = [], id) => {
   return null;
 };
 
+export const getFieldDataByNameValue = (fieldData = [], name, value = "") => {
+  for (let fd of fieldData) {
+    if (fd.field === name && fd.value.toLowerCase() === value.toLowerCase())
+      return fd;
+  }
+  return null;
+};
+
 export const getTargetFieldName = (prefix, fieldData) => {
   let list = [];
   for (let item of fieldData) {
@@ -75,4 +83,17 @@ export const sortByValue = (arrObj = []) => {
     }
     return 0;
   });
+};
+
+export const extractContent = (s, space) => {
+  var span = document.createElement("span");
+  span.innerHTML = s;
+  if (space) {
+    var children = span.querySelectorAll("*");
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].textContent) children[i].textContent += " ";
+      else children[i].innerText += " ";
+    }
+  }
+  return [span.textContent || span.innerText].toString().replace(/ +/g, " ");
 };

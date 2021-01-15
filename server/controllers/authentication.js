@@ -24,7 +24,7 @@ exports.login = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).populate("profile.org");
     if (!user) {
       return res.status(401).json({ error: "No user with the email" });
     }
@@ -123,12 +123,15 @@ exports.inviteRegister = async function (req, res, next) {
     });
     const usr = await user.save();
     const userInfo = setUserInfo(usr);
-    const pm = new ProjectMember({
-      participant: usr._id,
-      project: project_id,
-      role: project_role || "member",
-    });
-    pm.save();
+    if (project_id) {
+      const pm = new ProjectMember({
+        participant: usr._id,
+        project: project_id,
+        role: project_role || "member",
+      });
+      pm.save();
+    }
+
     return res.status(201).json({ user: userInfo });
   } catch (err) {
     return next(err);

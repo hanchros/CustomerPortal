@@ -51,6 +51,18 @@ export function deleteUser(uid) {
   };
 }
 
+export function fetchUserByEmail(email) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      let res = await client.post(`${API_URL}/user/email/check`, { email });
+      return res.data.user;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
 export function allSimpleUsers() {
   return async (dispatch) => {
     const client = Client(true);

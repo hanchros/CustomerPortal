@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { List } from "antd";
+import { List, Tag } from "antd";
 import { Link } from "react-router-dom";
-import { listTemplate } from "../../actions/template";
-import { Header } from "../../components/template";
+import { listOrgTemplate } from "../../actions/template";
+import { Header, Footer } from "../../components/template";
 import EditTemplate from "../template/create-form";
 import EditProject from "../project/project-edit";
 
@@ -21,8 +21,8 @@ class SeleteTemplate extends Component {
   }
 
   componentDidMount = async () => {
-    const { listTemplate } = this.props;
-    listTemplate();
+    const { listOrgTemplate, organization } = this.props;
+    listOrgTemplate(organization.currentOrganization._id);
   };
 
   onToggleCreateTemplate = () => {
@@ -44,11 +44,21 @@ class SeleteTemplate extends Component {
   renderTemplateItem = (template) => (
     <List.Item className="template-listitem">
       <Link to={`/template/${template._id}`} className="template-listitem-body">
-        <h5>{template.name}</h5>
+        <h5>
+          <b>{template.name}</b>
+          {!template.creator && (
+            <Tag className="ml-5" color="green">
+              Global Template
+            </Tag>
+          )}
+        </h5>
         <p>{template.description}</p>
       </Link>
       <div>
-        <button className="main-btn" onClick={() => this.onUseTemplate(template)}>
+        <button
+          className="main-btn"
+          onClick={() => this.onUseTemplate(template)}
+        >
           Use Template
         </button>
       </div>
@@ -56,7 +66,8 @@ class SeleteTemplate extends Component {
   );
 
   render() {
-    const templates = this.props.template.templates;
+    const { template } = this.props;
+    const templates = [...template.orgTemplates, ...template.globalTemplates];
     const {
       showCreateProject,
       showCreateTemplate,
@@ -109,6 +120,7 @@ class SeleteTemplate extends Component {
             Create new project
           </button>
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }
@@ -117,9 +129,10 @@ class SeleteTemplate extends Component {
 function mapStateToProps(state) {
   return {
     template: state.template,
+    organization: state.organization,
   };
 }
 
 export default connect(mapStateToProps, {
-  listTemplate,
+  listOrgTemplate,
 })(SeleteTemplate);

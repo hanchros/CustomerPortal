@@ -101,10 +101,15 @@ class OrgReport extends Component {
       return <img className="table-photo" src={cell || sampleUrl} alt="" />;
     };
 
+    const creatorFormatter = (cell, row) => {
+      if (!cell || !cell._id) return "";
+      return `${cell.profile.first_name} ${cell.profile.last_name}`;
+    };
+
     const adminFormatter = (cell, row) => {
       return (
         <AdminAction
-          onEdit={() => this.showModal(row.id)}
+          onEdit={() => this.showModal(row._id)}
           onDelete={() => this.deleteOrganization(row.id)}
         />
       );
@@ -117,28 +122,33 @@ class OrgReport extends Component {
         formatter: photoFormatter,
       },
       {
-        dataField: "name",
-        text: `Organization Name`,
+        dataField: "org_name",
+        text: `Organization_Name`,
       },
       {
-        dataField: "authroized_email",
-        text: "Authorized Email",
-      },
-      {
-        dataField: "id",
+        dataField: "_id",
         text: "ID",
       },
       {
-        dataField: "contact_email",
-        text: "Contact Email",
+        dataField: "org_type",
+        text: "Organization_Type",
       },
       {
-        dataField: "participants",
-        text: "Participant",
+        dataField: "location",
+        text: "Location",
       },
       {
-        dataField: "projects",
-        text: "Project",
+        dataField: "social",
+        text: "Social_Link",
+      },
+      {
+        dataField: "members",
+        text: "Members",
+      },
+      {
+        dataField: "creator",
+        text: "Creator",
+        formatter: creatorFormatter,
       },
       {
         dataField: "",

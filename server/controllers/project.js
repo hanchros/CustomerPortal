@@ -148,11 +148,9 @@ exports.listAllProject = async (req, res, next) => {
     for (let proj of projects) {
       result.push({
         project_name: proj.name,
-        project_creator: `${proj.participant.profile.first_name} ${proj.participant.profile.last_name}`,
-        creator_org: proj.participant.profile.org_name,
-        short_description: proj.short_description,
-        organization: proj.organization.org_name,
         logo: proj.logo,
+        objective: proj.objective,
+        status: proj.status,
         contact_detail: proj.contact_detail,
         _id: proj._id,
       });

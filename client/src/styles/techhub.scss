@@ -1,0 +1,86 @@
+.techhub-box {
+  border: 1px solid $blue;
+  min-height: 66vh !important;
+  margin-bottom: 10px;
+}
+
+.content-box {
+  padding: 20px !important;
+}
+
+.techhub-title-list {
+  .ant-list-item {
+    cursor: pointer;
+    &:hover {
+      background-color: $gray-200;
+      color: $purple-blue;
+    }
+  }
+  .ant-list-item.active {
+    color: $light-green;
+  }
+}
+
+.learn-header {
+  margin-top: -40px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  a {
+    color: #333;
+    font-size: 20px;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  a.active {
+    color: $light-green;
+  }
+}
+
+.learn-body {
+  margin-top: 50px;
+}
+
+.learnhub-menu {
+  width: 100%;
+  background-color: $weak-blue;
+
+  .ant-menu-submenu-title {
+    background-color: $middle-blue;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 8px !important;
+
+  }
+
+  li.ant-menu-item {
+    height: auto !important ;
+    min-height: 60px ;
+    overflow: auto;
+    text-overflow: unset;
+    white-space: unset;
+    display: flex;
+    line-height: 20px !important;
+    align-items: center;
+    background-color: $weak-blue;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    img {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .learn-header {
+    margin-top: -20px;
+    a {
+      font-size: 16px;
+    }
+  }
+}

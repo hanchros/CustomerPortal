@@ -7,7 +7,7 @@ import { registerInvitedUser } from "../../../actions/auth";
 import { ModalSpinner } from "../../../components/pages/spinner";
 import history from "../../../history";
 
-const InviteRegisterForm = ({
+export const InviteRegisterForm = ({
   onSubmit,
   values,
   setAvatar,
@@ -21,8 +21,8 @@ const InviteRegisterForm = ({
     }
     value.photo = avatarURL;
     value.organization = value.organization || null;
-    value.project_id = values.project_id
-    value.project_role = values.project_role
+    value.project_id = values.project_id;
+    value.project_role = values.project_role;
     onSubmit(value);
   };
 

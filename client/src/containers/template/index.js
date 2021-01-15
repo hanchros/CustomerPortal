@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 // import { Link } from "react-router-dom";
 import { Col, Row } from "antd";
 import { getTemplate } from "../../actions/template";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import EditTemplate from "./create-form";
 import EditProject from "../project/project-edit";
 
@@ -58,8 +58,7 @@ class Template extends Component {
                 <h2>{template.name}</h2>
                 {template.creator && (
                   <span className="mr-5">
-                    Creator: {template.creator.profile.first_name}{" "}
-                    {template.creator.profile.last_name}
+                    Creator: {template.creator.org_name}
                   </span>
                 )}
                 <span>Objective: {template.objective}</span>
@@ -99,6 +98,7 @@ class Template extends Component {
             Edit
           </button>
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }

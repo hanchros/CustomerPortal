@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { Header } from "../../components/template";
+import { Header, Footer } from "../../components/template";
 import { Button, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import ChallengeLogo from "../../assets/icon/challenge.png";
@@ -79,6 +79,7 @@ class ProjectOrgs extends Component {
             </Col>
           </Row>
         </Container>
+        <Footer />
       </React.Fragment>
     );
   }

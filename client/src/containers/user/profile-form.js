@@ -251,7 +251,6 @@ const ProfileForm = ({
       </Row>
 
       <ListTags
-        fieldData={fieldData}
         tags={tags}
         prefix={"profile"}
         updateTags={setTags}

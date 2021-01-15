@@ -25,23 +25,29 @@ exports.updateTemplate = async (req, res, next) => {
   }
 };
 
-exports.listTemplate = (req, res, next) => {
-  Template.find({}).exec((err, tps) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      templates: tps,
-    });
-  });
+exports.listTemplateByOrg = async (req, res, next) => {
+  try {
+    const templates = await Template.find({
+      creator: req.params.orgId,
+    }).populate("creator");
+    res.status(201).json({ templates });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.listTemplateGlobal = async (req, res, next) => {
+  try {
+    const templates = await Template.find({ creator: null });
+    res.status(201).json({ templates });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.getTemplate = async (req, res, next) => {
   try {
-    const template = await Template.findById(req.params.id).populate({
-      path: "creator",
-      select: "_id profile",
-    });
+    const template = await Template.findById(req.params.id).populate("creator");
     const projects = await Project.find({ template: req.params.id });
     template.projects = projects;
     res.status(201).json({ template });

@@ -48,11 +48,24 @@ class HeaderTemplate extends Component {
   };
 
   render = () => {
-    const { authenticated, currentUser, notification, isAdmin } = this.props;
+    const {
+      authenticated,
+      currentUser,
+      notification,
+      isAdmin,
+      orgAdmin,
+      organization,
+    } = this.props;
+    const orgSettings = organization.orgSettings;
 
     return (
       <React.Fragment>
-        <div className={`main-nav ${isAdmin && "admin-nav"}`}>
+        <div
+          className="main-nav"
+          style={{
+            backgroundColor: orgSettings.secondary_color,
+          }}
+        >
           <Navbar
             className="container-nav"
             light
@@ -60,15 +73,22 @@ class HeaderTemplate extends Component {
             expand="md"
           >
             <Link className="navbar-brand" to={"/dashboard"}>
-              {/* <img src={logoUrl} height="43" alt="logo" /> */}
-              HOME
+              {currentUser.profile && currentUser.profile.org.logo ? (
+                <img src={currentUser.profile.org.logo} alt="logo" />
+              ) : (
+                "HOME"
+              )}
             </Link>
             <NavbarToggler onClick={this.toggle} />
-            <Collapse isOpen={this.state.isOpen} navbar>
+            <Collapse
+              isOpen={this.state.isOpen}
+              navbar
+              style={{ color: orgSettings.menufont_color }}
+            >
               <Nav className="mr-auto" navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/projects">
+                    <Link className="nav-link" to="/dashboard">
                       MY PROJECTS
                     </Link>
                   </NavItem>
@@ -89,12 +109,12 @@ class HeaderTemplate extends Component {
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/learn">
+                    <Link className="nav-link" to="/learnhub">
                       LEARN
                     </Link>
                   </NavItem>
                 )}
-                {authenticated && isAdmin && (
+                {(isAdmin || orgAdmin) && (
                   <NavItem>
                     <Link className="nav-link" to="/admin">
                       ADMIN
@@ -141,7 +161,7 @@ class HeaderTemplate extends Component {
                           Profile
                         </Link>
                       </DropdownItem>
-                      <DropdownItem>
+                      {/* <DropdownItem>
                         <Link
                           className="nav-link"
                           to="#"
@@ -151,7 +171,7 @@ class HeaderTemplate extends Component {
                         >
                           Delete Account
                         </Link>
-                      </DropdownItem>
+                      </DropdownItem> */}
                       <DropdownItem divider />
                       <DropdownItem>
                         <Link className="nav-link" to="/logout">
@@ -189,7 +209,9 @@ function mapStateToProps(state) {
     authenticated: state.auth.authenticated,
     currentUser: state.user.profile,
     isAdmin: state.user.isAdmin,
+    orgAdmin: state.user.orgAdmin,
     notification: state.notification,
+    organization: state.organization,
   };
 }
 

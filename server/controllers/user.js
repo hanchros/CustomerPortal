@@ -1,36 +1,29 @@
 const User = require("../models/user");
 const setUserInfo = require("../helpers").setUserInfo;
-const setPublicUsers = require("../helpers").setPublicUsers;
 const Project = require("../models/project");
 const ProjectMember = require("../models/projectmember");
 
 //= =======================================
 // User Routes
 //= =======================================
-exports.viewProfile = function (req, res, next) {
-  const userId = req.params.userId;
-
-  // if (req.user._id.toString() !== userId) {
-  //   return res
-  //     .status(401)
-  //     .json({ error: "You are not authorized to view this user profile." });
-  // }
-  User.findById(userId, (err, user) => {
-    if (err || !user) {
+exports.viewProfile = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const user = User.findById(userId, "_id profile").populate("profile.org");
+    if (!user) {
       res.status(400).json({ error: "No user could be found for this ID." });
       return next(err);
     }
-
-    const userToReturn = setUserInfo(user);
-    delete userToReturn.email;
     return res.status(200).json({ user: userToReturn });
-  });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.getUserSession = async (req, res, next) => {
   try {
     if (req.user.email) {
-      let user = await User.findById(req.user._id);
+      let user = await User.findById(req.user._id).populate("profile.org");
       const userToReturn = setUserInfo(user);
       return res.status(200).json({ user: userToReturn });
     }
@@ -52,7 +45,7 @@ exports.updateProfile = async (req, res, next) => {
       profile,
       email,
     });
-    let user = await User.findById(req.user._id);
+    let user = await User.findById(req.user._id).populate("profile.org");
     res.send({ user });
   } catch (err) {
     console.log(err);
@@ -71,15 +64,24 @@ exports.deleteProfile = (req, res, next) => {
   });
 };
 
+exports.getUserByEmail = async (req, res, next) => {
+  try {
+    let user = await User.findOne({ email: req.body.email }, "_id profile");
+    return res.status(200).json({ user });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.orgUsers = (req, res, next) => {
-  User.find({ "profile.org": req.params.org_id })
-    .sort({ createdAt: "desc" })
+  User.find({ "profile.org": req.params.org_id }, "_id profile")
+    .select.sort({ createdAt: "desc" })
     .exec((err, users) => {
       if (err) {
         return next(err);
       }
       res.status(201).json({
-        participants: setPublicUsers(users),
+        participants: users,
       });
     });
 };
@@ -125,8 +127,10 @@ exports.listAllUsers = async (req, res, next) => {
     }
 
     let total = await User.find(filter).countDocuments();
-    let users = await User.find(filter).sort(sort).skip(curNum).limit(16);
-    users = setPublicUsers(users);
+    let users = await User.find(filter, "_id profile")
+      .sort(sort)
+      .skip(curNum)
+      .limit(16);
     let result = [];
     for (let user of users) {
       let proj_count = await Project.where({

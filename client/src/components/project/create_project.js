@@ -90,7 +90,6 @@ const CreateForm = ({
         </Col>
       </Row>
       <ProjectTags
-        fieldData={fieldData}
         tags={tags}
         updateTags={setTags}
         prefix={"project"}

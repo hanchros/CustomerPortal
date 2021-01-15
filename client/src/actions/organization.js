@@ -6,8 +6,10 @@ import {
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
+  FETCH_ORG_USER_LIST,
 } from "./types";
 import Client from "./api";
+import { message } from "antd";
 
 export function createOrganization(values) {
   return async (dispatch) => {
@@ -24,7 +26,11 @@ export function updateOrganization(orgData) {
   return async (dispatch) => {
     const client = Client(true);
     try {
-      await client.put(`${API_URL}/organization`, orgData);
+      let res = await client.put(`${API_URL}/organization`, orgData);
+      dispatch({
+        type: FETCH_ORGANIZATION,
+        organization: res.data.organization,
+      });
     } catch (err) {
       createNotification("Update Organization", errorMessage(err));
     }
@@ -42,6 +48,80 @@ export function getOrganization(org_id) {
       });
     } catch (err) {
       console.log(err);
+    }
+  };
+}
+
+export function listOrgUsers(orgId) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      let res = await client.get(`${API_URL}/organization/users/${orgId}`);
+      dispatch({
+        type: FETCH_ORG_USER_LIST,
+        users: res.data.users,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function removeOrgUser(userId) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.delete(`${API_URL}/organization/users/${userId}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function addOrgUser(userId, orgId) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/organization/users/${userId}`, { orgId });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function changeUserOrgRole(userId, org_role) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/organization/role/${userId}`, { org_role });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function sendOrgMemberInvite(values) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/organization/invite/user`, values);
+      message.success("Invitation has been sent successfully!");
+    } catch (err) {
+      console.log(err);
+      createNotification("Invite Send", errorMessage(err));
+    }
+  };
+}
+
+export function acceptOrgMemberInvite(values) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/organization/invite/accept`, values);
+      message.success("Invitation has been accepted successfully!");
+    } catch (err) {
+      console.log(err);
+      createNotification("Invite Accept", errorMessage(err));
     }
   };
 }
@@ -106,21 +186,6 @@ export function listOrgReport() {
     const client = Client(true);
     try {
       let res = await client.get(`${API_URL}/organization/admin/report`);
-      dispatch({
-        type: FETCH_ADMIN_ORG_LIST,
-        organizations: res.data.organizations,
-      });
-    } catch (err) {
-      createNotification("List Organization", errorMessage(err));
-    }
-  };
-}
-
-export function listOrgUserReport() {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.get(`${API_URL}/organization/admin/user-report`);
       dispatch({
         type: FETCH_ADMIN_ORG_LIST,
         organizations: res.data.organizations,
