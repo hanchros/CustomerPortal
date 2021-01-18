@@ -9,7 +9,13 @@ const ProjectMember = require("../models/projectmember");
 exports.viewProfile = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const user = User.findById(userId, "_id profile").populate("profile.org");
+    const user = User.findById(userId, "_id profile").populate({
+      path: "profile.org",
+      populate: {
+        path: "creator",
+        select: "_id profile",
+      },
+    });
     if (!user) {
       res.status(400).json({ error: "No user could be found for this ID." });
       return next(err);
@@ -23,7 +29,13 @@ exports.viewProfile = async (req, res, next) => {
 exports.getUserSession = async (req, res, next) => {
   try {
     if (req.user.email) {
-      let user = await User.findById(req.user._id).populate("profile.org");
+      let user = await User.findById(req.user._id).populate({
+        path: "profile.org",
+        populate: {
+          path: "creator",
+          select: "_id profile",
+        },
+      });
       const userToReturn = setUserInfo(user);
       return res.status(200).json({ user: userToReturn });
     }
@@ -45,7 +57,13 @@ exports.updateProfile = async (req, res, next) => {
       profile,
       email,
     });
-    let user = await User.findById(req.user._id).populate("profile.org");
+    let user = await User.findById(req.user._id).populate({
+      path: "profile.org",
+      populate: {
+        path: "creator",
+        select: "_id profile",
+      },
+    });
     res.send({ user });
   } catch (err) {
     console.log(err);

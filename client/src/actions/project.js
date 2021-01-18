@@ -230,3 +230,48 @@ export function sendInvite(values) {
     }
   };
 }
+
+export function getInviteContent(values) {
+  return (dispatch, getState) => {
+    try {
+      const mails = getState().mail.orgMails;
+      const org = getState().organization.currentOrganization;
+      const user = getState().user.profile;
+      if (!mails || mails.length === 0) {
+        message.error("No mail templates for the organization!");
+        return "";
+      }
+      let content = "";
+      for (let mail of mails) {
+        if (mail.name === "Project Invite") {
+          content = mail.content;
+        }
+      }
+      content = content.replace(
+        "[name]",
+        `${values.first_name} ${values.last_name}`
+      );
+      content = content.replace(
+        "[sender_name]",
+        `${user.profile.first_name} ${user.profile.last_name}`
+      );
+      content = content.replace("[sender_org]", org.org_name);
+      content = content.replace("[project_name]", values.project_name);
+      return content;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function getInviteEmailTemplate(values) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      const res = await client.post(`${API_URL}/project/mail/template`, values);
+      return res.data.mail;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}

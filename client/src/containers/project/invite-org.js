@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { Form, Input, Select, Button } from "antd";
+import { Form, Input, Select, Button, Modal } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sendInvite, joinOrgProject } from "../../actions/project";
 import { Header, Footer } from "../../components/template";
 import { listSimpleOrg } from "../../actions/organization";
+import { listMailByOrg } from "../../actions/mail";
+import {
+  getInviteContent,
+  getInviteEmailTemplate,
+} from "../../actions/project";
 import { ModalSpinner } from "../../components/pages/spinner";
 
 const OrgInviteForm = ({ onSubmit, project }) => {
@@ -116,18 +121,44 @@ class Invite extends Component {
 
     this.state = {
       loading: false,
+      visible: false,
+      content: "",
+      formVaule: {},
     };
   }
 
   componentDidMount = () => {
-    this.props.listSimpleOrg();
+    const { organization, listSimpleOrg, listMailByOrg } = this.props;
+    listSimpleOrg();
+    listMailByOrg(organization.currentOrganization._id);
   };
 
-  onSendOrgInvite = async (values) => {
+  onSendOrgInvite = async () => {
     this.setState({ loading: true });
-    await this.props.sendInvite(values);
+    await this.props.sendInvite(this.state.formVaule);
     this.setState({ loading: false });
+    this.onHidePreview();
     this.props.goback();
+  };
+
+  onShowPreview = async (values) => {
+    const {
+      organization,
+      getInviteContent,
+      getInviteEmailTemplate,
+    } = this.props;
+    this.setState({ loading: true });
+    values.content = getInviteContent(values);
+    values.logo =
+      organization.currentOrganization.logo ||
+      "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+    const mail = await getInviteEmailTemplate(values);
+    this.setState({
+      loading: false,
+      visible: true,
+      content: mail.html,
+      formVaule: values,
+    });
   };
 
   onJoinOrg = async (values) => {
@@ -137,8 +168,13 @@ class Invite extends Component {
     this.props.goback();
   };
 
+  onHidePreview = () => {
+    this.setState({ visible: false });
+  };
+
   render() {
     const { organization, project } = this.props;
+    const { loading, visible, content } = this.state;
     const orgs = organization.simpleOrgs;
     return (
       <React.Fragment>
@@ -148,7 +184,7 @@ class Invite extends Component {
             <ArrowLeftOutlined /> Back
           </Button>
           <OrgInviteForm
-            onSubmit={this.onSendOrgInvite}
+            onSubmit={this.onShowPreview}
             project={project.project}
           />
           <ExOrgForm
@@ -156,7 +192,31 @@ class Invite extends Component {
             orgs={orgs}
             project={project.project}
           />
-          <ModalSpinner visible={this.state.loading} />
+          {visible && (
+            <Modal
+              title={"Preview Invite Mail"}
+              visible={visible}
+              width={600}
+              footer={false}
+              onCancel={this.onHidePreview}
+            >
+              <div
+                style={{ border: "1px solid #4472c4" }}
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+              <div className="flex mt-4">
+                <Button
+                  type="primary"
+                  onClick={this.onSendOrgInvite}
+                  className="mr-4"
+                >
+                  Send
+                </Button>
+                <Button onClick={this.onHidePreview}>Cancel</Button>
+              </div>
+              <ModalSpinner visible={loading} />
+            </Modal>
+          )}
         </Container>
         <Footer />
       </React.Fragment>
@@ -176,4 +236,7 @@ export default connect(mapStateToProps, {
   sendInvite,
   listSimpleOrg,
   joinOrgProject,
+  listMailByOrg,
+  getInviteContent,
+  getInviteEmailTemplate,
 })(Invite);

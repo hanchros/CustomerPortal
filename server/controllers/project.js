@@ -171,7 +171,14 @@ exports.sendInvite = async (req, res, next) => {
       sender_name,
       sender_organization,
     });
+    const mailContent = {
+      logo: values.logo,
+      content: values.content,
+      email: values.email,
+    };
 
+    delete values.logo;
+    delete values.content;
     const form = new FormData();
     const pdfData = fs.readFileSync(`${__dirname}/../template/orginvite.pdf`);
     form.append("file", pdfData);
@@ -192,11 +199,23 @@ exports.sendInvite = async (req, res, next) => {
     const writer = fs.createWriteStream(path);
     response.data.pipe(writer);
     writer.on("close", () => {
-      sendgrid.inviteMail(values, filename);
+      sendgrid.inviteMail(mailContent, filename);
     });
     return res.status(200).json({
       content: "success",
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getMailTemplate = (req, res, next) => {
+  try {
+    let result = {
+      title: "Invite Email",
+      html: sendgrid.inviteFactory(req.body),
+    };
+    return res.status(200).json({ mail: result });
   } catch (err) {
     return next(err);
   }

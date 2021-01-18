@@ -2,7 +2,6 @@ const config = require("./main");
 const sgMail = require("@sendgrid/mail");
 const ejs = require("ejs");
 const fs = require("fs");
-const organization = require("../models/organization");
 
 sgMail.setApiKey(config.sendgridApiKey);
 const mainURL = "https://integrationcenter.z14.web.core.windows.net";
@@ -120,16 +119,9 @@ function notificationFactory(title, content, senderName, senderPhoto) {
 function inviteFactory(values) {
   const link = `${mainURL}/email-invite`;
   const mailData = Object.assign(values, { link });
-  let template;
-  if (values.organization) {
-    template = fs.readFileSync("template/OrgInvite.html", {
-      encoding: "utf-8",
-    });
-  } else {
-    template = fs.readFileSync("template/TeamInvite.html", {
-      encoding: "utf-8",
-    });
-  }
+  let template = fs.readFileSync("template/OrgInvite.html", {
+    encoding: "utf-8",
+  });
   var text = ejs.render(template, mailData);
   return text;
 }

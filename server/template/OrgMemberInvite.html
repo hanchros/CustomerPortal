@@ -109,10 +109,10 @@
                                 href="https://integrationcenter.z14.web.core.windows.net"
                                 target="_blank"
                                 ><img
-                                  width="100"
+                                  width="auto"
                                   height="35"
                                   alt="logo"
-                                  src="https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png"
+                                  src="<%= logo %>"
                               /></a>
                             </td>
                             <td
@@ -215,36 +215,9 @@
                                 -webkit-font-smoothing: antialiased;
                               "
                             >
-                              <p
-                                style="
-                                  margin: 0;
-                                  color: #585858;
-                                  font-size: 14px;
-                                  font-weight: 400;
-                                  line-height: 170%;
-                                "
-                              >
-                                Hi <%= first_name %> <%= last_name %>
-                              </p>
-                              <p
-                                style="
-                                  margin: 0;
-                                  margin-top: 20px;
-                                  line-height: 0;
-                                "
-                              ></p>
-                              <p
-                                style="
-                                  margin: 0;
-                                  color: #585858;
-                                  font-size: 14px;
-                                  font-weight: 400;
-                                  line-height: 170%;
-                                "
-                              >
-                                You have been invited to join the organization "<%= organization
-                                %>" by <%= sender_name %>.
-                              </p>
+                            <div style="width: 100%;margin-bottom: 20px;">
+                              <%- content %>
+                            </div>
                           <p style="
                             margin: 0;
                             color: #585858;
@@ -252,7 +225,7 @@
                             line-height: 200%;
                             margin-top: 30px;
                           ">
-                          Tap the button below to signup on the platform. 
+                          Click button below to learn more and start collaborating.​
                           If that doesn't work, copy and paste the following link in your browser:                           
                           </p>
                               </p>

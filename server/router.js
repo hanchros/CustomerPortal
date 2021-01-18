@@ -11,6 +11,7 @@ const NotificationController = require("./controllers/notification");
 const ArticleController = require("./controllers/article");
 const InviteRequestController = require("./controllers/inviterequest")
 const TemplateController = require("./controllers/template");
+const MailController = require("./controllers/mail");
 
 var multer  = require('multer')
 const express = require("express");
@@ -45,6 +46,7 @@ module.exports = function (app) {
     articleRoutes = express.Router(),
     inviteRequestRoutes = express.Router(),
     templateRoutes = express.Router(),
+    mailRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -138,7 +140,8 @@ module.exports = function (app) {
   organizationRoutes.get("/admin/report", OrganizationController.adminOrgReports)
   // Contact organization route
   organizationRoutes.post("/contact/:id", OrganizationController.contactOrg);
-
+  // Get invite member mail template route
+  organizationRoutes.post("/mail/template", OrganizationController.getInviteMailTemplate);
   
 
   //= ========================
@@ -166,6 +169,8 @@ module.exports = function (app) {
   projectRoutes.get("/admin/list", ProjectController.listAllProject);
   // send orginvitation route
   projectRoutes.post("/send-invite", requireAuth, ProjectController.sendInvite);
+  // Get invite mail template route
+  projectRoutes.post("/mail/template", ProjectController.getMailTemplate);
 
 
   //= ========================
@@ -256,9 +261,6 @@ module.exports = function (app) {
   adminRoutes.get("/user/:id", requireAuth, AdminController.getAdminUser);
   // update admin user route
   adminRoutes.post("/user/:id", requireAuth, AdminController.upateAdminUser);
-  // get admin email templates route
-  adminRoutes.get("/email/template", requireAuth, AdminController.getAdminEmailTemplates);
-
 
   //= ========================
   // Article Routes
@@ -302,6 +304,23 @@ module.exports = function (app) {
   templateRoutes.get("/:id", requireAuth, TemplateController.getTemplate);
   // Delete template route
   templateRoutes.delete("/:id", requireAuth, TemplateController.deleteTemplate);
+
+
+  //= ========================
+  // Mail Routes
+  //= ========================
+  apiRoutes.use("/mails", mailRoutes);
+  // create mail route
+  mailRoutes.post("/", requireAuth, MailController.createMail);
+  // List mail by org route
+  mailRoutes.get("/list/org/:org_id", MailController.listMailByOrg);
+  // List global mail route
+  mailRoutes.get("/list/global", MailController.listMailGlobal);
+  // update mail route
+  mailRoutes.put("/", requireAuth, MailController.updateMail);
+  // Delete mail route
+  mailRoutes.delete("/:id", requireAuth, MailController.deleteMail);
+
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

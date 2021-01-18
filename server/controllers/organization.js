@@ -3,6 +3,7 @@ const sendgrid = require("../config/sendgrid");
 const User = require("../models/user");
 const ProjectOrg = require("../models/projectorg");
 const ProjectMember = require("../models/projectmember");
+const MailController = require("./mail");
 
 exports.createOrganization = async (req, res, next) => {
   try {
@@ -21,6 +22,7 @@ exports.createOrganization = async (req, res, next) => {
       });
       po.save();
     }
+    MailController.addNewOrgMail(org_result._id);
     res.status(201).json({
       organization: org_result,
     });
@@ -226,9 +228,12 @@ exports.adminOrgReports = async (req, res, next) => {
     });
     let result = [];
     for (let org of organizations) {
-      let members = await User.find({
-        "profile.org": org._id,
-      }, "_id profile");
+      let members = await User.find(
+        {
+          "profile.org": org._id,
+        },
+        "_id profile"
+      );
       result.push(Object.assign({ members, id: org._id }, org._doc));
     }
     res.status(201).json({
@@ -255,6 +260,18 @@ exports.contactOrg = async (req, res, next) => {
       req.body.gallery
     );
     res.status(201).json({ message: "Contact submitted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getInviteMailTemplate = (req, res, next) => {
+  try {
+    let result = {
+      title: "Invite Email",
+      html: sendgrid.inviteOrgMemberFactory(req.body),
+    };
+    return res.status(200).json({ mail: result });
   } catch (err) {
     return next(err);
   }

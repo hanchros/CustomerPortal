@@ -1,6 +1,5 @@
 import { createNotification, API_URL, errorMessage } from "./index";
 import {
-  FETCH_ORGANIZATION,
   FETCH_ORGANIZATIONLIST,
   SET_CURRENT_ORGANIZATION,
   FETCH_ORG_SEARCH_LIST,
@@ -10,6 +9,7 @@ import {
 } from "./types";
 import Client from "./api";
 import { message } from "antd";
+import { protectedTest } from "./auth";
 
 export function createOrganization(values) {
   return async (dispatch) => {
@@ -26,11 +26,8 @@ export function updateOrganization(orgData) {
   return async (dispatch) => {
     const client = Client(true);
     try {
-      let res = await client.put(`${API_URL}/organization`, orgData);
-      dispatch({
-        type: FETCH_ORGANIZATION,
-        organization: res.data.organization,
-      });
+      await client.put(`${API_URL}/organization`, orgData);
+      dispatch(protectedTest());
     } catch (err) {
       createNotification("Update Organization", errorMessage(err));
     }
@@ -39,19 +36,10 @@ export function updateOrganization(orgData) {
 
 export function getOrganization(org_id) {
   const client = Client();
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       let res = await client.get(`${API_URL}/organization/${org_id}`);
-      dispatch({
-        type: FETCH_ORGANIZATION,
-        organization: res.data.organization,
-      });
-      let user = getState().user.profile;
-      let org = res.data.organization;
-      if (org.creator && org.creator._id === user._id) {
-        dispatch({ type: SET_CURRENT_ORGANIZATION, organization: org });
-      }
-      return org;
+      return res.data.organization;
     } catch (err) {
       console.log(err);
     }
@@ -218,6 +206,53 @@ export function contactOrg({ id, email, phone, gallery, message }) {
       );
     } catch (err) {
       createNotification("Contact organization", errorMessage(err));
+    }
+  };
+}
+
+export function getInviteContent(values) {
+  return (dispatch, getState) => {
+    try {
+      const mails = getState().mail.orgMails;
+      const org = getState().organization.currentOrganization;
+      const user = getState().user.profile;
+      if (!mails || mails.length === 0) {
+        message.error("No mail templates for the organization!");
+        return "";
+      }
+      let content = "";
+      for (let mail of mails) {
+        if (mail.name === "Organization Invite") {
+          content = mail.content;
+        }
+      }
+      content = content.replace(
+        "[name]",
+        `${values.first_name} ${values.last_name}`
+      );
+      content = content.replace(
+        "[sender_name]",
+        `${user.profile.first_name} ${user.profile.last_name}`
+      );
+      content = content.replace("[sender_org]", org.org_name);
+      return content;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function getInviteEmailTemplate(values) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      const res = await client.post(
+        `${API_URL}/organization/mail/template`,
+        values
+      );
+      return res.data.mail;
+    } catch (error) {
+      console.log(error);
     }
   };
 }

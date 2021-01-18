@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Collapse, Skeleton, Modal, Button, Tooltip } from "antd";
+import { Collapse, Skeleton, Modal, Tooltip } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
-import { listMailGlobal, createMail, updateMail } from "../../../actions/mail";
-import EditMailForm from "./create-form";
+import { listMailByOrg, updateMail } from "../../../actions/mail";
+import EditMailForm from "../setting/create-form";
 
 const { Panel } = Collapse;
 
-class GlobalMail extends React.Component {
+class OrgMail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,13 +16,6 @@ class GlobalMail extends React.Component {
       curMail: {},
     };
   }
-
-  createNew = () => {
-    this.setState({
-      curMail: {},
-      visible: true,
-    });
-  };
 
   hideModal = () => {
     this.setState({
@@ -39,9 +32,9 @@ class GlobalMail extends React.Component {
   };
 
   componentDidMount = async () => {
-    const { listMailGlobal } = this.props;
+    const { listMailByOrg, organization } = this.props;
     this.setState({ loading: true });
-    await listMailGlobal();
+    await listMailByOrg(organization.currentOrganization._id);
     this.setState({ loading: false });
   };
 
@@ -61,11 +54,11 @@ class GlobalMail extends React.Component {
 
   render() {
     const { loading, visible, curMail } = this.state;
-    const { mail, createMail, updateMail } = this.props;
-    const mails = mail.globalMails;
+    const { mail, updateMail } = this.props;
+    const mails = mail.orgMails;
     return (
       <div className="mt-4">
-        <h3 className="mt-4 mb-4">Global Email Templates</h3>
+        <h3 className="mt-4 mb-4">Email Templates</h3>
         <Skeleton active loading={loading} />
         <Skeleton active loading={loading} />
         <Skeleton active loading={loading} />
@@ -78,19 +71,16 @@ class GlobalMail extends React.Component {
             ))}
           </Collapse>
         )}
-        <Button type="primary" className="mt-4" onClick={this.createNew}>
-          Add New
-        </Button>
         {visible && (
           <Modal
-            title={`${curMail._id ? "Update" : "Create"} Mail`}
+            title={"Update Mail"}
             visible={visible}
             width={800}
             footer={false}
             onCancel={this.hideModal}
           >
             <EditMailForm
-              createMail={createMail}
+              createMail={() => {}}
               updateMail={updateMail}
               curMail={curMail}
               hideModal={this.hideModal}
@@ -103,11 +93,10 @@ class GlobalMail extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { mail: state.mail };
+  return { mail: state.mail, organization: state.organization };
 }
 
 export default connect(mapStateToProps, {
-  listMailGlobal,
-  createMail,
+  listMailByOrg,
   updateMail,
-})(GlobalMail);
+})(OrgMail);

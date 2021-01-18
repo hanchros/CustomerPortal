@@ -2,7 +2,6 @@ const User = require("../models/user");
 const Project = require("../models/project");
 const { ROLE_SUPER_ADMIN, ROLE_BLOCK } = require("../constants");
 const setUserInfo = require("../helpers").setUserInfo;
-const sendgrid = require("../config/sendgrid");
 
 exports.listAdminUsers = async (req, res, next) => {
   try {
@@ -72,57 +71,6 @@ exports.upateAdminUser = async (req, res, next) => {
     });
     let user = await User.findById(req.params.id);
     res.send({ user });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-exports.getAdminEmailTemplates = (req, res, next) => {
-  try {
-    let result = [];
-    result.push({
-      title: "Participant Email Verification",
-      html: sendgrid.userEVFactory(
-        "participant@mail.com",
-        "Sergey Oleh",
-        "e494a9ddff8488aa372df18cb884252d"
-      ),
-    });
-    result.push({
-      title: "Participant Reset Password",
-      html: sendgrid.userFPFactory("e494a9ddff8488aa372df18cb884252d"),
-    });
-    // result.push({
-    //   title: "New Notification",
-    //   html: sendgrid.notificationFactory(
-    //     "Group Chat Invitation",
-    //     "You are invited to team chat",
-    //     "Mike",
-    //     "https://hackathon-fourthsector.s3.us-east-2.amazonaws.com/a6d1e651-8198-46a4-a57d-669bd12ba96c.png"
-    //   ),
-    // });
-    result.push({
-      title: "Invite Email",
-      html: sendgrid.inviteFactory({
-        first_name: "Sergey",
-        last_name: "Rubezhin",
-        email: "test@gmail.com",
-        organization: "MYZ",
-        sender_name: "Mike Rinow"
-      }),
-    });
-    result.push({
-      title: "Organization Invite Member Email",
-      html: sendgrid.inviteOrgMemberFactory({
-        first_name: "Sergey",
-        last_name: "Rubezhin",
-        encode_email: "bXl6c29mdGRldjJAZ21haWwuY29t",
-        org_id: "e494a9ddff8488aa372df18cb884252d",
-        organization: "IntegraLedger",
-        sender_name: "Mike Rinow"
-      }),
-    });
-    return res.status(200).json({ templates: result });
   } catch (err) {
     return next(err);
   }

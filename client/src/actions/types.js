@@ -88,3 +88,9 @@ export const FETCH_TEMPLATE_LIST = "fetch_template_list",
   CREATE_GLOBAL_TEMPLATE = "create_global_template",
   UPDATE_GLOBAL_TEMPLATE = "update_global_template",
   DELETE_GLOBAL_TEMPLATE = "delete_global_template";
+
+//= =====================
+// Mail Actions
+//= =====================
+export const FETCH_MAIL_LIST = "fetch_mail_list",
+  FETCH_GLOBAL_MAIL_LIST = "fetch_global_mail_list";

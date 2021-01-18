@@ -4,13 +4,12 @@ import {
   FETCH_ORGANIZATIONLIST,
   DELETE_ORGANIZATION,
   SET_CURRENT_ORGANIZATION,
-  FETCH_ORGANIZATION,
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
   FETCH_ORG_USER_LIST,
 } from "../actions/types";
-import { org_consts } from "../constants/organization";
+import { org_consts } from "../constants";
 
 const INITIAL_STATE = {
   simpleOrgs: [],
@@ -62,12 +61,6 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         currentOrganization: org,
-      };
-    case FETCH_ORGANIZATION:
-      org = action.organization;
-      if (!org.profile) org.profile = {};
-      return {
-        ...state,
         orgSettings: {
           primary_color: org.profile.primary_color || org_consts.primary_color,
           secondary_color:

@@ -3,7 +3,7 @@ import { Row, Col, Input, Switch, Button } from "antd";
 import { connect } from "react-redux";
 import ColorPicker from "rc-color-picker";
 import { updateOrganization } from "../../../actions/organization";
-import { org_consts } from "../../../constants/organization";
+import { org_consts } from "../../../constants";
 import Avatar from "../../../components/template/upload";
 import { ModalSpinner } from "../../../components/pages/spinner";
 

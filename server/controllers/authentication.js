@@ -24,7 +24,13 @@ exports.login = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   try {
-    let user = await User.findOne({ email }).populate("profile.org");
+    let user = await User.findOne({ email }).populate({
+      path: "profile.org",
+      populate: {
+        path: "creator",
+        select: "_id profile",
+      },
+    });
     if (!user) {
       return res.status(401).json({ error: "No user with the email" });
     }

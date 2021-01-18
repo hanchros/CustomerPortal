@@ -10,6 +10,7 @@ import {
   Select,
   Form,
   Input,
+  Modal,
 } from "antd";
 import moment from "moment";
 import {
@@ -18,7 +19,11 @@ import {
   removeOrgUser,
   changeUserOrgRole,
   sendOrgMemberInvite,
+  getInviteContent,
+  getInviteEmailTemplate,
 } from "../../../actions/organization";
+import { listMailByOrg } from "../../../actions/mail";
+import { ModalSpinner } from "../../../components/pages/spinner";
 import UserAvatar from "../../../assets/img/user-avatar.png";
 import ChallengeImg from "../../../assets/icon/challenge.png";
 import Avatar from "antd/lib/avatar/avatar";
@@ -33,7 +38,6 @@ const InviteForm = ({ onSubmit, org, user, onCancel }) => {
     values.sender_name = `${user.profile.first_name} ${user.profile.last_name}`;
     values.encode_email = window.btoa(values.email);
     await onSubmit(values);
-    onCancel();
   };
 
   return (
@@ -99,12 +103,17 @@ class AdminUsers extends Component {
       curUser: {},
       curRole: "member",
       showInviteForm: false,
+      loading: false,
+      visible: false,
+      content: "",
+      formVaule: {},
     };
   }
 
   componentDidMount = async () => {
-    const { listOrgUsers, organization } = this.props;
+    const { listOrgUsers, listMailByOrg, organization } = this.props;
     listOrgUsers(organization.currentOrganization._id);
+    listMailByOrg(organization.currentOrganization._id);
   };
 
   onToggleShowUser = (user) => {
@@ -265,9 +274,48 @@ class AdminUsers extends Component {
     </React.Fragment>
   );
 
+  onSendOrgInvite = async () => {
+    this.setState({ loading: true });
+    await this.props.sendOrgMemberInvite(this.state.formVaule);
+    this.setState({ loading: false });
+    this.onHidePreview();
+    this.onToggleShowInvite();
+  };
+
+  onShowPreview = async (values) => {
+    const {
+      organization,
+      getInviteContent,
+      getInviteEmailTemplate,
+    } = this.props;
+    this.setState({ loading: true });
+    values.content = getInviteContent(values);
+    values.logo =
+      organization.currentOrganization.logo ||
+      "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+    const mail = await getInviteEmailTemplate(values);
+    this.setState({
+      loading: false,
+      visible: true,
+      content: mail.html,
+      formVaule: values,
+    });
+  };
+
+  onHidePreview = () => {
+    this.setState({ visible: false });
+  };
+
   render() {
-    const { organization, sendOrgMemberInvite, user } = this.props;
-    const { showUserDetail, curUser, showInviteForm } = this.state;
+    const { organization, user } = this.props;
+    const {
+      showUserDetail,
+      curUser,
+      showInviteForm,
+      loading,
+      visible,
+      content,
+    } = this.state;
 
     const users = organization.users;
     return (
@@ -275,7 +323,7 @@ class AdminUsers extends Component {
         {showUserDetail && this.renderUserDetails(curUser)}
         {showInviteForm && (
           <InviteForm
-            onSubmit={sendOrgMemberInvite}
+            onSubmit={this.onShowPreview}
             user={user}
             org={organization.currentOrganization}
             onCancel={this.onToggleShowInvite}
@@ -297,6 +345,31 @@ class AdminUsers extends Component {
             </button>
           </React.Fragment>
         )}
+        {visible && (
+          <Modal
+            title={"Preview Invite Mail"}
+            visible={visible}
+            width={600}
+            footer={false}
+            onCancel={this.onHidePreview}
+          >
+            <div
+              style={{ border: "1px solid #4472c4" }}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+            <div className="flex mt-4">
+              <Button
+                type="primary"
+                onClick={this.onSendOrgInvite}
+                className="mr-4"
+              >
+                Send
+              </Button>
+              <Button onClick={this.onHidePreview}>Cancel</Button>
+            </div>
+            <ModalSpinner visible={loading} />
+          </Modal>
+        )}
       </Container>
     );
   }
@@ -315,4 +388,7 @@ export default connect(mapStateToProps, {
   addOrgUser,
   changeUserOrgRole,
   sendOrgMemberInvite,
+  getInviteContent,
+  getInviteEmailTemplate,
+  listMailByOrg,
 })(AdminUsers);

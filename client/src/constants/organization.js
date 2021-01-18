@@ -6,3 +6,9 @@ export const org_consts = {
   title_page: "Organization",
   title_page_description: "this is organization description",
 };
+
+export const mailtemplates = [
+  "Organization Invite",
+  "Project Invite",
+  "New Project Leader",
+];

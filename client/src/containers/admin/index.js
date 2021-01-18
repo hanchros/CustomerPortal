@@ -22,7 +22,8 @@ import Constants from "./constants";
 import OrgAll from "./organization/org_report";
 import ProjectAll from "./project/project_report";
 import Article from "./article";
-import EmailTemplate from "./setting/email-template";
+import GlobalEmailTemplate from "./setting/email-template";
+import OrgEmailTemplate from "./org_admin/email-template";
 import OrgBasics from "./org_admin/basic";
 import OrgBranding from "./org_admin/branding";
 import OrgTemplate from "./org_admin/template";
@@ -177,45 +178,6 @@ class AdminDashboard extends Component {
                   </Menu.Item>
                 </React.Fragment>
               )}
-
-              {/* {isAdmin && (
-              )}
-              {isAdmin && (
-                <SubMenu
-                  key="sub4"
-                  title={
-                    <span>
-                      <ProjectOutlined />
-                      <span>Project</span>
-                    </span>
-                  }
-                >
-                  <Menu.Item
-                    key="prj-all"
-                    onClick={() => this.switchPage("Project", "All")}
-                  >
-                    All
-                  </Menu.Item>
-                </SubMenu>
-              )}
-              {isSuper && (
-                <SubMenu
-                  key="sub6"
-                  title={
-                    <span>
-                      <SettingOutlined />
-                      <span>Setting</span>
-                    </span>
-                  }
-                >
-                  <Menu.Item
-                    key="set-cst"
-                    onClick={() => this.switchPage("Setting", "Constants")}
-                  >
-                    Constants
-                  </Menu.Item>
-                </SubMenu>
-              )} */}
             </Menu>
           </Sider>
           <Layout className="site-layout">
@@ -254,8 +216,6 @@ class AdminDashboard extends Component {
         return <Article />;
       case "Super Template":
         return <SupTemplate />;
-      case "Setting Email":
-        return <EmailTemplate />;
       case "Organization Basics":
         return <OrgBasics />;
       case "Organization Branding":
@@ -265,8 +225,9 @@ class AdminDashboard extends Component {
       case "Organization Users":
         return <OrgUsers />;
       case "Super Emails":
+        return <GlobalEmailTemplate />;
       case "Organization Emails":
-        return <EmailTemplate />;
+        return <OrgEmailTemplate />;
       default:
         return null;
     }
