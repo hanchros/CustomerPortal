@@ -4,7 +4,7 @@ const ejs = require("ejs");
 const fs = require("fs");
 
 sgMail.setApiKey(config.sendgridApiKey);
-const mainURL = "https://integrationcenter.z14.web.core.windows.net";
+const mainURL = "https://www.automation.place";
 
 exports.userEmailVerification = function userEmailVerification(
   recipient,
@@ -13,7 +13,7 @@ exports.userEmailVerification = function userEmailVerification(
 ) {
   const msg = {
     to: recipient,
-    from: "events@dev.com",
+    from: "mrinow@automation.place",
     subject: "Participant Email Verification",
     html: userEVFactory(recipient, name, token),
   };
@@ -25,7 +25,7 @@ exports.userEmailVerification = function userEmailVerification(
 exports.userForgotPasword = function userForgotPasword(recipient, token) {
   const msg = {
     to: recipient,
-    from: "events@dev.com",
+    from: "mrinow@automation.place",
     subject: "Participant Reset Password",
     html: userFPFactory(token),
   };
@@ -43,7 +43,7 @@ exports.newNotification = function newNotification(
 ) {
   const msg = {
     to: email,
-    from: "events@dev.com",
+    from: "mrinow@automation.place",
     subject: senderName,
     html: notificationFactory(title, content, senderName, senderPhoto),
   };
@@ -58,7 +58,7 @@ exports.inviteMail = function inviteMail(values, filename) {
 
   const msg = {
     to: values.email,
-    from: "events@dev.com",
+    from: "mrinow@automation.place",
     subject: "You are invited",
     html: inviteFactory(values),
     attachments: [
@@ -78,7 +78,7 @@ exports.inviteMail = function inviteMail(values, filename) {
 exports.inviteOrgMemberMail = function inviteOrgMemberMail(values) {
   const msg = {
     to: values.email,
-    from: "events@dev.com",
+    from: "mrinow@automation.place",
     subject: "You are invited",
     html: inviteOrgMemberFactory(values),
   };

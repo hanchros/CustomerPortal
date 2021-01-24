@@ -1,8 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
-import { Col, Row, List, Collapse, Modal, Tooltip, Button } from "antd";
-import { Container } from "reactstrap";
+import {
+  PlusOutlined,
+  SettingOutlined,
+  GlobalOutlined,
+} from "@ant-design/icons";
+import { List, Collapse, Modal, Tooltip, Button } from "antd";
+import { Row, Col } from "reactstrap";
 import { Header, Footer } from "../../components/template";
 import { getFieldDataByNameValue } from "../../utils/helper";
 import Video from "../../components/pages/video";
@@ -101,6 +105,144 @@ class Techhub extends React.Component {
     </List.Item>
   );
 
+  renderOneArticle = (article) => {
+    if (article.iframe && article.show_iframe)
+      return (
+        <Row>
+          <Col md={4}>
+            <h3 className="mb-3">
+              <b>{article.title}</b>
+            </h3>
+            <div dangerouslySetInnerHTML={{ __html: article.content }} />
+            {article.files && article.files.length > 0 && (
+              <div className="download-file-box">
+                <span>Documents for download</span>
+                <br />
+                {article.files.map((file) => (
+                  <div key={file}>
+                    <a
+                      href={file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      title={file.replace(/^.*[\\/]/, "")}
+                    >
+                      {file.replace(/^.*[\\/]/, "")}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Col>
+          <Col md={8}>
+            <iframe
+              src={article.iframe}
+              is="x-frame-bypass"
+              title="demo-iframe"
+              style={{ width: "100%", height: "98%", minHeight: "60vh" }}
+            />
+          </Col>
+        </Row>
+      );
+    return (
+      <React.Fragment>
+        <h3 className="mb-3">
+          <b>{article.title}</b>
+        </h3>
+        <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        {article.image && (
+          <div className="article-img">
+            <img src={article.image} alt="" />
+          </div>
+        )}
+        {article.video && <Video url={article.video} />}
+        <div className="iframe-box">
+          {article.files && article.files.length > 0 && (
+            <div className="download-file-box">
+              <span>Documents for article</span>
+              <br />
+              {article.files.map((file) => (
+                <div key={file}>
+                  <a
+                    href={file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    title={file.replace(/^.*[\\/]/, "")}
+                  >
+                    {file.replace(/^.*[\\/]/, "")}
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+          {article.iframe && (
+            <div className="demo-site-link">
+              <a
+                href={article.iframe}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="main-btn"
+              >
+                <GlobalOutlined /> {article.button_name || "Go To Site"}
+              </a>
+            </div>
+          )}
+        </div>
+      </React.Fragment>
+    );
+  };
+
+  renderMultiArticles = (articles) => (
+    <React.Fragment>
+      <div className="right-flex mt-2 mb-3">
+        <Button type="primary" onClick={this.createNew}>
+          <PlusOutlined />
+          Add New
+        </Button>
+      </div>
+      <Collapse accordion>
+        {articles.map((hd) => (
+          <Panel
+            header={<b>{hd.title}</b>}
+            key={hd.title}
+            extra={this.genExtra(hd)}
+          >
+            <div
+              className="sun-editor-editable"
+              dangerouslySetInnerHTML={{ __html: hd.content }}
+            />
+            {hd.image && (
+              <div className="article-img">
+                <img src={hd.image} alt="" />
+              </div>
+            )}
+            {hd.video && <Video url={hd.video} />}
+            {hd.files && hd.files.length > 0 && (
+              <div className="download-file-box">
+                <span>Documents for download</span>
+                <br />
+                {hd.files.map((file) => (
+                  <div key={file}>
+                    <a
+                      href={file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      title={file.replace(/^.*[\\/]/, "")}
+                    >
+                      {file.replace(/^.*[\\/]/, "")}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Panel>
+        ))}
+      </Collapse>
+    </React.Fragment>
+  );
+
   renderArticles = () => {
     const { curArticles, visible, curArticle, topic } = this.state;
     const {
@@ -116,50 +258,10 @@ class Techhub extends React.Component {
     );
 
     if (curArticles.length === 0) return null;
-
-    if (curArticles.length === 1) {
-      let article = curArticles[0];
-      return (
-        <div className="tech-article-box">
-          <h3 className="mb-3"><b>{article.title}</b></h3>
-          <div dangerouslySetInnerHTML={{ __html: article.content }} />
-          {article.image && (
-            <div className="article-img">
-              <img src={article.image} alt="" />
-            </div>
-          )}
-          {article.video && <Video url={article.video} />}
-        </div>
-      );
-    }
     return (
       <div className="tech-article-box">
-        <div className="right-flex mt-2 mb-3">
-          <Button type="primary" onClick={this.createNew}>
-            <PlusOutlined />
-            Add New
-          </Button>
-        </div>
-        <Collapse accordion>
-          {curArticles.map((hd) => (
-            <Panel
-              header={<b>{hd.title}</b>}
-              key={hd.title}
-              extra={this.genExtra(hd)}
-            >
-              <div
-                className="sun-editor-editable"
-                dangerouslySetInnerHTML={{ __html: hd.content }}
-              />
-              {hd.image && (
-                <div className="article-img">
-                  <img src={hd.image} alt="" />
-                </div>
-              )}
-              {hd.video && <Video url={hd.video} />}
-            </Panel>
-          ))}
-        </Collapse>
+        {curArticles.length === 1 && this.renderOneArticle(curArticles[0])}
+        {curArticles.length > 1 && this.renderMultiArticles(curArticles)}
         {visible && (
           <Modal
             title={`${curArticle._id ? "Update" : "Create"} Article`}
@@ -190,9 +292,9 @@ class Techhub extends React.Component {
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
-          <Row gutter={10}>
-            <Col md={6} sm={24} className="techhub-box mr-4">
+        <div className="container-fluid content">
+          <Row>
+            <Col md={3} sm={12}>
               <List
                 size="large"
                 dataSource={techTitleTags}
@@ -200,11 +302,11 @@ class Techhub extends React.Component {
                 renderItem={this.renderTitleItem}
               />
             </Col>
-            <Col md={17} sm={24} className="techhub-box content-box">
+            <Col md={9} sm={12}>
               {this.renderArticles()}
             </Col>
           </Row>
-        </Container>
+        </div>
         <Footer />
       </React.Fragment>
     );

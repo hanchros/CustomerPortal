@@ -48,6 +48,7 @@ import OrganizationList from "./containers/organization/list";
 
 // Import admin related Pages
 import AdminDashboard from "./containers/admin";
+import SuperAdminDashboard from "./containers/admin/super";
 
 // Import notification pages
 import Notification from "./containers/notification";
@@ -57,6 +58,7 @@ import Help from "./containers/help";
 import HelpArticle from "./containers/help/article";
 import HelpCategory from "./containers/help/category";
 import HelpSearch from "./containers/help/search";
+import Faq from "./containers/faq";
 
 // Import higher order components
 import RequireAuth from "./containers/auth/require_auth";
@@ -123,6 +125,7 @@ class Routes extends React.Component {
           <Route path="/learnhub" component={RequireAuth(LearnHub)} />
 
           <Route path="/admin" component={RequireAuth(AdminDashboard)} />
+          <Route path="/super" component={RequireAuth(SuperAdminDashboard)} />
           <Route path="/notification" component={RequireAuth(Notification)} />
 
           <Route path="/help" component={Help} />
@@ -132,6 +135,7 @@ class Routes extends React.Component {
           />
           <Route path="/help-category/:category" component={HelpCategory} />
           <Route path="/help-search/:search" component={HelpSearch} />
+          <Route path="/faq" component={Faq} />
 
           <Route path="*" component={NotFoundPage} />
         </Switch>

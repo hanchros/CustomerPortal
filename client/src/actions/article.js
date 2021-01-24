@@ -69,3 +69,18 @@ export function updateArticle(values) {
     }
   };
 }
+
+export function bulkUpdateArticle(articles) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      client.put(`${API_URL}/articles/bulk/list`, { articles });
+      dispatch({
+        type: FETCH_ARTICLE_LIST,
+        articles,
+      });
+    } catch (err) {
+      createNotification("Update Article", errorMessage(err));
+    }
+  };
+}

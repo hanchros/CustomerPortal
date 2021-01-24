@@ -45,13 +45,13 @@ class Learn extends React.Component {
               className={page === 2 && "active"}
               onClick={() => this.setPage(2)}
             >
-              Demoes
+              Demos
             </Link>
           </div>
           <div className="learn-body">
             {page === 0 && <LearnHub />}
             {page === 1 && <HelpCenter />}
-            {page === 2 && <h2>Demoes</h2>}
+            {page === 2 && <h2>Demos</h2>}
           </div>
         </Container>
         <Footer />

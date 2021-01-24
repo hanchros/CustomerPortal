@@ -50,7 +50,7 @@ const data = [
       { field: "org_column", value: "4" },
       { field: "proj_column", value: "4" },
       { field: "ptp_column", value: "4" },
-      { field: "show_project", value: "true" },
+      { field: "show_iframe", value: "true" },
       { field: "org_intro", value: "" },
       { field: "proj_intro", value: "" },
       { field: "ptp_intro", value: "" },

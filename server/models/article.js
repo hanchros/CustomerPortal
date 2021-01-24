@@ -25,6 +25,23 @@ const ArticleSchema = new Schema(
     topic: {
       type: String,
     },
+    files: {
+      type: [String],
+    },
+    iframe: {
+      type: String,
+    },
+    order: {
+      type: Number,
+      default: 1000,
+    },
+    show_iframe: {
+      type: Boolean,
+    },
+    button_name: {
+      type: String,
+      default: "Go To Site",
+    },
   },
   {
     timestamps: true,

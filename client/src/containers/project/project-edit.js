@@ -5,6 +5,7 @@ import { Form, Input } from "antd";
 import { updateProject, createProject } from "../../actions/project";
 import { Header, Upload, Footer } from "../../components/template";
 import Technology from "../template/technology";
+import OrgInvite from "./invite-org";
 
 const CreateForm = ({
   createProject,
@@ -13,6 +14,7 @@ const CreateForm = ({
   avatarURL,
   curProject,
   goback,
+  gonext,
   user,
   template,
 }) => {
@@ -35,7 +37,7 @@ const CreateForm = ({
       goback();
     } else {
       await createProject(values);
-      goback();
+      gonext();
     }
   };
 
@@ -100,6 +102,7 @@ class EditProject extends Component {
       avatarURL: "",
       loading: false,
       curProject: {},
+      showInvite: false,
     };
   }
 
@@ -107,8 +110,12 @@ class EditProject extends Component {
     this.setState({ avatarURL: url });
   };
 
+  onGoInvitePage = () => {
+    this.setState({ showInvite: true });
+  };
+
   render = () => {
-    const { avatarURL } = this.state;
+    const { avatarURL, showInvite } = this.state;
     const {
       curProject,
       createProject,
@@ -117,6 +124,9 @@ class EditProject extends Component {
       user,
       template,
     } = this.props;
+
+    if (showInvite) return <OrgInvite goback={goback} />;
+
     return (
       <React.Fragment>
         <Header />
@@ -130,6 +140,7 @@ class EditProject extends Component {
             avatarURL={avatarURL || curProject.logo}
             curProject={curProject}
             goback={goback}
+            gonext={this.onGoInvitePage}
             user={user}
             template={template || {}}
           />

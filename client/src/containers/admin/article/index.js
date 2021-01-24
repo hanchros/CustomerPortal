@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
+import { sortableContainer, sortableElement } from "react-sortable-hoc";
+import arrayMove from "array-move";
 import {
   Collapse,
   Button,
@@ -15,8 +17,9 @@ import {
   createArticle,
   updateArticle,
   deleteArticle,
+  bulkUpdateArticle,
 } from "../../../actions/article";
-import { SettingOutlined } from "@ant-design/icons";
+import { SettingOutlined, GlobalOutlined } from "@ant-design/icons";
 import EditArticle from "./edit_form";
 import Video from "../../../components/pages/video";
 import {
@@ -27,6 +30,11 @@ import {
 
 const { Panel } = Collapse;
 const { Search } = Input;
+const SortableItem = sortableElement(({ children }) => <div>{children}</div>);
+
+const SortableContainer = sortableContainer(({ children }) => {
+  return <div className="mb-5">{children}</div>;
+});
 
 class AdminArticle extends React.Component {
   constructor(props) {
@@ -73,7 +81,7 @@ class AdminArticle extends React.Component {
       article: {},
       visible: false,
     });
-    this.filterArticles()
+    this.filterArticles();
   };
 
   setLoading = (loading) => {
@@ -146,6 +154,104 @@ class AdminArticle extends React.Component {
     );
   };
 
+  renderGeneralArticle = (article) => (
+    <React.Fragment>
+      <div
+        className="sun-editor-editable"
+        dangerouslySetInnerHTML={{ __html: article.content }}
+      />
+      {article.image && (
+        <div className="article-img">
+          <img src={article.image} alt="" />
+        </div>
+      )}
+      {article.video && <Video url={article.video} />}
+      <div className="iframe-box">
+        {article.files && article.files.length > 0 && (
+          <div className="download-file-box">
+            <span>Documents for article</span>
+            <br />
+            {article.files.map((file) => (
+              <div key={file}>
+                <a
+                  href={file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  title={file.replace(/^.*[\\/]/, "")}
+                >
+                  {file.replace(/^.*[\\/]/, "")}
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+        {article.iframe && (
+          <div className="demo-site-link">
+            <a
+              href={article.iframe}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="main-btn"
+            >
+              <GlobalOutlined /> {article.button_name || "Go To Site"}
+            </a>
+          </div>
+        )}
+      </div>
+    </React.Fragment>
+  );
+
+  renderIframeArticle = (article) => (
+    <React.Fragment>
+      <Row>
+        <Col md={4}>
+          <h3 className="mb-3">
+            <b>{article.title}</b>
+          </h3>
+          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+          {article.files && article.files.length > 0 && (
+            <div className="download-file-box">
+              <span>Documents for download</span>
+              <br />
+              {article.files.map((file) => (
+                <div key={file}>
+                  <a
+                    href={file}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    title={file.replace(/^.*[\\/]/, "")}
+                  >
+                    {file.replace(/^.*[\\/]/, "")}
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </Col>
+        <Col md={8}>
+          <iframe
+            src={article.iframe}
+            title="demo-iframe"
+            style={{ width: "100%", height: "98%", minHeight: "60vh" }}
+          />
+        </Col>
+      </Row>
+    </React.Fragment>
+  );
+
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    const { articles, bulkUpdateArticle } = this.props;
+    if (oldIndex === newIndex) return;
+    let newAqs = arrayMove(articles, oldIndex, newIndex);
+    for (let i = 0; i < newAqs.length; i++) {
+      newAqs[i].order = i;
+    }
+    this.setState({ filtArts: newAqs });
+    bulkUpdateArticle(newAqs);
+  };
+
   render() {
     const {
       articles,
@@ -213,7 +319,7 @@ class AdminArticle extends React.Component {
             </div>
           </Col>
         </Row>
-        {!loading && (
+        {!loading && filtArts.length < articles.length && (
           <Collapse accordion>
             {filtArts.map((hd) => (
               <Panel
@@ -221,19 +327,33 @@ class AdminArticle extends React.Component {
                 key={hd._id}
                 extra={this.genExtra(hd)}
               >
-                <div
-                  className="sun-editor-editable"
-                  dangerouslySetInnerHTML={{ __html: hd.content }}
-                />
-                {hd.image && (
-                  <div className="article-img">
-                    <img src={hd.image} alt="" />
-                  </div>
-                )}
-                {hd.video && <Video url={hd.video} />}
+                {hd.iframe && hd.show_iframe && this.renderIframeArticle(hd)}
+                {(!hd.iframe || !hd.show_iframe) &&
+                  this.renderGeneralArticle(hd)}
               </Panel>
             ))}
           </Collapse>
+        )}
+        {!loading && filtArts.length === articles.length && (
+          <SortableContainer onSortEnd={this.onSortEnd}>
+            {filtArts.map((hd, i) => (
+              <SortableItem key={hd._id} index={i}>
+                <Collapse accordion>
+                  <Panel
+                    header={this.renderDocHeader(hd)}
+                    key={hd._id}
+                    extra={this.genExtra(hd)}
+                  >
+                    {hd.iframe &&
+                      hd.show_iframe &&
+                      this.renderIframeArticle(hd)}
+                    {(!hd.iframe || !hd.show_iframe) &&
+                      this.renderGeneralArticle(hd)}
+                  </Panel>
+                </Collapse>
+              </SortableItem>
+            ))}
+          </SortableContainer>
         )}
         <Button type="primary" className="mt-5" onClick={this.createNew}>
           Add New
@@ -274,4 +394,5 @@ export default connect(mapStateToProps, {
   createArticle,
   updateArticle,
   deleteArticle,
+  bulkUpdateArticle,
 })(AdminArticle);

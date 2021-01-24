@@ -94,3 +94,11 @@ export const FETCH_TEMPLATE_LIST = "fetch_template_list",
 //= =====================
 export const FETCH_MAIL_LIST = "fetch_mail_list",
   FETCH_GLOBAL_MAIL_LIST = "fetch_global_mail_list";
+
+//= =====================
+// Faq Actions
+//= =====================
+export const FETCH_FAQ_LIST = "fetch_faq_list",
+  CREATE_FAQ = "create_faq",
+  DELETE_FAQ = "delete_faq",
+  UPDATE_FAQ = "update_faq";

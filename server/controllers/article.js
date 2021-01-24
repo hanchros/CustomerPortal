@@ -24,15 +24,34 @@ exports.updateArticle = async (req, res, next) => {
   }
 };
 
-exports.listArticle = (req, res, next) => {
-  Article.find({}).exec((err, hds) => {
-    if (err) {
-      return next(err);
+exports.bulkUpdateArticle = async (req, res, next) => {
+  const articles = req.body.articles;
+  try {
+    for (let article of articles) {
+      await Article.findOneAndUpdate(
+        { _id: article._id },
+        { order: article.order }
+      );
     }
     res.status(201).json({
-      articles: hds,
+      message: "Update success",
     });
-  });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.listArticle = (req, res, next) => {
+  Article.find({})
+    .sort({ tag: 'asc', order: 1 })
+    .exec((err, hds) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).json({
+        articles: hds,
+      });
+    });
 };
 
 exports.deleteArticle = (req, res, next) => {

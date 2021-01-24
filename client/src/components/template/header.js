@@ -114,10 +114,24 @@ class HeaderTemplate extends Component {
                     </Link>
                   </NavItem>
                 )}
-                {(isAdmin || orgAdmin) && (
+                {authenticated && (
+                  <NavItem>
+                    <Link className="nav-link" to="/faq">
+                      FAQ
+                    </Link>
+                  </NavItem>
+                )}
+                {orgAdmin && (
                   <NavItem>
                     <Link className="nav-link" to="/admin">
                       ADMIN
+                    </Link>
+                  </NavItem>
+                )}
+                {isAdmin && (
+                  <NavItem>
+                    <Link className="nav-link" to="/super">
+                      SUPER
                     </Link>
                   </NavItem>
                 )}

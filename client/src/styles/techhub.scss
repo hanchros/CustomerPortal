@@ -1,14 +1,8 @@
-.techhub-box {
-  border: 1px solid $blue;
-  min-height: 66vh !important;
-  margin-bottom: 10px;
-}
-
-.content-box {
-  padding: 20px !important;
-}
-
 .techhub-title-list {
+  border: 1px solid $blue;
+  min-height: 67vh;
+  padding: 0 10px !important;
+  margin-bottom: 10px !important;
   .ant-list-item {
     cursor: pointer;
     &:hover {
@@ -19,6 +13,30 @@
   .ant-list-item.active {
     color: $light-green;
   }
+}
+
+.tech-article-box {
+  border: 1px solid $blue;
+  padding: 20px;
+  min-height: 67vh;
+}
+
+.download-file-box {
+  span {
+    font-size: 14px;
+  }
+  div {
+    a {
+      font-size: 14px;
+    }
+  }
+}
+
+.iframe-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .learn-header {
@@ -51,12 +69,11 @@
     margin-bottom: 0 !important;
     margin-top: 0 !important;
     padding-bottom: 8px !important;
-
   }
 
   li.ant-menu-item {
     height: auto !important ;
-    min-height: 60px ;
+    min-height: 60px;
     overflow: auto;
     text-overflow: unset;
     white-space: unset;

@@ -9,6 +9,7 @@ import adminReducer from "./admin";
 import articleReducer from "./article";
 import templateReducer from "./template";
 import mailReducer from "./mail";
+import faqReducer from "./faq";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   article: articleReducer,
   template: templateReducer,
   mail: mailReducer,
+  faq: faqReducer,
 });
 
 export default rootReducer;

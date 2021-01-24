@@ -12,6 +12,7 @@ const ArticleController = require("./controllers/article");
 const InviteRequestController = require("./controllers/inviterequest")
 const TemplateController = require("./controllers/template");
 const MailController = require("./controllers/mail");
+const FaqController = require("./controllers/faq");
 
 var multer  = require('multer')
 const express = require("express");
@@ -47,6 +48,7 @@ module.exports = function (app) {
     inviteRequestRoutes = express.Router(),
     templateRoutes = express.Router(),
     mailRoutes = express.Router(),
+    faqRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -266,13 +268,15 @@ module.exports = function (app) {
   // Article Routes
   //= ========================
   apiRoutes.use("/articles", articleRoutes);
-  // create help document route
+  // create article document route
   articleRoutes.post("/", requireAuth, ArticleController.createArticle);
-  // List help documents route
+  // List article documents route
   articleRoutes.get("/", ArticleController.listArticle);
-  // update help document route
+  // update article document route
   articleRoutes.put("/", requireAuth, ArticleController.updateArticle);
-  // delete help document route
+  // update bulk articles route
+  articleRoutes.put("/bulk/list", requireAuth, ArticleController.bulkUpdateArticle);
+  // delete article document route
   articleRoutes.delete("/:id", requireAuth, ArticleController.deleteArticle);
 
   
@@ -320,6 +324,22 @@ module.exports = function (app) {
   mailRoutes.put("/", requireAuth, MailController.updateMail);
   // Delete mail route
   mailRoutes.delete("/:id", requireAuth, MailController.deleteMail);
+
+  
+  //= ========================
+  // Faq Routes
+  //= ========================
+  apiRoutes.use("/faq", faqRoutes);
+  // create faq route
+  faqRoutes.post("/", requireAuth, FaqController.createFaq);
+  // List faq route
+  faqRoutes.get("/", requireAuth, FaqController.listFaq);
+  // update faq route
+  faqRoutes.put("/", requireAuth, FaqController.updateFaq);
+  // update faq route
+  faqRoutes.put("/bulk/list", requireAuth, FaqController.bulkUpdateFaq);
+  // delete faq route
+  faqRoutes.delete("/:id", requireAuth, FaqController.deleteFaq);
 
 
   // Set url for API group routes
