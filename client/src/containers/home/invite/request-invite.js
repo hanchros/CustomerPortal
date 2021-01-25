@@ -50,7 +50,7 @@ const RequestInviteForm = ({ onSubmit, sent }) => {
       </Form.Item>
       <div className="signup-btn flex mt-5">
         <button type="submit" className="main-btn">
-          Register
+          Send
         </button>
         {sent && <p className="ml-4">Please check your email</p>}
       </div>
@@ -82,7 +82,7 @@ class RequestInvite extends React.Component {
         <RequestInviteForm onSubmit={this.onRequestInvite} sent={sent} />
         <div className="home-btn-group mt-big">
           <Link to="#" className="main-btn" onClick={this.props.goNext}>
-            Next
+            Go Back
           </Link>
         </div>
         <ModalSpinner visible={loading} />

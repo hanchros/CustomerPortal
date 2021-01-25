@@ -275,3 +275,10 @@ export function getInviteEmailTemplate(values) {
     }
   };
 }
+
+export function getBorderStyle() {
+  return async (dispatch, getState) => {
+    const orgSettings = getState().organization.orgSettings;
+    return `1px solid ${orgSettings.primary_color}`;
+  };
+}

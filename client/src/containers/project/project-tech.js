@@ -7,7 +7,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 
 class ProjectTech extends Component {
   render = () => {
-    const { project, goback } = this.props;
+    const { project, goback, orgSettings } = this.props;
     // let isCreator =
     //   project.project.participant &&
     //   project.project.participant._id === user._id;
@@ -22,7 +22,13 @@ class ProjectTech extends Component {
           <h4 className="mb-4">{curProj.name} Technology</h4>
           {curProj.technologies &&
             curProj.technologies.map((tech) => (
-              <div className="project-general-box mb-4" key={tech.application}>
+              <div
+                className="project-general-box mb-4"
+                key={tech.application}
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
                 <h5>{tech.application}</h5>
                 <span>{tech.organization}</span>
                 <br />
@@ -42,6 +48,7 @@ const mapStateToProps = (state) => {
     isAdmin: state.user.isAdmin,
     auth: state.auth,
     project: state.project,
+    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 };

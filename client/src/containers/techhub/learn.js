@@ -28,21 +28,21 @@ class Learn extends React.Component {
           <div className="learn-header">
             <Link
               to="#"
-              className={page === 0 && "active"}
+              className={page === 0 ? "active" : ""}
               onClick={() => this.setPage(0)}
             >
               LEARNING HUB
             </Link>
             <Link
               to="#"
-              className={page === 1 && "active"}
+              className={page === 1 ? "active" : ""}
               onClick={() => this.setPage(1)}
             >
               Help Center
             </Link>
             <Link
               to="#"
-              className={page === 2 && "active"}
+              className={page === 2 ? "active" : ""}
               onClick={() => this.setPage(2)}
             >
               Demos

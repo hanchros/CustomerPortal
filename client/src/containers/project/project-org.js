@@ -21,7 +21,7 @@ class ProjectOrgs extends Component {
   };
 
   render() {
-    const { project, goback } = this.props;
+    const { project, goback, orgSettings } = this.props;
     // let isCreator =
     //   project.project.participant &&
     //   project.project.participant._id === user._id;
@@ -47,7 +47,12 @@ class ProjectOrgs extends Component {
                       alt=""
                     ></img>
                   </div>
-                  <div className="project-detail-desc">
+                  <div
+                    className="project-detail-desc"
+                    style={{
+                      borderColor: orgSettings.primary_color,
+                    }}
+                  >
                     <h5>{org.organization.org_name}</h5>
                     <ul>
                       {org.organization.org_type && (
@@ -59,9 +64,7 @@ class ProjectOrgs extends Component {
                       {org.organization.location && (
                         <li>​{org.organization.location}</li>
                       )}
-                      {org.organization.bio && (
-                        <li>{org.organization.bio}</li>
-                      )}
+                      {org.organization.bio && <li>{org.organization.bio}</li>}
                     </ul>
                   </div>
                 </div>
@@ -91,6 +94,7 @@ const mapStateToProps = (state) => {
     isAdmin: state.user.isAdmin,
     auth: state.auth,
     project: state.project,
+    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 };

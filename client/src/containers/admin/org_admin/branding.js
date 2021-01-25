@@ -144,20 +144,6 @@ class OrgBasics extends React.Component {
               </ColorPicker>
             </div>
             <div className="color-picker-box">
-              <span>Secondary Color:</span>
-              <ColorPicker
-                color={secondary_color}
-                alpha={100}
-                onClose={(colors) =>
-                  this.onChangeOrgValue("secondary_color", colors.color)
-                }
-                placement="topLeft"
-                className="some-class"
-              >
-                <span className="rc-color-picker-trigger" />
-              </ColorPicker>
-            </div>
-            <div className="color-picker-box">
               <span>Background Color:</span>
               <ColorPicker
                 color={background_color}
@@ -172,7 +158,21 @@ class OrgBasics extends React.Component {
               </ColorPicker>
             </div>
             <div className="color-picker-box">
-              <span>MenuFont Color:</span>
+              <span>Menu Bar Color:</span>
+              <ColorPicker
+                color={secondary_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("secondary_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Menu Text Color:</span>
               <ColorPicker
                 color={menufont_color}
                 alpha={100}

@@ -1,15 +1,21 @@
 const InviteRequest = require("../models/inviterequest");
 
-exports.createInviteRequest = (req, res, next) => {
-  const ir = new InviteRequest(req.body);
-  ir.save((err, result) => {
-    if (err) {
-      return next(err);
+exports.createInviteRequest = async (req, res, next) => {
+  try {
+    let irs = await InviteRequest.find({ email: req.body.email });
+    if (irs.length > 0) {
+      return res
+        .status(422)
+        .send({ error: "That email address is already in use." });
     }
+    const ir = new InviteRequest(req.body);
+    result = await ir.save();
     res.status(201).json({
-      inviteRequest: result,
+      inviteRequests: result,
     });
-  });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.listInviteRequest = (req, res, next) => {

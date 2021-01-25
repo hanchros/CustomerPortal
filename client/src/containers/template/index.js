@@ -34,6 +34,7 @@ class Template extends Component {
   };
 
   render() {
+    const { orgSettings } = this.props;
     const { template, showEditForm, showUseTemplate } = this.state;
     if (showEditForm) {
       return <EditTemplate curTemplate={template} goback={this.onToggleEdit} />;
@@ -54,7 +55,12 @@ class Template extends Component {
         <Container className="content">
           <Row gutter={50}>
             <Col md={16} sm={24}>
-              <div className="template-name-box">
+              <div
+                className="template-name-box"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
                 <h2>{template.name}</h2>
                 {template.creator && (
                   <span className="mr-5">
@@ -63,13 +69,25 @@ class Template extends Component {
                 )}
                 <span>Objective: {template.objective}</span>
               </div>
-              <div className="template-desc-box">{template.description}</div>
+              <div
+                className="template-desc-box"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
+                {template.description}
+              </div>
             </Col>
             <Col md={8} sm={24}>
               <button className="main-btn" onClick={this.onToggleUseTemplate}>
                 Use Template
               </button>
-              <div className="template-tech-box">
+              <div
+                className="template-tech-box"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
                 <h5>Technology</h5>
                 {template.technologies && (
                   <ul>
@@ -79,7 +97,12 @@ class Template extends Component {
                   </ul>
                 )}
               </div>
-              <div className="template-tech-box">
+              <div
+                className="template-tech-box"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
                 <h5>Asssociated Projects</h5>
                 {template.projects && (
                   <ul>
@@ -107,6 +130,7 @@ class Template extends Component {
 function mapStateToProps(state) {
   return {
     template: state.template,
+    orgSettings: state.organization.orgSettings,
   };
 }
 

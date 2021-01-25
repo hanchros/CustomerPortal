@@ -22,7 +22,12 @@ class Learnhub extends React.Component {
 
   renderArticles = (article) => {
     return (
-      <div className="tech-article-box">
+      <div
+        className="tech-article-box"
+        style={{
+          borderColor: this.props.orgSettings.primary_color,
+        }}
+      >
         <h3 className="mb-4">{article.title}</h3>
         {article.video && <Video url={article.video} />}
         <p className="mt-4" />
@@ -44,7 +49,7 @@ class Learnhub extends React.Component {
       "article_tag",
       "learnhub"
     );
-    if (!techTag) return result
+    if (!techTag) return result;
     let filtArticles = articles.filter((item) => item.tag === techTag._id);
     for (let article of filtArticles) {
       if (!result[article.topic] || result[article.topic].length === 0) {
@@ -73,7 +78,7 @@ class Learnhub extends React.Component {
             mode="inline"
           >
             {keys.map((key) => (
-              <React.Fragment>
+              <React.Fragment key={key}>
                 {objArticles[key].length === 1 && (
                   <Menu.Item
                     key={key}
@@ -111,6 +116,7 @@ class Learnhub extends React.Component {
 function mapStateToProps(state) {
   return {
     articles: state.article.articles,
+    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 }

@@ -40,7 +40,7 @@ import Resend from "./containers/auth/resend";
 import ConfirmEmail from "./containers/auth/confirm-email";
 
 // Import user related Pages
-// import Dashboard from "./containers/dashboard";
+import Dashboard from "./containers/dashboard";
 import Participant from "./containers/user/user";
 import Profile from "./containers/user/profilepage";
 import ParticipantsList from "./containers/user/list";
@@ -77,7 +77,10 @@ class Routes extends React.Component {
 
   render() {
     return (
-      <div className="layout">
+      <div
+        className="layout"
+        style={{ backgroundColor: this.props.orgSettings.background_color }}
+      >
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/integraspace" component={IntegraSpace} />
@@ -112,7 +115,8 @@ class Routes extends React.Component {
           <Route path="/participants" component={ParticipantsList} />
           <Route path="/participant/:id" component={Participant} />
 
-          <Route path="/dashboard" component={RequireAuth(Projectslist)} />
+          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
+          <Route path="/projects" component={RequireAuth(Projectslist)} />
           <Route path="/project/:id" component={RequireAuth(Project)} />
           <Route
             path="/select-template"
@@ -146,7 +150,10 @@ class Routes extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { user: state.user };
+  return {
+    user: state.user,
+    orgSettings: state.organization.orgSettings,
+  };
 }
 
 export default connect(mapStateToProps, {

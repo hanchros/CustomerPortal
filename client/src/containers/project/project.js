@@ -54,7 +54,7 @@ class Project extends Component {
 
   render = () => {
     const { loading, showOrgs, showTeam, showTech, showEdit } = this.state;
-    const { project, user } = this.props;
+    const { project, user, orgSettings } = this.props;
     const curProj = project.project;
     const participants = project.participants;
     const organizations = project.organizations;
@@ -84,15 +84,32 @@ class Project extends Component {
                 <div>
                   <img src={curProj.logo || ChallengeLogo} alt="" />
                 </div>
-                <div className="project-detail-headerbox">
+                <div
+                  className="project-detail-headerbox"
+                  style={{
+                    borderColor: orgSettings.primary_color,
+                  }}
+                >
                   <h3>{curProj.name}</h3>
                   <span>Project Leader</span>
                   <br />
                   <b>{curProj.status}</b>
                 </div>
               </div>
-              <div className="project-detail-desc">{curProj.description}</div>
-              <div className="project-detail-desc">
+              <div
+                className="project-detail-desc"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
+                {curProj.description}
+              </div>
+              <div
+                className="project-detail-desc"
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
+              >
                 <h5>Project Timeline:</h5>
                 <ul>
                   <li>More recent here</li>
@@ -105,6 +122,9 @@ class Project extends Component {
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowOrgs}
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
               >
                 <h5>Client & Partner Organization:</h5>
                 <ul>
@@ -116,6 +136,9 @@ class Project extends Component {
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowTeam}
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
               >
                 <h5>Team:</h5>
                 <ul>
@@ -130,6 +153,9 @@ class Project extends Component {
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowTech}
+                style={{
+                  borderColor: orgSettings.primary_color,
+                }}
               >
                 <h5>Technology:</h5>
                 <ul>
@@ -163,6 +189,7 @@ const mapStateToProps = (state) => {
     auth: state.auth,
     project: state.project,
     fieldData: state.profile.fieldData,
+    orgSettings: state.organization.orgSettings,
   };
 };
 
