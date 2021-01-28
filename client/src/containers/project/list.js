@@ -27,7 +27,7 @@ class ProjectList extends Component {
   };
 
   goToProject = (item) => {
-    history.push(`/project/${item._id}`);
+    history.push(`/${this.props.curOrg.org_name}/project/${item._id}`);
   };
 
   render() {
@@ -38,7 +38,10 @@ class ProjectList extends Component {
       <React.Fragment>
         <Header />
         <Container className="content">
-          <Link className="main-btn mb-4" to="/select-template">
+          <Link
+            className="main-btn mb-4"
+            to={`/${this.props.curOrg.org_name}/select-template`}
+          >
             Create New
           </Link>
           <List
@@ -75,6 +78,8 @@ class ProjectList extends Component {
 function mapStateToProps(state) {
   return {
     project: state.project,
+    curOrg: state.organization.currentOrganization,
+    orgSettings: state.organization.orgSettings,
   };
 }
 

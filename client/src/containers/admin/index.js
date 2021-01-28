@@ -33,7 +33,7 @@ class AdminDashboard extends Component {
   componentDidMount() {
     const { orgAdmin, user, getOrganization } = this.props;
     if (!orgAdmin) {
-      history.push("/dashboard");
+      history.push("/");
       return;
     }
     if (orgAdmin) {

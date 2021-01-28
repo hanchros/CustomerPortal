@@ -172,7 +172,7 @@
     margin: 0 auto;
   }
   .org-bio-box {
-    border: 1px solid $blue;
+    border: 1px solid var(--primary_color);
     padding: 10px;
   }
   .color-picker-box {
@@ -181,6 +181,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+  }
+
+  .brand-color-span {
+    display: flex;
+    align-items: center;
+  }
+
+  .brand-logo {
+    width: 150px;
+    height: auto;
+    border-radius: 5px;
   }
   .admin-org-toggle {
     display: flex;
@@ -205,7 +216,6 @@
       font-weight: bold;
     }
     .ant-list-item-meta-description {
-      color: #555;
       font-size: 15px;
     }
   }
@@ -222,6 +232,10 @@
     justify-content: space-between;
     padding: 10px 24px;
   }
+}
+
+.ant-page-header-heading-title a:hover {
+  text-decoration: none;
 }
 
 .article-filter-box {

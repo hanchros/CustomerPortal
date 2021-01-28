@@ -22,12 +22,7 @@ class Learnhub extends React.Component {
 
   renderArticles = (article) => {
     return (
-      <div
-        className="tech-article-box"
-        style={{
-          borderColor: this.props.orgSettings.primary_color,
-        }}
-      >
+      <div className="tech-article-box">
         <h3 className="mb-4">{article.title}</h3>
         {article.video && <Video url={article.video} />}
         <p className="mt-4" />
@@ -116,7 +111,6 @@ class Learnhub extends React.Component {
 function mapStateToProps(state) {
   return {
     articles: state.article.articles,
-    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 }

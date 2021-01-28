@@ -175,7 +175,7 @@ class OrgReport extends Component {
               extra={this.genExtra(org)}
             >
               <PageHeader
-                title={org.org_name}
+                title={<Link to={`/${org.org_name}`}>{org.org_name}</Link>}
                 className="site-page-header mb-4"
               >
                 <Descriptions size="small" column={2}>

@@ -106,7 +106,6 @@ class HelpCenter extends React.Component {
       updateArticle,
       deleteArticle,
       fieldData,
-      orgSettings,
     } = this.props;
     const techTag = getFieldDataByNameValue(
       fieldData,
@@ -115,12 +114,7 @@ class HelpCenter extends React.Component {
     );
 
     return (
-      <div
-        className="tech-article-box"
-        style={{
-          borderColor: orgSettings.primary_color,
-        }}
-      >
+      <div className="tech-article-box">
         <div className="right-flex mt-2 mb-3">
           <Button type="primary" onClick={this.createNew}>
             <PlusOutlined />
@@ -181,9 +175,6 @@ class HelpCenter extends React.Component {
             dataSource={techTitleTags}
             className="techhub-title-list"
             renderItem={this.renderTitleItem}
-            style={{
-              borderColor: this.props.orgSettings.primary_color,
-            }}
           />
         </Col>
         <Col md={17} sm={24} className="techhub-box content-box">
@@ -197,7 +188,6 @@ class HelpCenter extends React.Component {
 function mapStateToProps(state) {
   return {
     articles: state.article.articles,
-    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 }

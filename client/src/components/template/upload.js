@@ -5,8 +5,12 @@ import Signature from "../../../node_modules/react-s3/lib/Signature";
 import { xAmzDate, dateYMD } from "../../../node_modules/react-s3/lib/Date";
 
 import { v4 as uuidv4 } from "uuid";
-import { Upload, message } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { Upload, message, Tooltip } from "antd";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 
 const config = {
   bucketName: process.env.REACT_APP_S3_BUCKET,
@@ -31,9 +35,8 @@ const beforeUpload = (file) => {
 };
 
 export const uploadFile = async (file) => {
-
   const originalFilename = file.name;
-  const fileExtension = originalFilename.split('.').pop();
+  const fileExtension = originalFilename.split(".").pop();
   const newfileName = `${uuidv4()}.${fileExtension}`;
 
   const fd = new FormData();
@@ -44,31 +47,39 @@ export const uploadFile = async (file) => {
   fd.append("Content-Type", file.type);
   fd.append("x-amz-meta-uuid", "14365123651274");
   fd.append("x-amz-server-side-encryption", "AES256");
-  fd.append("X-Amz-Credential", `${config.accessKeyId}/${dateYMD}/${config.region}/s3/aws4_request`);
+  fd.append(
+    "X-Amz-Credential",
+    `${config.accessKeyId}/${dateYMD}/${config.region}/s3/aws4_request`
+  );
   fd.append("X-Amz-Algorithm", "AWS4-HMAC-SHA256");
   fd.append("X-Amz-Date", xAmzDate);
   fd.append("x-amz-meta-tag", "");
   fd.append("Policy", Policy.getPolicy(config));
-  fd.append("X-Amz-Signature", Signature.getSignature(config, dateYMD, Policy.getPolicy(config)));
+  fd.append(
+    "X-Amz-Signature",
+    Signature.getSignature(config, dateYMD, Policy.getPolicy(config))
+  );
   fd.append("file", file);
 
   const params = {
-      method: "post",
-      headers: {
-          fd
-      },
-      body: fd
+    method: "post",
+    headers: {
+      fd,
+    },
+    body: fd,
   };
 
   const data = await fetch(url, params);
   if (!data.ok) return Promise.reject(data);
   return Promise.resolve({
-      bucket: config.bucketName,
-      key: `${config.dirName ? config.dirName + "/" : ""}${newfileName}`,
-      location: `${url}${config.dirName ? config.dirName + "/" : ""}${newfileName}`,
-      result: data
+    bucket: config.bucketName,
+    key: `${config.dirName ? config.dirName + "/" : ""}${newfileName}`,
+    location: `${url}${
+      config.dirName ? config.dirName + "/" : ""
+    }${newfileName}`,
+    result: data,
   });
-}
+};
 
 class Avatar extends React.Component {
   state = {
@@ -93,6 +104,12 @@ class Avatar extends React.Component {
       });
   };
 
+  onRemoveImg = (e) => {
+    e.stopPropagation();
+    this.setState({ imageUrl: "" });
+    this.props.setAvatar("");
+  };
+
   render() {
     const uploadButton = (
       <div>
@@ -114,6 +131,15 @@ class Avatar extends React.Component {
           <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
         ) : (
           uploadButton
+        )}
+        {imageUrl && (
+          <Tooltip title="Remove">
+            <CloseCircleOutlined
+              className="upload-remove"
+              onClick={this.onRemoveImg}
+              style={{ fontSize: "16px", color: "#999" }}
+            />
+          </Tooltip>
         )}
       </Upload>
     );

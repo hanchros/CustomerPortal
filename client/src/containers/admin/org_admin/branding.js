@@ -17,6 +17,8 @@ class OrgBasics extends React.Component {
       secondary_color: "",
       background_color: "",
       menufont_color: "",
+      font_color: "",
+      link_color: "",
       title_page: "",
       title_page_description: "",
       loading: false,
@@ -33,6 +35,8 @@ class OrgBasics extends React.Component {
       background_color:
         org.profile.background_color || org_consts.background_color,
       menufont_color: org.profile.menufont_color || org_consts.menufont_color,
+      font_color: org.profile.font_color || org_consts.font_color,
+      link_color: org.profile.link_color || org_consts.link_color,
       title_page: org.profile.title_page || org_consts.title_page,
       title_page_description:
         org.profile.title_page_description || org_consts.title_page_description,
@@ -53,6 +57,8 @@ class OrgBasics extends React.Component {
       secondary_color: org_consts.secondary_color,
       background_color: org_consts.background_color,
       menufont_color: org_consts.menufont_color,
+      font_color: org_consts.font_color,
+      link_color: org_consts.link_color,
     });
   };
 
@@ -70,6 +76,8 @@ class OrgBasics extends React.Component {
       secondary_color,
       background_color,
       menufont_color,
+      font_color,
+      link_color,
       title_page,
       title_page_description,
     } = this.state;
@@ -83,6 +91,8 @@ class OrgBasics extends React.Component {
         secondary_color,
         background_color,
         menufont_color,
+        font_color,
+        link_color,
         title_page,
         title_page_description,
       },
@@ -97,6 +107,8 @@ class OrgBasics extends React.Component {
       secondary_color,
       background_color,
       menufont_color,
+      font_color,
+      link_color,
       title_page,
       title_page_description,
     } = this.state;
@@ -107,6 +119,8 @@ class OrgBasics extends React.Component {
       secondary_color !== org.profile.secondary_color ||
       background_color !== org.profile.background_color ||
       menufont_color !== org.profile.menufont_color ||
+      font_color !== org.profile.font_color ||
+      link_color !== org.profile.link_color ||
       title_page !== org.profile.title_page ||
       title_page_description !== org.profile.title_page_description
     )
@@ -121,6 +135,8 @@ class OrgBasics extends React.Component {
       secondary_color,
       background_color,
       menufont_color,
+      font_color,
+      link_color,
       title_page,
       title_page_description,
       loading,
@@ -178,6 +194,34 @@ class OrgBasics extends React.Component {
                 alpha={100}
                 onClose={(colors) =>
                   this.onChangeOrgValue("menufont_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Main Font Color:</span>
+              <ColorPicker
+                color={font_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("font_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Main Link Color:</span>
+              <ColorPicker
+                color={link_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("link_color", colors.color)
                 }
                 placement="topLeft"
                 className="some-class"

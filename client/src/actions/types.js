@@ -24,6 +24,7 @@ export const FETCH_ORGANIZATION = "fetch_organization",
   FETCH_ORG_USER_LIST = "fetch_org_user_list",
   FETCH_ORG_SEARCH_LIST = "fetch_org_seaerch_list",
   FETCH_SIMPLE_ORG = "fetch_simple_org",
+  SET_ORG_SETTINGS = "set_org_settings",
   SET_CURRENT_ORGANIZATION = "set_current_organization";
 
 //= =====================

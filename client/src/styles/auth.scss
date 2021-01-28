@@ -68,8 +68,22 @@
 }
 
 .avatar-uploader {
-  width: 110px;
+  width: 110px !important;
   margin: 0 auto;
+  position: relative;
+
+  .upload-remove {
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: .7s, .7s;
+  }
+}
+
+.avatar-uploader:hover .upload-remove {
+  opacity: 1;
 }
 
 .verify-redirect {
@@ -214,7 +228,7 @@
 
   .register-project-view {
     display: flex;
-    border: 1px solid $blue;
+    border: 1px solid var(--primary_color);
     padding: 10px;
     width: 100%;
     img {

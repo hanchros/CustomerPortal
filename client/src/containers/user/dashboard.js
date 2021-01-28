@@ -100,7 +100,6 @@ class UserDashboard extends Component {
           {!isUpdate && (
             <div className="user-dashboard">
               {this.renderProfileAlert(userInfo)}
-              {this.renderMessageAlert()}
               {dashIntro && (
                 <div
                   className="sun-editor-editable mb-4"
@@ -132,31 +131,6 @@ class UserDashboard extends Component {
       </div>
     );
     return <Alert description={valid} type="info" closable />;
-  };
-
-  renderMessageAlert = () => {
-    const { joinProjects } = this.state;
-    let invPros = [];
-    joinProjects.map((jpm) => {
-      if (jpm.pending) {
-        invPros.push(jpm.project);
-      }
-      return false;
-    });
-    if (invPros.length === 0) return null;
-    return (
-      <React.Fragment>
-        {invPros.map((proj) => {
-          let valid = (
-            <div className="profile-alert">
-              A project - "{proj.name}" has invited you to join the team. Click{" "}
-              <Link to={`/project/${proj._id}`}>here</Link> to accept invitation
-            </div>
-          );
-          return <Alert description={valid} type="success" closable />;
-        })}
-      </React.Fragment>
-    );
   };
 
   renderUserInfo = (userInfo) => {

@@ -250,7 +250,6 @@ class Techhub extends React.Component {
       updateArticle,
       deleteArticle,
       fieldData,
-      orgSettings,
     } = this.props;
     const techTag = getFieldDataByNameValue(
       fieldData,
@@ -260,12 +259,7 @@ class Techhub extends React.Component {
 
     if (curArticles.length === 0) return null;
     return (
-      <div
-        className="tech-article-box"
-        style={{
-          borderColor: orgSettings.primary_color,
-        }}
-      >
+      <div className="tech-article-box">
         {curArticles.length === 1 && this.renderOneArticle(curArticles[0])}
         {curArticles.length > 1 && this.renderMultiArticles(curArticles)}
         {visible && (
@@ -305,9 +299,6 @@ class Techhub extends React.Component {
                 dataSource={techTitleTags}
                 className="techhub-title-list"
                 renderItem={this.renderTitleItem}
-                style={{
-                  borderColor: this.props.orgSettings.primary_color,
-                }}
               />
             </Col>
             <Col md={9} sm={12}>
@@ -324,7 +315,6 @@ class Techhub extends React.Component {
 function mapStateToProps(state) {
   return {
     articles: state.article.articles,
-    orgSettings: state.organization.orgSettings,
     fieldData: state.profile.fieldData,
   };
 }

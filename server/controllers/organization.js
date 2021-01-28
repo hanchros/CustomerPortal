@@ -62,6 +62,17 @@ exports.getOrganization = async (req, res, next) => {
   }
 };
 
+exports.getOrgByName = async (req, res, next) => {
+  try {
+    const org = await Organization.findOne({ org_name: req.params.org_name });
+    res.status(201).json({
+      organization: org,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.getOrgUsers = async (req, res, next) => {
   try {
     const users = await User.find(

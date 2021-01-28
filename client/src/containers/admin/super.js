@@ -38,7 +38,7 @@ class AdminDashboard extends Component {
   componentDidMount() {
     const { isAdmin } = this.props;
     if (!isAdmin) {
-      history.push("/dashboard");
+      history.push("/");
       return;
     }
   }

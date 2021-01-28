@@ -11,40 +11,22 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import { Modal, Avatar, Badge } from "antd";
-import { ExclamationCircleOutlined, BellOutlined } from "@ant-design/icons";
+import { Avatar, Badge } from "antd";
+import { BellOutlined } from "@ant-design/icons";
 import { deleteUser } from "../../actions/user";
 import { Link } from "react-router-dom";
 import sampleUrl from "../../assets/img/user-avatar.png";
-
-const { confirm } = Modal;
 
 class HeaderTemplate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
-      projects: [],
-      challenges: [],
-      organizations: [],
-      participants: [],
     };
   }
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
-  };
-
-  handleOnClickDelete = (deleteUser) => {
-    const { currentUser } = this.props;
-    confirm({
-      title: "Do you want to delete your account?",
-      icon: <ExclamationCircleOutlined />,
-      content: "",
-      onOk() {
-        deleteUser(currentUser._id);
-      },
-    });
   };
 
   render = () => {
@@ -56,23 +38,19 @@ class HeaderTemplate extends Component {
       orgAdmin,
       organization,
     } = this.props;
-    const orgSettings = organization.orgSettings;
+    const orgName =
+      organization.currentOrganization.org_name || "integra-ledger";
 
     return (
       <React.Fragment>
-        <div
-          className="main-nav"
-          style={{
-            backgroundColor: orgSettings.secondary_color,
-          }}
-        >
+        <div className="main-nav">
           <Navbar
             className="container-nav"
             light
             color="transparent"
             expand="md"
           >
-            <Link className="navbar-brand" to={"/dashboard"}>
+            <Link className="navbar-brand" to={`/${orgName}`}>
               {currentUser.profile && currentUser.profile.org.logo ? (
                 <img src={currentUser.profile.org.logo} alt="logo" />
               ) : (
@@ -80,15 +58,11 @@ class HeaderTemplate extends Component {
               )}
             </Link>
             <NavbarToggler onClick={this.toggle} />
-            <Collapse
-              isOpen={this.state.isOpen}
-              navbar
-              style={{ color: orgSettings.menufont_color }}
-            >
+            <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/projects">
+                    <Link className="nav-link" to={`/${orgName}/projects`}>
                       MY PROJECTS
                     </Link>
                   </NavItem>
@@ -102,28 +76,28 @@ class HeaderTemplate extends Component {
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/techhub">
+                    <Link className="nav-link" to={`/${orgName}/techhub`}>
                       TECH HUB
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/learnhub">
+                    <Link className="nav-link" to={`/${orgName}/learnhub`}>
                       LEARN
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/faq">
+                    <Link className="nav-link" to={`/${orgName}/faq`}>
                       FAQ
                     </Link>
                   </NavItem>
                 )}
                 {orgAdmin && (
                   <NavItem>
-                    <Link className="nav-link" to="/admin">
+                    <Link className="nav-link" to={`/${orgName}/admin`}>
                       ADMIN
                     </Link>
                   </NavItem>
@@ -175,17 +149,6 @@ class HeaderTemplate extends Component {
                           Profile
                         </Link>
                       </DropdownItem>
-                      {/* <DropdownItem>
-                        <Link
-                          className="nav-link"
-                          to="#"
-                          onClick={() =>
-                            this.handleOnClickDelete(this.props.deleteUser)
-                          }
-                        >
-                          Delete Account
-                        </Link>
-                      </DropdownItem> */}
                       <DropdownItem divider />
                       <DropdownItem>
                         <Link className="nav-link" to="/logout">

@@ -54,7 +54,7 @@ class AdminFaq extends React.Component {
         <div className="container content">
           <Row>
             <Col md={12} className="mb-4" style={{ textAlign: "center" }}>
-              <h5 style={{ color: "#006699" }}>Frequently Asked Questions</h5>
+              <h5>Frequently Asked Questions</h5>
             </Col>
           </Row>
           <Skeleton active loading={loading} />

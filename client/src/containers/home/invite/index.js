@@ -10,6 +10,8 @@ import RequestInvite from "./request-invite";
 import InviteRegister from "./invite-register";
 import ProjectRegister from "./project-register";
 import InviteComplete from "./invite-complete";
+import { getOrgByName } from "../../../actions/organization";
+import ChallengeIcon from "../../../assets/icon/challenge.png";
 
 class InviteHomePage extends React.Component {
   constructor() {
@@ -21,6 +23,14 @@ class InviteHomePage extends React.Component {
       fileReading: false,
     };
   }
+
+  componentDidMount = async () => {
+    const { match, getOrgByName, orgSettings } = this.props;
+    let org_name = match.params.org_name;
+    if (org_name && orgSettings.org_name !== org_name) {
+      await getOrgByName(org_name);
+    }
+  };
 
   onBegin = () => {
     this.setState({ step: 1 });
@@ -50,19 +60,30 @@ class InviteHomePage extends React.Component {
     this.setState({ step: 3, pdfData: res.data.result, fileReading: false });
   };
 
-  renderHome = () => (
-    <React.Fragment>
-      <div className="main-background-title">AUTOMATION PLACE</div>
-      <p className="home-intro mt-big">
-        Explanation – address all friction and fears​
-      </p>
-      <div className="home-btn-group mt-big">
-        <Link to="#" className="main-btn" onClick={this.onBegin}>
-          Begin
-        </Link>
-      </div>
-    </React.Fragment>
-  );
+  renderHome = () => {
+    const { orgSettings, location } = this.props;
+    const params = new URLSearchParams(location.search);
+    return (
+      <React.Fragment>
+        <div className="main-background-title">AUTOMATION PLACE</div>
+        <img
+          className="invite-page-logo"
+          src={orgSettings.logo || ChallengeIcon}
+          alt=""
+        />
+        <p className="home-intro mt-5">
+          {orgSettings.org_name} has invited you to join the{" "}
+          {params.get("project")} project. Click the "Begin" button below to
+          find out more information
+        </p>
+        <div className="home-btn-group mt-big">
+          <Link to="#" className="main-btn" onClick={this.onBegin}>
+            Begin
+          </Link>
+        </div>
+      </React.Fragment>
+    );
+  };
 
   renderRegisterStart = () => (
     <React.Fragment>
@@ -102,7 +123,11 @@ class InviteHomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    orgSettings: state.organization.orgSettings,
+  };
 }
 
-export default connect(mapStateToProps, { dropRegFile })(InviteHomePage);
+export default connect(mapStateToProps, { dropRegFile, getOrgByName })(
+  InviteHomePage
+);

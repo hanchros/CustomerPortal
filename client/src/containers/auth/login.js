@@ -28,11 +28,7 @@ const LoginForm = ({ onSubmit }) => {
           },
         ]}
       >
-        <Input
-          size="large"
-          type="email"
-          placeholder="Email"
-        />
+        <Input size="large" type="email" placeholder="Email" />
       </Form.Item>
       <Form.Item
         name="password"
@@ -43,11 +39,7 @@ const LoginForm = ({ onSubmit }) => {
           },
         ]}
       >
-        <Input
-          size="large"
-          type="password"
-          placeholder="Password"
-        />
+        <Input size="large" type="password" placeholder="Password" />
       </Form.Item>
       <div className="login-options">
         <Form.Item>
@@ -78,7 +70,7 @@ const LoginForm = ({ onSubmit }) => {
 class Login extends Component {
   componentDidMount() {
     if (this.props.authenticated) {
-      history.push("/dashboard");
+      history.push(`/${this.props.curOrg.org_name}`);
       return;
     }
   }
@@ -97,6 +89,7 @@ class Login extends Component {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
+    curOrg: state.organization.currentOrganization,
   };
 }
 

@@ -138,6 +138,8 @@ module.exports = function (app) {
     "/:org_id",
     OrganizationController.deleteOrganization
   );
+  // Get organization by name route
+  organizationRoutes.get("/name/:org_name", OrganizationController.getOrgByName);
   // admin org report
   organizationRoutes.get("/admin/report", OrganizationController.adminOrgReports)
   // Contact organization route

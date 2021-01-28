@@ -15,8 +15,8 @@ import InvitePage from "./containers/intro/invite";
 import InviteHomePage from "./containers/home/invite";
 
 // Import organization pages
-import Organization from "./containers/organization/dashboard";
-import OrgProfile from "./containers/organization/profile";
+// import Organization from "./containers/organization/dashboard";
+// import OrgProfile from "./containers/organization/profile";
 import OrgInviteMember from "./containers/home/invite/org-invite";
 
 // Import project pages
@@ -43,8 +43,11 @@ import ConfirmEmail from "./containers/auth/confirm-email";
 import Dashboard from "./containers/dashboard";
 import Participant from "./containers/user/user";
 import Profile from "./containers/user/profilepage";
-import ParticipantsList from "./containers/user/list";
-import OrganizationList from "./containers/organization/list";
+// import ParticipantsList from "./containers/user/list";
+// import OrganizationList from "./containers/organization/list";
+
+// Import chat related pages
+import MessageBox from "./containers/message";
 
 // Import admin related Pages
 import AdminDashboard from "./containers/admin";
@@ -52,12 +55,6 @@ import SuperAdminDashboard from "./containers/admin/super";
 
 // Import notification pages
 import Notification from "./containers/notification";
-
-// Import Help related pages
-import Help from "./containers/help";
-import HelpArticle from "./containers/help/article";
-import HelpCategory from "./containers/help/category";
-import HelpSearch from "./containers/help/search";
 import Faq from "./containers/faq";
 
 // Import higher order components
@@ -77,15 +74,12 @@ class Routes extends React.Component {
 
   render() {
     return (
-      <div
-        className="layout"
-        style={{ backgroundColor: this.props.orgSettings.background_color }}
-      >
+      <div className="layout">
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/integraspace" component={IntegraSpace} />
           <Route path="/invitation" component={InvitePage} />
-          <Route path="/email-invite" component={InviteHomePage} />
+          <Route path="/:org_name/email-invite" component={InviteHomePage} />
           <Route
             path="/org-invite/:org_id/:email"
             component={OrgInviteMember}
@@ -103,43 +97,37 @@ class Routes extends React.Component {
           <Route path="/email-verify/:mode/:token" component={ConfirmEmail} />
           <Route path="/profile" component={RequireAuth(Profile)} />
 
-          {/* <Route path="/dashboard" component={RequireAuth(Dashboard)} /> */}
-
-          <Route path="/organizations" component={OrganizationList} />
-          <Route
+          {/* <Route path="/organizations" component={OrganizationList} /> */}
+          {/* <Route
             path="/organization/:id"
             component={RequireAuth(Organization)}
           />
           <Route path="/org-profile" component={OrgProfile} />
 
-          <Route path="/participants" component={ParticipantsList} />
+          <Route path="/participants" component={ParticipantsList} /> */}
           <Route path="/participant/:id" component={Participant} />
 
-          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
-          <Route path="/projects" component={RequireAuth(Projectslist)} />
-          <Route path="/project/:id" component={RequireAuth(Project)} />
+          <Route path="/:org/projects" component={RequireAuth(Projectslist)} />
+          <Route path="/:org/project/:id" component={RequireAuth(Project)} />
           <Route
-            path="/select-template"
+            path="/:org/select-template"
             component={RequireAuth(SelectTemplate)}
           />
 
-          <Route path="/template/:id" component={RequireAuth(TemplatePage)} />
-
-          <Route path="/techhub" component={RequireAuth(Techhub)} />
-          <Route path="/learnhub" component={RequireAuth(LearnHub)} />
-
-          <Route path="/admin" component={RequireAuth(AdminDashboard)} />
-          <Route path="/super" component={RequireAuth(SuperAdminDashboard)} />
-          <Route path="/notification" component={RequireAuth(Notification)} />
-
-          <Route path="/help" component={Help} />
           <Route
-            path="/help-article/:category/:articleId"
-            component={HelpArticle}
+            path="/:org/template/:id"
+            component={RequireAuth(TemplatePage)}
           />
-          <Route path="/help-category/:category" component={HelpCategory} />
-          <Route path="/help-search/:search" component={HelpSearch} />
-          <Route path="/faq" component={Faq} />
+
+          <Route path="/:org/techhub" component={RequireAuth(Techhub)} />
+          <Route path="/:org/learnhub" component={RequireAuth(LearnHub)} />
+
+          <Route path="/:org/admin" component={RequireAuth(AdminDashboard)} />
+          <Route path="/super" component={RequireAuth(SuperAdminDashboard)} />
+          <Route path="/messages" component={RequireAuth(MessageBox)} />
+          <Route path="/notification" component={RequireAuth(Notification)} />
+          <Route path="/:org/faq" component={Faq} />
+          <Route path="/:org_name" component={RequireAuth(Dashboard)} />
 
           <Route path="*" component={NotFoundPage} />
         </Switch>
@@ -152,7 +140,6 @@ class Routes extends React.Component {
 function mapStateToProps(state) {
   return {
     user: state.user,
-    orgSettings: state.organization.orgSettings,
   };
 }
 

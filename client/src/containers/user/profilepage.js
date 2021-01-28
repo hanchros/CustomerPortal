@@ -5,7 +5,6 @@ import { listSimpleOrg } from "../../actions/organization";
 import { updateProfile } from "../../actions/auth";
 import { getFieldData } from "../../utils/helper";
 import ProfileForm from "./profile-form";
-import history from "../../history";
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -25,7 +24,6 @@ class ProfilePage extends Component {
     delete profile.organization;
     delete profile.org_input;
     await this.props.updateProfile({ profile });
-    history.push("/dashboard");
   };
 
   render = () => {

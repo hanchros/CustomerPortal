@@ -44,11 +44,8 @@ class SeleteTemplate extends Component {
   renderTemplateItem = (template) => (
     <List.Item className="template-listitem">
       <Link
-        to={`/template/${template._id}`}
+        to={`/${this.props.organization.currentOrganization.org_name}/template/${template._id}`}
         className="template-listitem-body"
-        style={{
-          borderColor: this.props.organization.orgSettings.primary_color,
-        }}
       >
         <h5>
           <b>{template.name}</b>

@@ -117,7 +117,7 @@ function notificationFactory(title, content, senderName, senderPhoto) {
 }
 
 function inviteFactory(values) {
-  const link = `${mainURL}/email-invite`;
+  const link = `${mainURL}/${values.sender_organization}/email-invite?project=${values.project_name}`;
   const mailData = Object.assign(values, { link });
   let template = fs.readFileSync("template/OrgInvite.html", {
     encoding: "utf-8",

@@ -75,7 +75,7 @@
 
 .link-block {
   float: right;
-  color: $blue !important;
+  color: var(--primary_color) !important;
 }
 
 @media screen and (max-width: 768px) {

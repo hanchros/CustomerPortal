@@ -24,7 +24,7 @@
 .template-listitem {
   align-items: flex-start !important;
   .template-listitem-body {
-    border: 1px solid $blue;
+    border: 1px solid var(--primary_color);
     margin-right: 20px;
     padding: 10px 20px;
     margin-bottom: 10px;
@@ -42,13 +42,13 @@
 }
 
 .template-name-box {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   padding-bottom: 20px;
 }
 
 .template-desc-box {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   margin-top: 50px;
   margin-bottom: 10px;
@@ -56,7 +56,7 @@
 }
 
 .template-tech-box {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   margin-top: 40px;
   min-height: 22vh;
@@ -103,7 +103,7 @@
     margin-right: 20px;
   }
   .project-detail-headerbox {
-    border: 1px solid $blue;
+    border: 1px solid var(--primary_color);
     padding: 10px;
     width: 100%;
     min-height: 14vh;
@@ -112,7 +112,7 @@
 }
 
 .project-detail-desc {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   width: 100%;
   min-height: 25vh;
@@ -120,7 +120,7 @@
 }
 
 .project-detail-clients {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   width: 100%;
   min-height: 21vh;
@@ -143,7 +143,7 @@
 }
 
 .project-general-box {
-  border: 1px solid $blue;
+  border: 1px solid var(--primary_color);
   padding: 10px;
   width: 100%;
   min-height: 50px;

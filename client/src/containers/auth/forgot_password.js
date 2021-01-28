@@ -38,7 +38,7 @@ const ForgotForm = ({ sendMail }) => {
 class ForgotPassword extends Component {
   componentDidMount() {
     if (this.props.authenticated) {
-      history.push("/dashboard");
+      history.push("/");
       return;
     }
   }

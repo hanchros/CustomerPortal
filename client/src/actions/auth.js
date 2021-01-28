@@ -8,7 +8,7 @@ import {
   FETCH_USER_LIST,
   FETCH_USER_SEARCH_LIST,
   SET_PDF_INVITE_DATA,
-  SET_CURRENT_ORGANIZATION
+  SET_CURRENT_ORGANIZATION,
 } from "./types";
 import history from "../history";
 import Client from "./api";
@@ -29,9 +29,11 @@ export function loginUser({ email, password }) {
       cookie.save("user", user, { path: "/" });
       dispatch({ type: AUTH_USER });
       dispatch({ type: FETCH_USER, payload: user });
-      dispatch({ type: SET_CURRENT_ORGANIZATION, organization: user.profile.org });
-      
-      history.push("/dashboard");
+      dispatch({
+        type: SET_CURRENT_ORGANIZATION,
+        organization: user.profile.org,
+      });
+      history.push(`/${user.profile.org.org_name}`);
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));
     }
@@ -70,7 +72,6 @@ export function registerInvitedUser(values) {
         values
       );
       dispatch({ type: FETCH_USER, payload: response.data.user });
-      return ;
     } catch (err) {
       createNotification("Register Failed", errorMessage(err));
     }
@@ -211,10 +212,17 @@ export function protectedTest() {
       if (response.data.user) {
         dispatch({ type: AUTH_USER });
         dispatch({ type: FETCH_USER, payload: response.data.user });
-        dispatch({ type: SET_CURRENT_ORGANIZATION, organization: response.data.user.profile.org });
+        dispatch({
+          type: SET_CURRENT_ORGANIZATION,
+          organization: response.data.user.profile.org,
+        });
       }
     } catch (error) {
       dispatch({ type: UNAUTH_USER, payload: "" });
+      dispatch({
+        type: SET_CURRENT_ORGANIZATION,
+        organization: { profile: {} },
+      });
     }
   };
 }

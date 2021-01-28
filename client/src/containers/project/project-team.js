@@ -20,7 +20,7 @@ class ProjectTeam extends Component {
   };
 
   render = () => {
-    const { project, goback, orgSettings } = this.props;
+    const { project, goback } = this.props;
     // let isCreator =
     //   project.project.participant &&
     //   project.project.participant._id === user._id;
@@ -39,12 +39,7 @@ class ProjectTeam extends Component {
           </Button>
           <Row gutter={50} className="mb-5">
             <Col md={16} sm={24}>
-              <div
-                className="project-general-box"
-                style={{
-                  borderColor: orgSettings.primary_color,
-                }}
-              >
+              <div className="project-general-box">
                 <h5>{curProj.name} Team</h5>
               </div>
             </Col>
@@ -57,13 +52,7 @@ class ProjectTeam extends Component {
             </Col>
           </Row>
           {participants.map((pt) => (
-            <div
-              className="project-general-box mb-4"
-              key={pt._id}
-              style={{
-                borderColor: orgSettings.primary_color,
-              }}
-            >
+            <div className="project-general-box mb-4" key={pt._id}>
               <h5>Project {pt.role}</h5>
               <span>
                 {pt.participant.profile.first_name}{" "}
@@ -85,7 +74,6 @@ const mapStateToProps = (state) => {
     user: state.user.profile,
     isAdmin: state.user.isAdmin,
     auth: state.auth,
-    orgSettings: state.organization.orgSettings,
     project: state.project,
     fieldData: state.profile.fieldData,
   };

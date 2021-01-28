@@ -168,14 +168,15 @@ class InviteRegister extends React.Component {
   };
 
   render() {
-    const userRoles = getFieldData(this.props.fieldData, "user_role");
+    const { fieldData, pdfData } = this.props;
+    const userRoles = getFieldData(fieldData, "user_role");
 
     return (
       <React.Fragment>
         <div className="main-background-title">REGISTRATION</div>
         <InviteRegisterForm
           onSubmit={this.onSubmitRegister}
-          values={this.props.pdfData}
+          values={pdfData}
           setAvatar={this.setAvatar}
           avatarURL={this.state.avatarURL}
           userRoles={userRoles}

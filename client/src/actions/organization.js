@@ -6,6 +6,7 @@ import {
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
   FETCH_ORG_USER_LIST,
+  SET_ORG_SETTINGS,
 } from "./types";
 import Client from "./api";
 import { message } from "antd";
@@ -253,6 +254,24 @@ export function getInviteEmailTemplate(values) {
       return res.data.mail;
     } catch (error) {
       console.log(error);
+    }
+  };
+}
+
+export function getOrgByName(org_name) {
+  const client = Client();
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/organization/name/${org_name}`);
+      dispatch({
+        type: SET_ORG_SETTINGS,
+        profile: res.data.organization ? res.data.organization.profile : {},
+        logo: res.data.organization ? res.data.organization.logo : "",
+        org_name: org_name,
+      });
+      return res.data.organization;
+    } catch (err) {
+      console.log(err);
     }
   };
 }

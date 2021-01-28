@@ -175,6 +175,8 @@ exports.sendInvite = async (req, res, next) => {
       logo: values.logo,
       content: values.content,
       email: values.email,
+      sender_organization,
+      project_name: values.project_name,
     };
 
     delete values.logo;

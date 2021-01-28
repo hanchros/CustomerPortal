@@ -5,6 +5,7 @@ import HomeHOC from "../../../components/template/home-hoc";
 import {
   getOrganization,
   acceptOrgMemberInvite,
+  getOrgByName,
 } from "../../../actions/organization";
 import { fetchUserByEmail } from "../../../actions/user";
 import { registerInvitedUser } from "../../../actions/auth";
@@ -21,15 +22,23 @@ class OrgInviteMember extends React.Component {
       loading: false,
       isCreate: false,
       avatarURL: "",
+      org: {},
     };
   }
 
   componentDidMount = async () => {
-    const { match, getOrganization, fetchUserByEmail } = this.props;
+    const {
+      match,
+      getOrganization,
+      fetchUserByEmail,
+      getOrgByName,
+    } = this.props;
     const org_id = match.params.org_id;
     const email = window.atob(match.params.email);
     this.setState({ loading: true });
-    await getOrganization(org_id);
+    const org = await getOrganization(org_id);
+    this.setState({ org });
+    await getOrgByName(org.org_name);
     const exuser = await fetchUserByEmail(email);
     this.setState({ loading: false, exuser });
   };
@@ -44,7 +53,7 @@ class OrgInviteMember extends React.Component {
         orgId: org._id,
         org_name: org.org_name,
       });
-      history.push("/dashboard");
+      history.push(`/${org.org_name}`);
     } else {
       this.onToggleRegister();
     }
@@ -127,4 +136,5 @@ export default connect(mapStateToProps, {
   getOrganization,
   fetchUserByEmail,
   acceptOrgMemberInvite,
+  getOrgByName,
 })(OrgInviteMember);

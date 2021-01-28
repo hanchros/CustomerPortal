@@ -24,6 +24,13 @@
     url(../assets/fonts/Poppins-Regular.ttf) format("opentype");
 }
 
+// --primary_color : dynamic app primary color
+// --secondary_color : dynamic app secondary color
+// --background_color : dynamic app background color
+// --menufont_color : dynamic app menu font color
+// --font_color : dynamic app font color
+// --link_color : dynamic app link color
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -37,16 +44,48 @@ body {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  color: #333;
   font-family: "Poppins";
+  color: var(--font_color);
+  background-color: var(--background_color);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .ant-list-item-meta-description,
+  .ant-list-item,
+  .ant-form,
+  .ant-page-header,
+  .ant-page-header-heading-title,
+  .ant-descriptions-item-label,
+  .ant-descriptions-item-content,
+  .ant-breadcrumb,
+  .ant-breadcrumb > span:last-child,
+  .ant-list-item-meta-content {
+    color: var(--font_color);
+  }
+
+  a,
+  .ant-list-item-action a,
+  .ant-btn-link {
+    color: var(--link_color);
+  }
+
+  .ant-layout {
+    background-color: var(--background_color);
+  }
 }
 
 .main-nav {
-  // text-transform: uppercase;
   width: 100%;
   z-index: 100;
-  // background-color: $blue-2;
+  background-color: var(--secondary_color);
 
+  .navbar-collapse {
+    color: var(--menufont_color);
+  }
   .container-nav {
     padding: 10px 5%;
   }

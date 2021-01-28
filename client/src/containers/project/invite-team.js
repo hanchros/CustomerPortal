@@ -113,6 +113,7 @@ class Invite extends Component {
     values.logo =
       organization.currentOrganization.logo ||
       "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+    values.sender_organization = organization.currentOrganization.org_name
     const mail = await getInviteEmailTemplate(values);
     this.setState({
       loading: false,
