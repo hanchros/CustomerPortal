@@ -2,6 +2,7 @@ const Project = require("../models/project");
 const sendgrid = require("../config/sendgrid");
 const Notification = require("../models/notification");
 const ProjectMember = require("../models/projectmember");
+const ProjectOrg = require("../models/projectorg");
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
@@ -16,28 +17,39 @@ exports.createProject = async (req, res, next) => {
       role: "Creator",
     });
     await pm.save();
+    const po = new ProjectOrg({
+      organization: req.user.profile.org,
+      project: pr._id,
+      option: "creator"
+    })
+    await po.save();
+    const result = await Project.findById(pr._id).populate({
+      path: "participant",
+      select: "_id profile",
+    });
     return res.status(201).json({
-      project: pr,
+      project: result,
     });
   } catch (err) {
     return next(err);
   }
 };
 
-exports.updateProject = (req, res, next) => {
-  const id = req.body._id;
-  delete req.body._id;
-  Project.findOneAndUpdate(
-    { _id: id },
-    req.body,
-    { new: true },
-    (err, project) => {
-      if (err) {
-        return next(err);
-      }
-      res.status(201).json({ project });
-    }
-  );
+exports.updateProject = async (req, res, next) => {
+  try {
+    const id = req.body._id;
+    delete req.body._id;
+    const pr = await Project.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+    const result = await Project.findById(pr._id).populate({
+      path: "participant",
+      select: "_id profile",
+    });
+    res.status(201).json({ project: result });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.voteProject = async (req, res, next) => {
@@ -77,7 +89,13 @@ exports.getProject = (req, res, next) => {
 exports.listProject = async (req, res, next) => {
   try {
     const pms = await ProjectMember.find({ participant: req.user._id })
-      .populate("project")
+      .populate({
+        path: "project",
+        populate: {
+          path: "participant",
+          select: "_id profile",
+        },
+      })
       .sort({ createdAt: "desc" });
     let projects = [];
     pms.map((pm) => {

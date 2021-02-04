@@ -47,10 +47,12 @@ exports.listTemplateGlobal = async (req, res, next) => {
 
 exports.getTemplate = async (req, res, next) => {
   try {
-    const template = await Template.findById(req.params.id).populate("creator");
+    let template = await Template.findById(req.params.id)
+      .populate("creator")
+      .populate("technologies");
     const projects = await Project.find({ template: req.params.id });
     template.projects = projects;
-    res.status(201).json({ template });
+    res.status(201).json({ template, projects });
   } catch (err) {
     return next(err);
   }

@@ -18,13 +18,7 @@ const TemplateSchema = new Schema(
     objective: {
       type: String,
     },
-    technologies: [
-      {
-        application: { type: String, required: true },
-        organization: { type: String, required: true },
-        description: { type: String },
-      },
-    ],
+    technologies: [{ type: Schema.Types.ObjectId, ref: " Article" }],
     creator: {
       type: Schema.Types.ObjectId,
       ref: "Organization",

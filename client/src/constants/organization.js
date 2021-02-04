@@ -7,6 +7,7 @@ export const org_consts = {
   menufont_color: "#fff",
   font_color: "#333",
   link_color: "#007bff",
+  shadow_color: "#adb5bd",
   title_page: "",
   title_page_description: "",
   logo: ChallengeIcon,

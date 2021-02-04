@@ -7,7 +7,6 @@ import {
   acceptOrgMemberInvite,
   getOrgByName,
 } from "../../../actions/organization";
-import { fetchUserByEmail } from "../../../actions/user";
 import { registerInvitedUser } from "../../../actions/auth";
 import history from "../../../history";
 import { InviteRegisterForm } from "./invite-register";
@@ -18,7 +17,6 @@ class OrgInviteMember extends React.Component {
     super();
 
     this.state = {
-      exuser: false,
       loading: false,
       isCreate: false,
       avatarURL: "",
@@ -27,36 +25,17 @@ class OrgInviteMember extends React.Component {
   }
 
   componentDidMount = async () => {
-    const {
-      match,
-      getOrganization,
-      fetchUserByEmail,
-      getOrgByName,
-    } = this.props;
+    const { match, getOrganization, getOrgByName } = this.props;
     const org_id = match.params.org_id;
-    const email = window.atob(match.params.email);
     this.setState({ loading: true });
     const org = await getOrganization(org_id);
     this.setState({ org });
     await getOrgByName(org.org_name);
-    const exuser = await fetchUserByEmail(email);
-    this.setState({ loading: false, exuser });
+    this.setState({ loading: false });
   };
 
   onAcceptInvite = async () => {
-    const { exuser } = this.state;
-    const { acceptOrgMemberInvite, organization } = this.props;
-    const org = organization.currentOrganization;
-    if (exuser && exuser._id) {
-      await acceptOrgMemberInvite({
-        userId: exuser._id,
-        orgId: org._id,
-        org_name: org.org_name,
-      });
-      history.push(`/${org.org_name}`);
-    } else {
-      this.onToggleRegister();
-    }
+    this.onToggleRegister();
   };
 
   onCancelInvite = () => {
@@ -78,13 +57,15 @@ class OrgInviteMember extends React.Component {
   };
 
   render() {
-    const { loading, isCreate, avatarURL } = this.state;
-    const { match, organization, fieldData } = this.props;
-    const org = organization.currentOrganization;
+    const { loading, isCreate, avatarURL, org } = this.state;
+    const { match, location, fieldData } = this.props;
     const userRoles = getFieldData(fieldData, "user_role");
+    const params = new URLSearchParams(location.search);
     const values = {
       email: window.atob(match.params.email),
       organization: org.org_name,
+      first_name: params.get("fn"),
+      last_name: params.get("ln"),
     };
     return (
       <HomeHOC>
@@ -127,14 +108,12 @@ class OrgInviteMember extends React.Component {
 function mapStateToProps(state) {
   return {
     fieldData: state.profile.fieldData,
-    organization: state.organization,
   };
 }
 
 export default connect(mapStateToProps, {
   registerInvitedUser,
   getOrganization,
-  fetchUserByEmail,
   acceptOrgMemberInvite,
   getOrgByName,
 })(OrgInviteMember);

@@ -20,7 +20,7 @@ const ProjectMemberSchema = new Schema(
     },
     role: {
       type: String,
-      required: true,
+      default: "member"
     },
   },
   {

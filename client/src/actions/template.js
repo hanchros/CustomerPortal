@@ -80,7 +80,9 @@ export function getTemplate(id) {
   return async (dispatch) => {
     try {
       let res = await client.get(`${API_URL}/templates/${id}`);
-      return res.data.template;
+      let template = res.data.template;
+      template.projects = res.data.projects;
+      return template;
     } catch (err) {
       console.log(err);
     }

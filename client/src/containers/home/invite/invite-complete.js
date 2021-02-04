@@ -9,7 +9,7 @@ class InviteComplete extends React.Component {
     const curProj = project.project;
     return (
       <React.Fragment>
-        <div className="main-background-title">REGISTERATION</div>
+        <div className="main-background-title">REGISTRATION</div>
         <div className="project-box">
           <div className="register-project-view">
             <div>

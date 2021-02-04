@@ -1,6 +1,5 @@
 import { createNotification, API_URL, errorMessage } from "./index";
 import {
-  FETCH_ORGANIZATIONLIST,
   SET_CURRENT_ORGANIZATION,
   FETCH_ORG_SEARCH_LIST,
   FETCH_SIMPLE_ORG,
@@ -117,25 +116,6 @@ export function acceptOrgMemberInvite(values) {
     } catch (err) {
       console.log(err);
       createNotification("Invite Accept", errorMessage(err));
-    }
-  };
-}
-
-export function listOrganization(count, filters) {
-  return async (dispatch) => {
-    const client = Client(true);
-    try {
-      let res = await client.post(
-        `${API_URL}/organization/list/${count}`,
-        filters
-      );
-      dispatch({
-        type: FETCH_ORGANIZATIONLIST,
-        organizations: res.data.organizations,
-        total: res.data.total,
-      });
-    } catch (err) {
-      console.log(err);
     }
   };
 }
@@ -273,5 +253,16 @@ export function getOrgByName(org_name) {
     } catch (err) {
       console.log(err);
     }
+  };
+}
+
+export function testColorChange(profile, logo, org_name) {
+  return (dispatch) => {
+    dispatch({
+      type: SET_ORG_SETTINGS,
+      profile,
+      logo,
+      org_name,
+    });
   };
 }

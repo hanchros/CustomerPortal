@@ -5,7 +5,7 @@ import { Form, Input } from "antd";
 import { updateProject, createProject } from "../../actions/project";
 import { Header, Upload, Footer } from "../../components/template";
 import Technology from "../template/technology";
-import OrgInvite from "./invite-org";
+import OrgInvite from "./invite";
 
 const CreateForm = ({
   createProject,

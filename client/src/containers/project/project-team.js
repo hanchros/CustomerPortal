@@ -4,7 +4,8 @@ import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
 import { Button, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import InviteTeam from "./invite-team";
+import UserIcon from "../../assets/img/user-avatar.png";
+import Invite from "./invite";
 
 class ProjectTeam extends Component {
   constructor() {
@@ -20,16 +21,18 @@ class ProjectTeam extends Component {
   };
 
   render = () => {
-    const { project, goback } = this.props;
-    // let isCreator =
-    //   project.project.participant &&
-    //   project.project.participant._id === user._id;
+    const { project, goback, user } = this.props;
     const { showInvite } = this.state;
-    if (showInvite) {
-      return <InviteTeam goback={this.onToggleInvite} />;
-    }
+    let isCreator =
+      project.project.participant &&
+      project.project.participant._id === user._id;
     const participants = project.participants;
     const curProj = project.project;
+
+    if (showInvite) {
+      return <Invite goback={this.onToggleInvite} invite="team" />;
+    }
+
     return (
       <React.Fragment>
         <Header />
@@ -43,23 +46,31 @@ class ProjectTeam extends Component {
                 <h5>{curProj.name} Team</h5>
               </div>
             </Col>
-            <Col md={8} sm={24}>
-              <div className="center">
-                <button className="main-btn" onClick={this.onToggleInvite}>
-                  Invite New Member
-                </button>
-              </div>
-            </Col>
+            {isCreator && (
+              <Col md={8} sm={24}>
+                <div className="center">
+                  <button className="main-btn" onClick={this.onToggleInvite}>
+                    Invite New Member
+                  </button>
+                </div>
+              </Col>
+            )}
           </Row>
           {participants.map((pt) => (
             <div className="project-general-box mb-4" key={pt._id}>
-              <h5>Project {pt.role}</h5>
-              <span>
-                {pt.participant.profile.first_name}{" "}
-                {pt.participant.profile.last_name}
-              </span>
-              <br />
-              <span>Contact: {pt.participant.email}</span>
+              <div className="pr-4">
+                <img src={pt.participant.profile.photo || UserIcon} alt="" />
+              </div>
+              <div>
+                <h5>Project {pt.role}</h5>
+                <span>
+                  {pt.participant.profile.first_name}{" "}
+                  {pt.participant.profile.last_name} -{" "}
+                  {pt.participant.profile.org_name}
+                </span>
+                <br />
+                <span>Contact: {pt.participant.email}</span>
+              </div>
             </div>
           ))}
         </Container>
@@ -72,10 +83,7 @@ class ProjectTeam extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user.profile,
-    isAdmin: state.user.isAdmin,
-    auth: state.auth,
     project: state.project,
-    fieldData: state.profile.fieldData,
   };
 };
 

@@ -17,7 +17,7 @@ const InvitePage = () => (
     </p>
     <div className="inv-btn">
       <Link to="/register" className="main-btn">
-        Back to REGISTERATION
+        Back to REGISTRATION
       </Link>
       <Link to="/integraspace" className="inv-learn">
         Or learn more about the platform

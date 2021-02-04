@@ -204,7 +204,7 @@ export function resetPasswordSecurity(userid, password, conf_password) {
 }
 
 export function protectedTest() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       let response = await axios.get(`${API_URL}/protected`, {
         headers: { Authorization: cookie.load("token") },
@@ -219,10 +219,12 @@ export function protectedTest() {
       }
     } catch (error) {
       dispatch({ type: UNAUTH_USER, payload: "" });
-      dispatch({
-        type: SET_CURRENT_ORGANIZATION,
-        organization: { profile: {} },
-      });
+      if (!getState().organization.setValue) {
+        dispatch({
+          type: SET_CURRENT_ORGANIZATION,
+          organization: { profile: {} },
+        });
+      }
     }
   };
 }

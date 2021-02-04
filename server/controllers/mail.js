@@ -1,4 +1,5 @@
 const Mail = require("../models/mail");
+const sendgrid = require("../config/sendgrid");
 
 exports.createMail = (req, res, next) => {
   const mail = new Mail(req.body);
@@ -71,4 +72,13 @@ exports.addNewOrgMail = async (orgId) => {
   } catch (err) {
     return next(err);
   }
+};
+
+exports.sendTestMail = (req, res, next) => {
+  const feedType = req.body.feedType;
+  const comment = req.body.comment;
+  sendgrid.sendFeedbackMail(feedType, comment);
+  res.status(201).json({
+    message: "success",
+  });
 };

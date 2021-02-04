@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
 // import { Link } from "react-router-dom";
-import { Col, Row } from "antd";
+import { Col, Row, Button } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { getTemplate } from "../../actions/template";
 import { Header, Footer } from "../../components/template";
 import EditTemplate from "./create-form";
 import EditProject from "../project/project-edit";
+import history from "../../history";
 
 class Template extends Component {
   constructor(props) {
@@ -52,6 +54,15 @@ class Template extends Component {
       <React.Fragment>
         <Header />
         <Container className="content">
+          <Button
+            className="mb-4"
+            type="link"
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            <ArrowLeftOutlined /> Back
+          </Button>
           <Row gutter={50}>
             <Col md={16} sm={24}>
               <div className="template-name-box">

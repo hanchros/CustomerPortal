@@ -58,7 +58,12 @@ class ProjectList extends Component {
                   title={<b>{item.name}</b>}
                   description={
                     <span>
-                      Project Leader
+                      {item.participant && (
+                        <span>
+                          {item.participant.profile.first_name}{" "}
+                          {item.participant.profile.last_name} - {item.participant.profile.org_name}
+                        </span>
+                      )}
                       <br />
                       {item.description}
                     </span>

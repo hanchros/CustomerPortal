@@ -5,7 +5,7 @@ import { Header, Footer } from "../../components/template";
 import { Button, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import ChallengeLogo from "../../assets/icon/challenge.png";
-import OrgInvite from "./invite-org";
+import Invite from "./invite";
 
 class ProjectOrgs extends Component {
   constructor() {
@@ -21,15 +21,18 @@ class ProjectOrgs extends Component {
   };
 
   render() {
-    const { project, goback } = this.props;
-    // let isCreator =
-    //   project.project.participant &&
-    //   project.project.participant._id === user._id;
+    const { project, goback, user } = this.props;
     const { showInvite } = this.state;
-    if (showInvite) {
-      return <OrgInvite goback={this.onToggleInvite} />;
-    }
+    let isCreator =
+      project.project.participant &&
+      project.project.participant._id === user._id;
     const organizations = project.organizations;
+    const curProj = project.project;
+
+    if (showInvite) {
+      return <Invite goback={this.onToggleInvite} />;
+    }
+
     return (
       <React.Fragment>
         <Header />
@@ -37,6 +40,7 @@ class ProjectOrgs extends Component {
           <Button className="mb-4" type="link" onClick={goback}>
             <ArrowLeftOutlined /> Back
           </Button>
+          <h5 className="mb-4">{curProj.name} Organizations</h5>
           <Row gutter={50}>
             <Col md={16} sm={24}>
               {organizations.map((org) => (
@@ -65,16 +69,18 @@ class ProjectOrgs extends Component {
                 </div>
               ))}
             </Col>
-            <Col md={8} sm={24}>
-              <div className="center">
-                <button
-                  className="main-btn invite-org"
-                  onClick={this.onToggleInvite}
-                >
-                  Invite New Client/Partner
-                </button>
-              </div>
-            </Col>
+            {isCreator && (
+              <Col md={8} sm={24}>
+                <div className="center">
+                  <button
+                    className="main-btn invite-org"
+                    onClick={this.onToggleInvite}
+                  >
+                    Invite New Client/Partner
+                  </button>
+                </div>
+              </Col>
+            )}
           </Row>
         </Container>
         <Footer />
@@ -85,11 +91,8 @@ class ProjectOrgs extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.profile,
-    isAdmin: state.user.isAdmin,
-    auth: state.auth,
     project: state.project,
-    fieldData: state.profile.fieldData,
+    user: state.user.profile,
   };
 };
 

@@ -88,13 +88,6 @@ class HeaderTemplate extends Component {
                     </Link>
                   </NavItem>
                 )}
-                {authenticated && (
-                  <NavItem>
-                    <Link className="nav-link" to={`/${orgName}/faq`}>
-                      FAQ
-                    </Link>
-                  </NavItem>
-                )}
                 {orgAdmin && (
                   <NavItem>
                     <Link className="nav-link" to={`/${orgName}/admin`}>

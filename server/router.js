@@ -117,8 +117,6 @@ module.exports = function (app) {
   organizationRoutes.get("/:org_id", OrganizationController.getOrganization);
   // Update organization route
   organizationRoutes.put("/", OrganizationController.updateOrganization);
-  // List organization route
-  organizationRoutes.post("/list/:count", OrganizationController.listOrganization);
   // List organization user route
   organizationRoutes.get("/users/:org_id", OrganizationController.getOrgUsers);
   // Remove organization user route
@@ -326,7 +324,8 @@ module.exports = function (app) {
   mailRoutes.put("/", requireAuth, MailController.updateMail);
   // Delete mail route
   mailRoutes.delete("/:id", requireAuth, MailController.deleteMail);
-
+  // send test mail route
+  mailRoutes.post("/test", MailController.sendTestMail);
   
   //= ========================
   // Faq Routes

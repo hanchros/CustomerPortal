@@ -23,10 +23,12 @@ class ProjectTech extends Component {
           {curProj.technologies &&
             curProj.technologies.map((tech) => (
               <div className="project-general-box mb-4" key={tech.application}>
-                <h5>{tech.application}</h5>
-                <span>{tech.organization}</span>
-                <br />
-                <span>{tech.description}</span>
+                <div>
+                  <h5>{tech.application}</h5>
+                  <span>{tech.organization}</span>
+                  <br />
+                  <span>{tech.description}</span>
+                </div>
               </div>
             ))}
         </Container>

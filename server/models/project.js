@@ -31,13 +31,7 @@ const ProjectSchema = new Schema(
       type: String,
       default: "In Progress",
     },
-    technologies: [
-      {
-        application: { type: String, required: true },
-        organization: { type: String, required: true },
-        description: { type: String },
-      },
-    ],
+    technologies: [{ type: Schema.Types.ObjectId, ref: " Article" }],
     template: {
       type: Schema.Types.ObjectId,
       ref: "Template",

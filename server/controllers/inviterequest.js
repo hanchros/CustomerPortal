@@ -1,4 +1,5 @@
 const InviteRequest = require("../models/inviterequest");
+const sendgrid = require("../config/sendgrid");
 
 exports.createInviteRequest = async (req, res, next) => {
   try {
@@ -10,6 +11,24 @@ exports.createInviteRequest = async (req, res, next) => {
     }
     const ir = new InviteRequest(req.body);
     result = await ir.save();
+    sendgrid.inviteRequestMail(
+      Object.assign(
+        {
+          admin_name: "David Fisher",
+          admin_email: "dfisher@integraledger.com",
+        },
+        req.body
+      )
+    );
+    sendgrid.inviteRequestMail(
+      Object.assign(
+        {
+          admin_name: "Mike Rinow",
+          admin_email: "mrinow@integraledger.com",
+        },
+        req.body
+      )
+    );
     res.status(201).json({
       inviteRequests: result,
     });

@@ -56,9 +56,7 @@ class Learnhub extends React.Component {
     return result;
   };
 
-  handleClick = (e) => {
-    console.log("click ", e);
-  };
+  handleClick = () => {};
 
   render() {
     const objArticles = this.getArticlesByTopic();

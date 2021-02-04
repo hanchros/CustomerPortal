@@ -147,64 +147,6 @@ exports.acceptInviteOrgMember = async (req, res, next) => {
   }
 };
 
-exports.listOrganization = async (req, res, next) => {
-  let curNum = parseInt(req.params.count) || 0;
-  try {
-    let sortFilter = req.body.filter_sort || "";
-    let searchStr = req.body.searchStr || "";
-    delete req.body.loading;
-    delete req.body.searchStr;
-    delete req.body.filter_sort;
-
-    let filter = {};
-    let tags = [];
-    for (let k of Object.keys(req.body)) {
-      if (req.body[k] && req.body[k].length > 0) {
-        tags = [...tags, ...req.body[k]];
-      }
-    }
-    if (tags.length > 0) filter["tags"] = { $all: tags };
-    if (searchStr.length > 2)
-      filter["$or"] = [
-        { org_name: { $regex: searchStr, $options: "i" } },
-        { org_type: { $regex: searchStr, $options: "i" } },
-        { country: { $regex: searchStr, $options: "i" } },
-      ];
-    let sort = { createdAt: -1 };
-    switch (sortFilter) {
-      case "A-Z":
-        sort = { org_name: 1 };
-        break;
-      case "Z-A":
-        sort = { org_name: -1 };
-        break;
-      case "Oldest-Newest":
-        sort = { createdAt: 1 };
-        break;
-      default:
-        sort = sort;
-    }
-
-    let total = await Organization.find(filter).countDocuments();
-    let organizations = await Organization.find(filter)
-      .sort(sort)
-      .skip(curNum)
-      .limit(16);
-    let result = [];
-    for (let org of organizations) {
-      let count = await User.where({ "profile.org": org._id }).countDocuments();
-      let newOrg = { ...org._doc, participants: count };
-      result.push(newOrg);
-    }
-    res.status(201).json({
-      organizations: result,
-      total: total,
-    });
-  } catch (error) {
-    return next(error);
-  }
-};
-
 exports.listSimpleOrgs = async (req, res, next) => {
   let curNum = parseInt(req.params.count) || 0;
   try {
@@ -235,7 +177,7 @@ exports.adminOrgReports = async (req, res, next) => {
   try {
     let organizations = await Organization.find({}).populate({
       path: "creator",
-      select: "_id profile",
+      select: "_id profile email",
     });
     let result = [];
     for (let org of organizations) {
@@ -243,7 +185,7 @@ exports.adminOrgReports = async (req, res, next) => {
         {
           "profile.org": org._id,
         },
-        "_id profile"
+        "_id profile email"
       );
       result.push(Object.assign({ members, id: org._id }, org._doc));
     }

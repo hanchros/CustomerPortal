@@ -1,0 +1,10 @@
+.org-invite-box {
+  .org-invite-header {
+    display: flex;
+    margin-bottom: 20px;
+    .ant-select {
+      width: 300px;
+      margin-right: 50px;
+    }
+  }
+}

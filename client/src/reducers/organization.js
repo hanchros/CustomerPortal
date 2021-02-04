@@ -18,6 +18,7 @@ const INITIAL_STATE = {
   adminOrganizations: [],
   currentOrganization: {},
   orgSettings: org_consts,
+  setValue: false,
   users: [],
   searchTxt: "",
   total: 0,
@@ -69,6 +70,7 @@ export default function (state = INITIAL_STATE, action) {
         menufont_color: org.profile.menufont_color || org_consts.menufont_color,
         font_color: org.profile.font_color || org_consts.font_color,
         link_color: org.profile.link_color || org_consts.link_color,
+        shadow_color: org.profile.shadow_color || org_consts.shadow_color,
         title_page: org.profile.title_page || org_consts.title_page,
         title_page_description:
           org.profile.title_page_description ||
@@ -82,10 +84,12 @@ export default function (state = INITIAL_STATE, action) {
       style.setProperty("--menufont_color", ost.menufont_color);
       style.setProperty("--font_color", ost.font_color);
       style.setProperty("--link_color", ost.link_color);
+      style.setProperty("--shadow_color", ost.shadow_color);
       return {
         ...state,
         currentOrganization: org,
         orgSettings: ost,
+        setValue: true,
       };
     case SET_ORG_SETTINGS:
       const astyle = document.documentElement.style;
@@ -99,6 +103,7 @@ export default function (state = INITIAL_STATE, action) {
           action.profile.menufont_color || org_consts.menufont_color,
         font_color: action.profile.font_color || org_consts.font_color,
         link_color: action.profile.link_color || org_consts.link_color,
+        shadow_color: action.profile.shadow_color || org_consts.shadow_color,
         title_page: action.profile.title_page || org_consts.title_page,
         title_page_description:
           action.profile.title_page_description ||
@@ -112,9 +117,11 @@ export default function (state = INITIAL_STATE, action) {
       astyle.setProperty("--menufont_color", aost.menufont_color);
       astyle.setProperty("--font_color", aost.font_color);
       astyle.setProperty("--link_color", aost.link_color);
+      astyle.setProperty("--shadow_color", aost.shadow_color);
       return {
         ...state,
         orgSettings: aost,
+        setValue: true,
       };
     case FETCH_ORG_SEARCH_LIST:
       return {

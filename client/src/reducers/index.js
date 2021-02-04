@@ -10,6 +10,7 @@ import articleReducer from "./article";
 import templateReducer from "./template";
 import mailReducer from "./mail";
 import faqReducer from "./faq";
+import inviteReducer from "./invite";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   template: templateReducer,
   mail: mailReducer,
   faq: faqReducer,
+  invite: inviteReducer,
 });
 
 export default rootReducer;

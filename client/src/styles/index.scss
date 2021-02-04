@@ -16,6 +16,7 @@
 @import "./message.scss";
 @import "./techhub.scss";
 @import "./article.scss";
+@import "./invite.scss";
 @import "../assets/fonts/Poppins-Black.ttf";
 
 @font-face {
@@ -30,6 +31,7 @@
 // --menufont_color : dynamic app menu font color
 // --font_color : dynamic app font color
 // --link_color : dynamic app link color
+// --shadow_color : dynamic app shadow color
 
 body {
   margin: 0;
@@ -63,7 +65,8 @@ body {
   .ant-descriptions-item-content,
   .ant-breadcrumb,
   .ant-breadcrumb > span:last-child,
-  .ant-list-item-meta-content {
+  .ant-list-item-meta-content,
+  .ant-tabs {
     color: var(--font_color);
   }
 
@@ -145,7 +148,7 @@ body {
 
 .content {
   padding-top: 70px;
-  min-height: calc(100vh - 123px);
+  min-height: calc(100vh - 119px);
   margin: 0 auto;
   padding-bottom: 45px;
 
@@ -248,4 +251,16 @@ body {
     padding-right: 0;
     padding-left: 0;
   }
+}
+
+@media (min-width: 1320px) {
+  .container {
+    max-width: 1300px !important;
+  }
+}
+
+@media (min-width: 1420px) {
+  .container-half {
+    max-width: 1400px !important;
+}
 }

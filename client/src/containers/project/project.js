@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
-import { Skeleton, Row, Col } from "antd";
+import { Skeleton, Row, Col, List, Avatar } from "antd";
 import {
   getProject,
   getParticipant,
   listOrgByProject,
 } from "../../actions/project";
 import ChallengeLogo from "../../assets/icon/challenge.png";
+import UserIcon from "../../assets/img/user-avatar.png";
 import ProjectOrgs from "./project-org";
 import ProjectTeam from "./project-team";
 import ProjectTech from "./project-tech";
@@ -86,9 +87,15 @@ class Project extends Component {
                 </div>
                 <div className="project-detail-headerbox">
                   <h3>{curProj.name}</h3>
-                  <span>Project Leader</span>
+                  {curProj.participant && (
+                    <span>
+                      leader: {curProj.participant.profile.first_name}{" "}
+                      {curProj.participant.profile.last_name} -{" "}
+                      {curProj.participant.profile.org_name}
+                    </span>
+                  )}
                   <br />
-                  <b>{curProj.status}</b>
+                  <b>status: {curProj.status}</b>
                 </div>
               </div>
               <div className="project-detail-desc">{curProj.description}</div>
@@ -100,6 +107,16 @@ class Project extends Component {
                   <li>Even older here</li>
                 </ul>
               </div>
+              {isCreator && (
+                <div className="mt-5 mb-4 flex">
+                  <button
+                    className="main-btn template-btn mr-4"
+                    onClick={this.onToggleEdit}
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
             </Col>
             <Col md={8} sm={24}>
               <div
@@ -107,25 +124,60 @@ class Project extends Component {
                 onClick={this.onToggleShowOrgs}
               >
                 <h5>Client & Partner Organization:</h5>
-                <ul>
-                  {organizations.map((org) => (
-                    <li key={org._id}>{org.organization.org_name}</li>
-                  ))}
-                </ul>
+                <List
+                  itemLayout="horizontal"
+                  className="project-list mt-1"
+                  dataSource={organizations}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            src={item.organization.logo || ChallengeLogo}
+                          />
+                        }
+                        title={<b>{item.organization.org_name}</b>}
+                        description={
+                          <span>
+                            {item.organization.org_type || ""}{" "}
+                            {item.organization.location || ""}
+                          </span>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
               </div>
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowTeam}
               >
                 <h5>Team:</h5>
-                <ul>
-                  {participants.map((pt) => (
-                    <li key={pt._id}>
-                      {pt.participant.profile.first_name}{" "}
-                      {pt.participant.profile.last_name}
-                    </li>
-                  ))}
-                </ul>
+                <List
+                  itemLayout="horizontal"
+                  className="project-list mt-1"
+                  dataSource={participants}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar
+                            src={item.participant.profile.photo || UserIcon}
+                          />
+                        }
+                        title={
+                          <b>
+                            {item.participant.profile.first_name}{" "}
+                            {item.participant.profile.last_name}
+                          </b>
+                        }
+                        description={
+                          <span>{item.participant.profile.org_name || ""}</span>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
               </div>
               <div
                 className="project-detail-clients"
@@ -141,14 +193,6 @@ class Project extends Component {
               </div>
             </Col>
           </Row>
-          {isCreator && (
-            <button
-              className="main-btn template-btn mt-5"
-              onClick={this.onToggleEdit}
-            >
-              Edit
-            </button>
-          )}
         </Container>
         <Footer />
       </React.Fragment>

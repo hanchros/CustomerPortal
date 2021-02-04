@@ -129,14 +129,15 @@ export function joinProject(projectId) {
   };
 }
 
-export function joinOrgProject(projectId, orgId) {
+export function joinOrgProject(projectId, userId, orgId) {
   return async (dispatch) => {
     try {
       const client = Client(true);
       let res = await client.post(`${API_URL}/projectorg/${projectId}`, {
+        user: userId,
         organization: orgId,
       });
-      message.success("Organization is joining this project.");
+      message.success("Invite has been sent successfully!");
       return res.data.projectOrg;
     } catch (err) {
       createNotification("Follow Project", errorMessage(err));
