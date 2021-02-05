@@ -65,10 +65,13 @@ export function updateTemplate(values) {
       let res = await client.put(`${API_URL}/templates`, values);
       let type = UPDATE_TEMPLATE;
       if (!values.creator) type = UPDATE_GLOBAL_TEMPLATE;
+      let template = res.data.template;
       dispatch({
         type,
-        template: res.data.template,
+        template,
       });
+      template.projects = res.data.projects;
+      return template;
     } catch (err) {
       createNotification("Update Template", errorMessage(err));
     }

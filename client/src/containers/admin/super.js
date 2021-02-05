@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
-  GlobalOutlined,
   TeamOutlined,
   UserOutlined,
   ProfileOutlined,
@@ -104,15 +103,6 @@ class AdminDashboard extends Component {
                 <span>
                   <MailOutlined />
                   <span>Global Emails</span>
-                </span>
-              </Menu.Item>
-              <Menu.Item
-                key="sup-app"
-                onClick={() => this.switchPage("Super", "Applications")}
-              >
-                <span>
-                  <GlobalOutlined />
-                  <span>Applications</span>
                 </span>
               </Menu.Item>
               <Menu.Item

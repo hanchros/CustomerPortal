@@ -35,10 +35,20 @@ class Template extends Component {
     this.setState({ template: template || {} });
   };
 
+  setUpdateTemplate = (template) => {
+    this.setState({ template });
+  };
+
   render() {
     const { template, showEditForm, showUseTemplate } = this.state;
     if (showEditForm) {
-      return <EditTemplate curTemplate={template} goback={this.onToggleEdit} />;
+      return (
+        <EditTemplate
+          curTemplate={template}
+          goback={this.onToggleEdit}
+          setTemplate={this.setUpdateTemplate}
+        />
+      );
     }
     if (showUseTemplate) {
       return (
@@ -85,7 +95,7 @@ class Template extends Component {
                 {template.technologies && (
                   <ul>
                     {template.technologies.map((tech) => (
-                      <li key={tech.application}>{tech.application}</li>
+                      <li key={tech.title}>{tech.title}</li>
                     ))}
                   </ul>
                 )}
@@ -95,7 +105,7 @@ class Template extends Component {
                 {template.projects && (
                   <ul>
                     {template.projects.map((proj) => (
-                      <li>{proj.name}</li>
+                      <li key={proj.name}>{proj.name}</li>
                     ))}
                   </ul>
                 )}

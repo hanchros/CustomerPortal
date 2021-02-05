@@ -187,7 +187,7 @@ class Project extends Component {
                 <ul>
                   {curProj.technologies &&
                     curProj.technologies.map((tech) => (
-                      <li key={tech.application}>{tech.application}</li>
+                      <li key={tech.title}>{tech.title}</li>
                     ))}
                 </ul>
               </div>

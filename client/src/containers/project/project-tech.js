@@ -4,6 +4,8 @@ import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { extractContent } from "../../utils/helper";
+import TechImg from "../../assets/img/technology.png";
 
 class ProjectTech extends Component {
   render = () => {
@@ -22,12 +24,13 @@ class ProjectTech extends Component {
           <h4 className="mb-4">{curProj.name} Technology</h4>
           {curProj.technologies &&
             curProj.technologies.map((tech) => (
-              <div className="project-general-box mb-4" key={tech.application}>
+              <div className="project-general-box mb-4" key={tech.title}>
+                <div className="pr-4">
+                  <img src={tech.image || TechImg} alt="" />
+                </div>
                 <div>
-                  <h5>{tech.application}</h5>
-                  <span>{tech.organization}</span>
-                  <br />
-                  <span>{tech.description}</span>
+                  <h5>{tech.title}</h5>
+                  <span>{extractContent(tech.content, true)}</span>
                 </div>
               </div>
             ))}

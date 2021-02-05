@@ -8,17 +8,20 @@ const TemplateForm = ({
   updateTemplate,
   deleteTemplate,
   hideModal,
-  org,
+  setTemplate,
 }) => {
   const [technologies, setTechnologies] = useState(
     curTemplate.technologies || []
   );
 
   const onFinish = async (values) => {
-    values.technologies = technologies;
+    values.technologies = technologies.map((tech) => {
+      return tech._id;
+    });
     if (curTemplate._id) {
       values._id = curTemplate._id;
-      await updateTemplate(values);
+      let newTemp = await updateTemplate(values);
+      setTemplate(newTemp);
     } else {
       await createTemplate(values);
     }

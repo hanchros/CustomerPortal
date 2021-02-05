@@ -6,6 +6,7 @@ const ProjectOrg = require("../models/projectorg");
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
+const utils = require("./util");
 
 exports.createProject = async (req, res, next) => {
   try {
@@ -20,8 +21,8 @@ exports.createProject = async (req, res, next) => {
     const po = new ProjectOrg({
       organization: req.user.profile.org,
       project: pr._id,
-      option: "creator"
-    })
+      option: "creator",
+    });
     await po.save();
     const result = await Project.findById(pr._id).populate({
       path: "participant",
@@ -42,10 +43,12 @@ exports.updateProject = async (req, res, next) => {
     const pr = await Project.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
-    const result = await Project.findById(pr._id).populate({
-      path: "participant",
-      select: "_id profile",
-    });
+    const result = await Project.findById(pr._id)
+      .populate({
+        path: "participant",
+        select: "_id profile",
+      })
+      .populate("technologies");
     res.status(201).json({ project: result });
   } catch (err) {
     return next(err);
@@ -77,6 +80,7 @@ exports.getProject = (req, res, next) => {
       path: "participant",
       select: "_id profile",
     })
+    .populate("technologies")
     .exec((err, project) => {
       if (err) {
         return next(err);
@@ -196,15 +200,19 @@ exports.sendInvite = async (req, res, next) => {
       sender_organization,
       project_name: values.project_name,
     };
+    const project = await Project.findById(values.project_id)
+    utils.createPDFDoc(values, project.description)
+    await sleep(3000)
 
     delete values.logo;
     delete values.content;
+    delete values.project_description
     const form = new FormData();
-    const pdfData = fs.readFileSync(`${__dirname}/../template/orginvite.pdf`);
-    form.append("file", pdfData);
+    form.append('file', fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`));
     form.append("data_form", JSON.stringify(values));
     form.append("meta_form", JSON.stringify(values));
     form.append("master_id", "123456789");
+    form.append("cartridge_type", "Organization")
 
     let response = await axios.post(
       "http://integraapiproduction.azurewebsites.net/pdf",
@@ -214,7 +222,7 @@ exports.sendInvite = async (req, res, next) => {
         responseType: "stream",
       }
     );
-    let filename = `${new Date().getTime().toString(36)}.pdf`;
+    let filename = `invite_${new Date().getTime().toString(36)}.pdf`;
     let path = `${__dirname}/../uploads/${filename}`;
     const writer = fs.createWriteStream(path);
     response.data.pipe(writer);
@@ -240,3 +248,9 @@ exports.getMailTemplate = (req, res, next) => {
     return next(err);
   }
 };
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}   

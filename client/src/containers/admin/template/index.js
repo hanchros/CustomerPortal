@@ -42,6 +42,10 @@ class AdminTemplate extends Component {
     });
   };
 
+  setUpdateTemplate = (template) => {
+    this.setState({ template });
+  };
+
   renderTemplateItem = (template) => (
     <List.Item className="template-li">
       <div style={{ width: "100%" }}>
@@ -97,6 +101,7 @@ class AdminTemplate extends Component {
               curTemplate={template}
               user={user}
               hideModal={this.hideModal}
+              setTemplate={this.setUpdateTemplate}
             />
           </Modal>
         )}

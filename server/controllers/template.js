@@ -18,8 +18,11 @@ exports.updateTemplate = async (req, res, next) => {
     const id = req.body._id;
     delete req.body._id;
     await Template.findByIdAndUpdate(id, req.body);
-    const template = await Template.findById(id);
-    res.send({ template });
+    const template = await Template.findById(id)
+      .populate("creator")
+      .populate("technologies");
+    const projects = await Project.find({ template: id });
+    res.send({ template, projects });
   } catch (err) {
     return next(err);
   }
@@ -29,7 +32,9 @@ exports.listTemplateByOrg = async (req, res, next) => {
   try {
     const templates = await Template.find({
       creator: req.params.orgId,
-    }).populate("creator");
+    })
+      .populate("creator")
+      .populate("technologies");
     res.status(201).json({ templates });
   } catch (err) {
     return next(err);
@@ -38,7 +43,9 @@ exports.listTemplateByOrg = async (req, res, next) => {
 
 exports.listTemplateGlobal = async (req, res, next) => {
   try {
-    const templates = await Template.find({ creator: null });
+    const templates = await Template.find({ creator: null }).populate(
+      "technologies"
+    );
     res.status(201).json({ templates });
   } catch (err) {
     return next(err);
@@ -51,7 +58,6 @@ exports.getTemplate = async (req, res, next) => {
       .populate("creator")
       .populate("technologies");
     const projects = await Project.find({ template: req.params.id });
-    template.projects = projects;
     res.status(201).json({ template, projects });
   } catch (err) {
     return next(err);

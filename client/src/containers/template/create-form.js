@@ -12,6 +12,7 @@ export const TemplateForm = ({
   updateTemplate,
   goback,
   org,
+  setTemplate
 }) => {
   const [technologies, setTechnologies] = useState(
     curTemplate.technologies || []
@@ -19,10 +20,13 @@ export const TemplateForm = ({
 
   const onFinish = async (values) => {
     values.creator = org._id;
-    values.technologies = technologies;
+    values.technologies = technologies.map((tech) => {
+      return tech._id;
+    });
     if (curTemplate._id) {
       values._id = curTemplate._id;
-      await updateTemplate(values);
+      let newTemp = await updateTemplate(values);
+      setTemplate(newTemp)
     } else {
       await createTemplate(values);
     }
@@ -88,6 +92,7 @@ class Template extends Component {
       updateTemplate,
       goback,
       organization,
+      setTemplate
     } = this.props;
     return (
       <React.Fragment>
@@ -103,6 +108,7 @@ class Template extends Component {
             curTemplate={curTemplate}
             createTemplate={createTemplate}
             updateTemplate={updateTemplate}
+            setTemplate={setTemplate}
             goback={goback}
             org={organization.currentOrganization}
           />

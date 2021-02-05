@@ -1,44 +1,47 @@
-import React from "react";
-import { Button, Form, Input, List, Avatar } from "antd";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Button, Form, Input, List, Avatar, Select, Modal } from "antd";
 import { Link } from "react-router-dom";
+import { Row, Col } from "reactstrap";
 import TechImg from "../../assets/img/technology.png";
-import {PlusOutlined} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { getFieldDataByNameValue, extractContent } from "../../utils/helper";
+import { createArticle } from "../../actions/article";
+import RichTextEditor from "../../components/pages/editor";
+import UploadLogo from "../../components/template/upload";
 
-const TechnologyForm = ({ addTech, onCancel }) => {
+const TechnologyForm = ({ addTech, onCancel, tagId }) => {
+  const [avatarURL, setAvatar] = useState("");
+
   const onFinish = async (values) => {
+    values.tag = tagId;
+    values.topic = "Technology";
+    values.image = avatarURL;
     addTech(values);
   };
 
   return (
     <Form name="create-technology" className="mt-4" onFinish={onFinish}>
       <Form.Item
-        name="application"
+        name="title"
         rules={[
           {
             required: true,
-            message: `Please input the application name!`,
+            message: "Please input the technology title!",
           },
         ]}
       >
-        <Input placeholder="Application" />
+        <Input type="text" placeholder="Title" />
       </Form.Item>
-      <Form.Item
-        name="organization"
-        rules={[
-          {
-            required: true,
-            message: `Please input the organization name!`,
-          },
-        ]}
-      >
-        <Input placeholder="Organization" />
+      <Form.Item name="content">
+        <RichTextEditor placeholder="Content" />
       </Form.Item>
-      <Form.Item name="description">
-        <Input.TextArea rows={3} placeholder="Description" />
-      </Form.Item>
+      <div className="center">
+        <UploadLogo setAvatar={setAvatar} imageUrl={avatarURL} />
+      </div>
       <div className="flex">
         <Button type="primary" htmlType="submit" className="mr-2">
-          Add
+          Create
         </Button>
         <Button
           type="default"
@@ -61,6 +64,8 @@ class Technology extends React.Component {
     this.state = {
       showForm: false,
       technologies: props.technologies || [],
+      exTech: {},
+      visible: false,
     };
   }
 
@@ -68,11 +73,8 @@ class Technology extends React.Component {
     this.setState({ showForm: !this.state.showForm });
   };
 
-  onAddTechnology = (tech) => {
-    const { technologies } = this.state;
-    const newTechArr = [...technologies, tech];
-    this.setState({ showForm: false, technologies: newTechArr });
-    this.props.onChangeTechs(newTechArr);
+  onToggleModal = () => {
+    this.setState({ visible: !this.state.visible });
   };
 
   onRemoveTechnology = (index) => {
@@ -82,8 +84,44 @@ class Technology extends React.Component {
     this.props.onChangeTechs(techs);
   };
 
+  onChangeExTechs = (tech) => {
+    const { articles } = this.props;
+    const art = articles.filter((item) => item._id === tech);
+    let exTech = {};
+    if (art.length > 0) exTech = art[0];
+    this.setState({ exTech });
+  };
+
+  addExTech = () => {
+    const { technologies, exTech } = this.state;
+    if (!exTech._id) return;
+    const newTechArr = [...technologies, exTech];
+    this.setState({ showForm: false, technologies: newTechArr, exTech: {} });
+    this.props.onChangeTechs(newTechArr);
+  };
+
+  createTech = async (values) => {
+    const { technologies } = this.state;
+    let newTech = await this.props.createArticle(values);
+    const newTechArr = [...technologies, newTech];
+    this.setState({
+      showForm: false,
+      technologies: newTechArr,
+      visible: false,
+    });
+    this.props.onChangeTechs(newTechArr);
+  };
+
   render() {
-    const { showForm, technologies } = this.state;
+    const { articles, fieldData } = this.props;
+    const { showForm, technologies, exTech, visible } = this.state;
+    const techTag = getFieldDataByNameValue(
+      fieldData,
+      "article_tag",
+      "application"
+    );
+    const exTechs = articles.filter((item) => item.tag === techTag._id);
+
     return (
       <div className="create-tech-box">
         <List
@@ -95,15 +133,13 @@ class Technology extends React.Component {
               actions={[
                 <Link to="#" onClick={() => this.onRemoveTechnology(index)}>
                   remove
-                </Link>
+                </Link>,
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={TechImg} />}
-                title={<b>{item.application}</b>}
-                description={
-                    <span>{item.organization}<br />{item.description}</span>
-                }
+                avatar={<Avatar src={item.image || TechImg} />}
+                title={<b>{item.title}</b>}
+                description={<span>{extractContent(item.content, true)}</span>}
               />
             </List.Item>
           )}
@@ -114,14 +150,63 @@ class Technology extends React.Component {
           </Button>
         )}
         {showForm && (
-          <TechnologyForm
-            addTech={this.onAddTechnology}
-            onCancel={this.onToggleShowForm}
-          />
+          <React.Fragment>
+            <span>Add existing technology or create new</span>
+            <Row>
+              <Col md={6} sm={12}>
+                <div className="flex mb-3">
+                  <Select
+                    placeholder="Select Technology​"
+                    onChange={this.onChangeExTechs}
+                    value={exTech._id}
+                    className="mr-3"
+                  >
+                    {exTechs.map((item) => {
+                      return (
+                        <Select.Option key={item._id} value={item._id}>
+                          {item.title}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                  <Button type="primary" onClick={this.addExTech}>
+                    Add
+                  </Button>
+                </div>
+              </Col>
+              <Col md={6} sm={12}>
+                <Button type="primary" onClick={this.onToggleModal}>
+                  Create New Technology
+                </Button>
+              </Col>
+            </Row>
+          </React.Fragment>
+        )}
+        {visible && (
+          <Modal
+            title={`Create Technology`}
+            visible={visible}
+            width={800}
+            footer={false}
+            onCancel={this.onToggleModal}
+          >
+            <TechnologyForm
+              addTech={this.createTech}
+              onCancel={this.onToggleModal}
+              tagId={techTag._id}
+            />
+          </Modal>
         )}
       </div>
     );
   }
 }
 
-export default Technology;
+function mapStateToProps(state) {
+  return {
+    articles: state.article.articles,
+    fieldData: state.profile.fieldData,
+  };
+}
+
+export default connect(mapStateToProps, { createArticle })(Technology);

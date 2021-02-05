@@ -33,6 +33,7 @@ export function createArticle(values) {
         article: res.data.article,
       });
       message.success("New article has been created successfully!");
+      return res.data.article;
     } catch (err) {
       createNotification("Create Article", errorMessage(err));
     }

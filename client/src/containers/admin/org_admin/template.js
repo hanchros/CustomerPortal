@@ -34,6 +34,10 @@ class AdminTemplate extends Component {
     });
   };
 
+  setUpdateTemplate = (template) => {
+    this.setState({ curTemplate: template });
+  };
+
   onDeleteTemplate = (id) => {
     this.props.deleteTemplate(id);
   };
@@ -79,6 +83,7 @@ class AdminTemplate extends Component {
             updateTemplate={updateTemplate}
             goback={this.onToggleCreateTemplate}
             org={organization.currentOrganization}
+            setTemplate={this.setUpdateTemplate}
           />
         )}
         {!showCreateTemplate && (
