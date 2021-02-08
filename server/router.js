@@ -13,6 +13,8 @@ const InviteRequestController = require("./controllers/inviterequest")
 const TemplateController = require("./controllers/template");
 const MailController = require("./controllers/mail");
 const FaqController = require("./controllers/faq");
+const ChatController = require("./controllers/chat");
+const TimelineController = require("./controllers/timeline");
 
 var multer  = require('multer')
 const express = require("express");
@@ -49,6 +51,8 @@ module.exports = function (app) {
     templateRoutes = express.Router(),
     mailRoutes = express.Router(),
     faqRoutes = express.Router(),
+    chatRoutes = express.Router(),
+    timelineRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -342,6 +346,51 @@ module.exports = function (app) {
   // delete faq route
   faqRoutes.delete("/:id", requireAuth, FaqController.deleteFaq);
 
+
+  //= ========================
+  // Chat Routes
+  //= ========================
+  apiRoutes.use("/chat", chatRoutes);
+  // View messages to and from authenticated user
+  chatRoutes.get("/", requireAuth, ChatController.getConversations);
+  // Retrieve single conversation
+  chatRoutes.get(
+    "/:conversationId",
+    requireAuth,
+    ChatController.getConversation
+  );
+  // Create team chat route
+  chatRoutes.post("/team/new", requireAuth, ChatController.createTeamChat)
+  // Send reply in conversation
+  chatRoutes.post("/:conversationId", requireAuth, ChatController.sendReply);
+  // Start new conversation
+  chatRoutes.post(
+    "/new/:recipient",
+    requireAuth,
+    ChatController.newConversation
+  );
+  // Update message route
+  chatRoutes.put("/message", requireAuth, ChatController.updateMessage);
+  // Delete message route
+  chatRoutes.delete("/message/:messageId", requireAuth, ChatController.deleteMessage);
+  // Block chat route
+  chatRoutes.post("/block/:userid", requireAuth, ChatController.blockChat)
+  // Block chat route
+  chatRoutes.get("/participant/:userid", requireAuth, ChatController.getOneConversation)
+
+
+  //= ========================
+  // Timeline Routes
+  //= ========================
+  apiRoutes.use("/timeline", timelineRoutes);
+  // list timeline by project id route
+  timelineRoutes.get("/:projectId", requireAuth, TimelineController.listTimeline);
+  // create timeline route
+  timelineRoutes.post("/", requireAuth, TimelineController.createTimeline);
+  // update timeline route
+  timelineRoutes.put("/", requireAuth, TimelineController.updateTimeline);
+  // delete timeline route
+  timelineRoutes.delete("/:id", requireAuth, TimelineController.deleteTimeline);
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

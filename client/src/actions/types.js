@@ -103,3 +103,16 @@ export const FETCH_FAQ_LIST = "fetch_faq_list",
   CREATE_FAQ = "create_faq",
   DELETE_FAQ = "delete_faq",
   UPDATE_FAQ = "update_faq";
+
+//= =====================
+// Messaging Actions
+//= =====================
+export const FETCH_CONVERSATIONS = "fetch_conversations",
+  SET_ON_MESSAGE = "set_on_message",
+  SET_CHANNEL = "set_channel",
+  FETCH_MESSAGES = "fetch_messages";
+
+export const FETCH_TIMELINE_LIST = "fetch_timeline_list",
+  CREATE_TIMELINE = "create_timeline",
+  UPDATE_TIMELINE = "update_timeline",
+  DELETE_TIMELINE = "delete_timeline";

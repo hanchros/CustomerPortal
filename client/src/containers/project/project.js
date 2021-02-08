@@ -14,6 +14,7 @@ import ProjectOrgs from "./project-org";
 import ProjectTeam from "./project-team";
 import ProjectTech from "./project-tech";
 import ProjectEdit from "./project-edit";
+import Timeline from "./project-timeline";
 
 class Project extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class Project extends Component {
 
   render = () => {
     const { loading, showOrgs, showTeam, showTech, showEdit } = this.state;
-    const { project, user } = this.props;
+    const { project, user, match } = this.props;
     const curProj = project.project;
     const participants = project.participants;
     const organizations = project.organizations;
@@ -99,14 +100,7 @@ class Project extends Component {
                 </div>
               </div>
               <div className="project-detail-desc">{curProj.description}</div>
-              <div className="project-detail-desc">
-                <h5>Project Timeline:</h5>
-                <ul>
-                  <li>More recent here</li>
-                  <li>Older here</li>
-                  <li>Even older here</li>
-                </ul>
-              </div>
+              <Timeline id={match.params.id} />
               {isCreator && (
                 <div className="mt-5 mb-4 flex">
                   <button
@@ -186,8 +180,8 @@ class Project extends Component {
                 <h5>Technology:</h5>
                 <ul>
                   {curProj.technologies &&
-                    curProj.technologies.map((tech) => (
-                      <li key={tech.title}>{tech.title}</li>
+                    curProj.technologies.map((tech, index) => (
+                      <li key={index}>{tech.title}</li>
                     ))}
                 </ul>
               </div>

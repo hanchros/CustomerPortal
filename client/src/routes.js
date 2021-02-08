@@ -63,10 +63,14 @@ import { protectedTest } from "./actions/auth";
 import { listFieldData } from "./actions/profile";
 import { listArticle } from "./actions/article";
 import { listGlobalTemplate } from "./actions/template";
+import { fetchConversations } from "./actions/message";
+import { fetchNotifications } from "./actions/notification";
 
 class Routes extends React.Component {
   componentDidMount = async () => {
     await this.props.protectedTest();
+    this.props.fetchConversations();
+    this.props.fetchNotifications();
     this.props.listFieldData();
     this.props.listArticle();
     this.props.listGlobalTemplate();
@@ -148,4 +152,6 @@ export default connect(mapStateToProps, {
   listFieldData,
   listArticle,
   listGlobalTemplate,
+  fetchConversations,
+  fetchNotifications,
 })(Routes);

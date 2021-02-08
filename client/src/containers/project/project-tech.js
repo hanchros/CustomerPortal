@@ -23,8 +23,8 @@ class ProjectTech extends Component {
           </Button>
           <h4 className="mb-4">{curProj.name} Technology</h4>
           {curProj.technologies &&
-            curProj.technologies.map((tech) => (
-              <div className="project-general-box mb-4" key={tech.title}>
+            curProj.technologies.map((tech, index) => (
+              <div className="project-general-box mb-4" key={index}>
                 <div className="pr-4">
                   <img src={tech.image || TechImg} alt="" />
                 </div>

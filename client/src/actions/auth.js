@@ -12,7 +12,8 @@ import {
 } from "./types";
 import history from "../history";
 import Client from "./api";
-
+import { setMessageUserId, fetchConversations } from "./message";
+import { fetchNotifications } from "./notification";
 //= ===============================
 // Authentication actions
 //= ===============================
@@ -33,6 +34,9 @@ export function loginUser({ email, password }) {
         type: SET_CURRENT_ORGANIZATION,
         organization: user.profile.org,
       });
+      setMessageUserId({ userId: user._id })(dispatch);
+      fetchConversations()(dispatch);
+      fetchNotifications()(dispatch);
       history.push(`/${user.profile.org.org_name}`);
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));
@@ -216,6 +220,7 @@ export function protectedTest() {
           type: SET_CURRENT_ORGANIZATION,
           organization: response.data.user.profile.org,
         });
+        setMessageUserId({ userId: response.data.user._id })(dispatch);
       }
     } catch (error) {
       dispatch({ type: UNAUTH_USER, payload: "" });

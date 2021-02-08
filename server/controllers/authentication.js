@@ -8,6 +8,7 @@ const config = require("../config/main");
 const Token = require("../models/token");
 const Organization = require("../models/organization");
 const ProjectMember = require("../models/projectmember");
+const Timeline = require("../models/timeline");
 
 // Generate JWT
 // TO-DO Add issuer and audience
@@ -136,8 +137,12 @@ exports.inviteRegister = async function (req, res, next) {
         role: project_role || "member",
       });
       pm.save();
+      const timeline = new Timeline({
+        title: `${first_name} ${last_name} was invited to the project`,
+        project: project_id,
+      });
+      timeline.save();
     }
-
     return res.status(201).json({ user: userInfo });
   } catch (err) {
     return next(err);

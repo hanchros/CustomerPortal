@@ -4,6 +4,7 @@ const User = require("../models/user");
 const ProjectOrg = require("../models/projectorg");
 const ProjectMember = require("../models/projectmember");
 const MailController = require("./mail");
+const Timeline = require("../models/timeline");
 
 exports.createOrganization = async (req, res, next) => {
   try {
@@ -21,6 +22,11 @@ exports.createOrganization = async (req, res, next) => {
         project: project_id,
       });
       po.save();
+      let tl = new Timeline({
+        title: `Organization "${org_result.org_name}" was added to the project`,
+        project: project_id,
+      });
+      await tl.save();
     }
     MailController.addNewOrgMail(org_result._id);
     res.status(201).json({

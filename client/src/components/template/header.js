@@ -37,6 +37,7 @@ class HeaderTemplate extends Component {
       isAdmin,
       orgAdmin,
       organization,
+      message,
     } = this.props;
     const orgName =
       organization.currentOrganization.org_name || "integra-ledger";
@@ -70,7 +71,12 @@ class HeaderTemplate extends Component {
                 {authenticated && (
                   <NavItem>
                     <Link className="nav-link" to="/messages">
-                      MESSAGES
+                      <Badge
+                        count={message.unread}
+                        style={{ backgroundColor: "#52c41a" }}
+                      >
+                        <span>MESSAGES</span>
+                      </Badge>
                     </Link>
                   </NavItem>
                 )}
@@ -182,6 +188,7 @@ function mapStateToProps(state) {
     orgAdmin: state.user.orgAdmin,
     notification: state.notification,
     organization: state.organization,
+    message: state.message,
   };
 }
 

@@ -11,6 +11,8 @@ import templateReducer from "./template";
 import mailReducer from "./mail";
 import faqReducer from "./faq";
 import inviteReducer from "./invite";
+import messageReducer from "./message";
+import timelineReducer from "./timeline";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -25,6 +27,8 @@ const rootReducer = combineReducers({
   mail: mailReducer,
   faq: faqReducer,
   invite: inviteReducer,
+  message: messageReducer,
+  timeline: timelineReducer,
 });
 
 export default rootReducer;

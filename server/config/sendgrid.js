@@ -34,6 +34,18 @@ exports.userForgotPasword = function userForgotPasword(recipient, token) {
   });
 };
 
+exports.newMessage = function newMessage(name, sender, content, email) {
+  const msg = {
+    to: email,
+    from: "mrinow@automation.place",
+    subject: "You have unread messages",
+    html: messageFactory(name, sender, content),
+  };
+  sgMail.send(msg).catch((err) => {
+    console.log(err);
+  });
+};
+
 exports.newNotification = function newNotification(
   email,
   title,
@@ -131,6 +143,15 @@ function userFPFactory(token) {
   return text;
 }
 
+function messageFactory(name, sender, content) {
+  const mailData = { name, sender, content };
+  const template = fs.readFileSync("template/Message.html", {
+    encoding: "utf-8",
+  });
+  var text = ejs.render(template, mailData);
+  return text;
+}
+
 function notificationFactory(title, content, senderName, senderPhoto) {
   const mailData = { title, content, senderName, senderPhoto };
   const template = fs.readFileSync("template/Notification.html", {
@@ -198,6 +219,7 @@ exports.sendFeedbackMail = function sendFeedbackMail(freeType, comment) {
 
 exports.userEVFactory = userEVFactory;
 exports.userFPFactory = userFPFactory;
+exports.messageFactory = messageFactory;
 exports.notificationFactory = notificationFactory;
 exports.inviteFactory = inviteFactory;
 exports.inviteOrgMemberFactory = inviteOrgMemberFactory;

@@ -3,10 +3,12 @@ const sendgrid = require("../config/sendgrid");
 const Notification = require("../models/notification");
 const ProjectMember = require("../models/projectmember");
 const ProjectOrg = require("../models/projectorg");
+const Timeline = require("../models/timeline");
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const utils = require("./util");
+const Article = require("../models/article");
 
 exports.createProject = async (req, res, next) => {
   try {
@@ -24,6 +26,11 @@ exports.createProject = async (req, res, next) => {
       option: "creator",
     });
     await po.save();
+    const timeline = new Timeline({
+      title: `Project created by ${req.user.profile.first_name} ${req.user.profile.last_name}`,
+      project: pr._id,
+    });
+    await timeline.save();
     const result = await Project.findById(pr._id).populate({
       path: "participant",
       select: "_id profile",
@@ -40,9 +47,25 @@ exports.updateProject = async (req, res, next) => {
   try {
     const id = req.body._id;
     delete req.body._id;
+    let oldProject = await Project.findById(id);
+    let techs = req.body.technologies || [];
+
     const pr = await Project.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
+    for (let tech of techs) {
+      let exTechs = oldProject.technologies.filter((item) => {
+        return utils.compareIds(item, tech._id);
+      });
+      if (exTechs.length === 0) {
+        const timeline = new Timeline({
+          title: `Technology ${tech.title} was added to the project`,
+          project: id,
+        });
+        await timeline.save();
+      }
+    }
+
     const result = await Project.findById(pr._id)
       .populate({
         path: "participant",
@@ -200,19 +223,22 @@ exports.sendInvite = async (req, res, next) => {
       sender_organization,
       project_name: values.project_name,
     };
-    const project = await Project.findById(values.project_id)
-    utils.createPDFDoc(values, project.description)
-    await sleep(3000)
+    const project = await Project.findById(values.project_id);
+    utils.createPDFDoc(values, project.description);
+    await sleep(3000);
 
     delete values.logo;
     delete values.content;
-    delete values.project_description
+    delete values.project_description;
     const form = new FormData();
-    form.append('file', fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`));
+    form.append(
+      "file",
+      fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`)
+    );
     form.append("data_form", JSON.stringify(values));
     form.append("meta_form", JSON.stringify(values));
     form.append("master_id", "123456789");
-    form.append("cartridge_type", "Organization")
+    form.append("cartridge_type", "Organization");
 
     let response = await axios.post(
       "http://integraapiproduction.azurewebsites.net/pdf",
@@ -253,4 +279,4 @@ function sleep(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
-}   
+}

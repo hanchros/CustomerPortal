@@ -20,6 +20,7 @@ exports.viewProfile = async (req, res, next) => {
       res.status(400).json({ error: "No user could be found for this ID." });
       return next(err);
     }
+    const userToReturn = setUserInfo(user);
     return res.status(200).json({ user: userToReturn });
   } catch (err) {
     return next(err);
@@ -28,20 +29,15 @@ exports.viewProfile = async (req, res, next) => {
 
 exports.getUserSession = async (req, res, next) => {
   try {
-    if (req.user.email) {
-      let user = await User.findById(req.user._id).populate({
-        path: "profile.org",
-        populate: {
-          path: "creator",
-          select: "_id profile",
-        },
-      });
-      const userToReturn = setUserInfo(user);
-      return res.status(200).json({ user: userToReturn });
-    }
-    if (req.user.org_name) {
-      return res.status(200).json({ organization: req.user });
-    }
+    let user = await User.findById(req.user._id).populate({
+      path: "profile.org",
+      populate: {
+        path: "creator",
+        select: "_id profile",
+      },
+    });
+    const userToReturn = setUserInfo(user);
+    return res.status(200).json({ user: userToReturn });
   } catch (err) {
     return next(err);
   }

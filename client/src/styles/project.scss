@@ -122,6 +122,31 @@
   width: 100%;
   min-height: 25vh;
   margin-bottom: 20px;
+
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .timeline-list {
+    max-height: 180px;
+    overflow-y: auto;
+
+    .timeline-item {
+      font-size: 14px;
+      font-style: italic;
+      margin-bottom: 3px;
+      padding-right: 10px;
+      display: flex;
+      justify-content: space-between;
+
+      .timeline-description {
+        padding: 7px;
+      }
+    }
+  }
 }
 
 .project-detail-clients {
@@ -176,6 +201,12 @@
   width: 200px;
 }
 
+.project-team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
 @media screen and (min-width: 768px) {
   .invite-tab {
     .ant-tabs-nav-list {
@@ -195,6 +226,15 @@
   .project-org-box {
     img {
       width: 80px;
+    }
+  }
+  .project-detail-desc {
+    .timeline-list {
+      .timeline-item {
+        font-size: 13px;
+        margin-bottom: 12px;
+        flex-direction: column;
+      }
     }
   }
 }

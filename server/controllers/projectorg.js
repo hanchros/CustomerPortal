@@ -1,11 +1,14 @@
 const ProjectOrg = require("../models/projectorg");
 const ProjectMember = require("../models/projectmember");
+const Timeline = require("../models/timeline");
 const User = require("../models/user");
 const Project = require("../models/project");
 const sendgrid = require("../config/sendgrid");
+const Organization = require("../models/organization");
 
 exports.joinProject = async (req, res, next) => {
   try {
+    const customer = await User.findById(req.body.user);
     const pms = await ProjectMember.find({
       participant: req.body.user,
       project: req.params.projectId,
@@ -16,8 +19,14 @@ exports.joinProject = async (req, res, next) => {
         project: req.params.projectId,
       });
       await pm.save();
+      let timeline = new Timeline({
+        title: `${customer.profile.first_name} ${customer.profile.last_name} was invited to the project`,
+        project: req.params.projectId,
+      });
+      await timeline.save();
     }
     if (req.body.organization) {
+      const org = await Organization.findById(req.body.organization);
       const pos = await ProjectOrg.find({
         organization: req.body.organization,
         project: req.params.projectId,
@@ -28,9 +37,13 @@ exports.joinProject = async (req, res, next) => {
           project: req.params.projectId,
         });
         await po.save();
+        let tl = new Timeline({
+          title: `Organization "${org.org_name}" was added to the project`,
+          project: req.params.projectId,
+        });
+        await tl.save();
       }
     }
-    const customer = await User.findById(req.body.user);
     const project = await Project.findById(req.params.projectId);
     const content = `<p>Hi, ${customer.profile.first_name} ${
       customer.profile.last_name
