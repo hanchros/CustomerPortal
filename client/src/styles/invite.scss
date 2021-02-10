@@ -1,10 +1,22 @@
 .org-invite-box {
+  padding: 10px;
   .org-invite-header {
     display: flex;
     margin-bottom: 20px;
-    .ant-select {
-      width: 300px;
+    input {
+      width: 250px;
       margin-right: 50px;
     }
   }
+}
+
+.project-teaminvite-box {
+  margin-top: 40px;
+  box-shadow: 1px 1px 5px var(--shadow_color);
+  padding: 20px 30px;
+}
+
+.project-exuser-box {
+  display: flex;
+  
 }

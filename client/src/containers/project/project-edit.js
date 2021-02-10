@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { Form, Input } from "antd";
+import { Form, Input, Row, Col } from "antd";
 import { updateProject, createProject } from "../../actions/project";
 import { Header, Upload, Footer } from "../../components/template";
 import Technology from "../template/technology";
@@ -48,33 +48,35 @@ const CreateForm = ({
       onFinish={onFinish}
       initialValues={curProject._id ? { ...curProject } : { ...template }}
     >
-      <span>Name:</span>
-      <Form.Item
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: `Please input the project name!`,
-          },
-        ]}
-      >
-        <Input type="text" className="name" placeholder={`Name`} />
-      </Form.Item>
-      <span>Objective:</span>
-      <Form.Item name="objective">
-        <Input placeholder="Objective" />
-      </Form.Item>
-      <p>What are you automating? Contracts, invoices, etc</p>
-      <p className="mb-4"></p>
-      <span>Description:</span>
+      <Row className="mb-4">
+        <Col md={18} sm={24}>
+          <span>Name:</span>
+          <Form.Item
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: `Please input the project name!`,
+              },
+            ]}
+          >
+            <Input type="text" className="name" placeholder={`Name`} />
+          </Form.Item>
+          <span>Short description:</span>
+          <Form.Item name="objective">
+            <Input placeholder="Objective" />
+          </Form.Item>
+        </Col>
+        <Col md={6} sm={24}>
+          <div className="center mt-4">
+            <Upload setAvatar={setAvatar} imageUrl={avatarURL} />
+          </div>
+        </Col>
+      </Row>
+      <span>Detailed description:</span>
       <Form.Item name="description">
         <Input.TextArea rows={3} placeholder="Description" />
       </Form.Item>
-      <p className="mb-4"></p>
-      <span>Add logo:</span>
-      <div className="avatar-uploader mb-4">
-        <Upload setAvatar={setAvatar} imageUrl={avatarURL} />
-      </div>
       <span>Technology:</span>
       <Technology technologies={technologies} onChangeTechs={setTechnologies} />
       <div className="flex mt-5">

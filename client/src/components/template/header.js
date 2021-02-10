@@ -144,8 +144,8 @@ class HeaderTemplate extends Component {
                     </DropdownToggle>
                     <DropdownMenu right>
                       <DropdownItem>
-                        <Link className="nav-link" to={"/profile"}>
-                          Profile
+                        <Link className="nav-link" to={"/account"}>
+                          Account
                         </Link>
                       </DropdownItem>
                       <DropdownItem divider />

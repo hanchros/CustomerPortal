@@ -15,6 +15,7 @@ exports.createOrganization = async (req, res, next) => {
     const user = await User.findById(req.body.creator);
     user.profile.org = org_result._id;
     user.profile.org_role = "admin";
+    user.profile.role = "Creator";
     user.save();
     if (project_id) {
       const po = new ProjectOrg({
@@ -46,6 +47,12 @@ exports.updateOrganization = async (req, res, next) => {
       path: "creator",
       select: "_id profile",
     });
+    let users = await User.find({ "profile.org": org._id });
+    console.log("users", users)
+    for (let user of users) {
+      user.profile.org_name = org.org_name;
+      await user.save();
+    }
     res.status(201).json({
       organization: org,
     });

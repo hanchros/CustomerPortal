@@ -43,9 +43,14 @@
         background-color: $gray-200;
         color: $purple-blue;
       }
+      padding: 16px 15px;
     }
     .ant-list-item.active {
-      color: $light-green;
+      font-weight: bold;
+    }
+
+    .ant-avatar {
+      border-radius: 3px;
     }
   }
 

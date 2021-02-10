@@ -28,12 +28,14 @@ const EditArticle = ({
   const [newTopic, setNewTopic] = useState("");
   const [artTopics, setArtTopics] = useState(topics || []);
   const [avatarURL, setAvatar] = useState(article.image || "");
+  const [iconURL, setIconURL] = useState(article.icon || "");
   const [files, setFiles] = useState(article.files || []);
 
   const onFinish = async (values) => {
     setLoading(true);
     values.image = avatarURL;
     values.files = files;
+    values.icon = iconURL;
     if (article._id) {
       values._id = article._id;
       await updateArticle(values);
@@ -70,17 +72,26 @@ const EditArticle = ({
       onFinish={onFinish}
       initialValues={{ ...article }}
     >
-      <Form.Item
-        name="title"
-        rules={[
-          {
-            required: true,
-            message: "Please input the article title!",
-          },
-        ]}
-      >
-        <Input type="text" placeholder="Title" />
-      </Form.Item>
+      <Row gutter="30" className="mb-3">
+        <Col md={6} sm={24}>
+          <div className="center">
+            <Avatar setAvatar={setIconURL} imageUrl={iconURL} />
+          </div>
+        </Col>
+        <Col md={18} sm={24} style={{ paddingTop: "33px" }}>
+          <Form.Item
+            name="title"
+            rules={[
+              {
+                required: true,
+                message: "Please input the article title!",
+              },
+            ]}
+          >
+            <Input type="text" placeholder="Title" />
+          </Form.Item>
+        </Col>
+      </Row>
       <Form.Item name="content">
         <RichTextEditor placeholder="Content" />
       </Form.Item>

@@ -71,11 +71,14 @@ class InviteHomePage extends React.Component {
           src={orgSettings.logo || ChallengeIcon}
           alt=""
         />
-        <p className="home-intro mt-5">
-          {orgSettings.org_name} has invited you to join the{" "}
-          {params.get("project")} project. Click the "Begin" button below to
-          find out more information
-        </p>
+        <div className="mt-5">
+          <p className="home-intro">
+            {orgSettings.org_name} has invited you to join the{" "}
+            {params.get("project")} project. Click the "Begin" button below to
+            find out more information
+          </p>
+          <p className="home-intro mt-3">{window.atob(params.get("intro"))}</p>
+        </div>
         <div className="home-btn-group mt-big">
           <Link to="#" className="main-btn" onClick={this.onBegin}>
             Begin

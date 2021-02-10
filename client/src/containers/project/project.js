@@ -33,7 +33,8 @@ class Project extends Component {
     this.setState({ showOrgs: !this.state.showOrgs });
   };
 
-  onToggleShowTeam = () => {
+  onToggleShowTeam = (e) => {
+    e.stopPropagation()
     this.setState({ showTeam: !this.state.showTeam });
   };
 
@@ -54,11 +55,18 @@ class Project extends Component {
     this.setState({ loading: false });
   };
 
+  getTeamMembers = (org_name) => {
+    const { project } = this.props;
+    if (project.participants.length === 0) return [];
+    return project.participants.filter(
+      (pm) => pm.participant.profile.org_name === org_name
+    );
+  };
+
   render = () => {
     const { loading, showOrgs, showTeam, showTech, showEdit } = this.state;
     const { project, user, match } = this.props;
     const curProj = project.project;
-    const participants = project.participants;
     const organizations = project.organizations;
     let isCreator = curProj.participant && curProj.participant._id === user._id;
 
@@ -82,24 +90,29 @@ class Project extends Component {
           <Skeleton active loading={loading} />
           <Row gutter={50}>
             <Col md={16} sm={24}>
-              <div className="project-detail-head">
-                <div>
-                  <img src={curProj.logo || ChallengeLogo} alt="" />
+              <div className="project-info-box">
+                <div className="project-detail-head">
+                  <div className="project-img-box">
+                    <img src={curProj.logo || ChallengeLogo} alt="" />
+                  </div>
+                  <div>
+                    <h3>{curProj.name}</h3>
+                    {curProj.participant && (
+                      <span>
+                        leader: {curProj.participant.profile.first_name}{" "}
+                        {curProj.participant.profile.last_name} -{" "}
+                        {curProj.participant.profile.org_name}
+                      </span>
+                    )}
+                    <br />
+                    <b>status: {curProj.status}</b>
+                  </div>
                 </div>
-                <div className="project-detail-headerbox">
-                  <h3>{curProj.name}</h3>
-                  {curProj.participant && (
-                    <span>
-                      leader: {curProj.participant.profile.first_name}{" "}
-                      {curProj.participant.profile.last_name} -{" "}
-                      {curProj.participant.profile.org_name}
-                    </span>
-                  )}
-                  <br />
-                  <b>status: {curProj.status}</b>
-                </div>
+                <span>Short Description:</span>
+                <p>{curProj.objective}</p>
+                <span>Long Description:</span>
+                <p>{curProj.description} </p>
               </div>
-              <div className="project-detail-desc">{curProj.description}</div>
               <Timeline id={match.params.id} />
               {isCreator && (
                 <div className="mt-5 mb-4 flex">
@@ -117,65 +130,54 @@ class Project extends Component {
                 className="project-detail-clients"
                 onClick={this.onToggleShowOrgs}
               >
-                <h5>Client & Partner Organization:</h5>
-                <List
-                  itemLayout="horizontal"
-                  className="project-list mt-1"
-                  dataSource={organizations}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={
-                          <Avatar
-                            src={item.organization.logo || ChallengeLogo}
+                <h5>&nbsp; Project Team:</h5>
+                {organizations.map((org) => (
+                  <div key={org._id} className="project-team-box">
+                    <div className="project-org-box">
+                      <Avatar src={org.organization.logo || ChallengeLogo} />
+                      <div className="ml-3">
+                        <b>{org.organization.org_name}</b>
+                        <br />
+                        <span style={{ fontSize: "14px" }}>
+                          {org.organization.org_type || ""}{" "}
+                          {org.organization.location || ""}
+                        </span>
+                      </div>
+                    </div>
+                    <List
+                      itemLayout="horizontal"
+                      className="project-list pl-2"
+                      dataSource={this.getTeamMembers(
+                        org.organization.org_name
+                      )}
+                      renderItem={(item) => (
+                        <List.Item onClick={this.onToggleShowTeam}>
+                          <List.Item.Meta
+                            avatar={
+                              <Avatar
+                                src={item.participant.profile.photo || UserIcon}
+                              />
+                            }
+                            title={
+                              <b>
+                                {item.participant.profile.first_name}{" "}
+                                {item.participant.profile.last_name}
+                              </b>
+                            }
+                            description={
+                              <span>{item.participant.profile.role || ""}</span>
+                            }
                           />
-                        }
-                        title={<b>{item.organization.org_name}</b>}
-                        description={
-                          <span>
-                            {item.organization.org_type || ""}{" "}
-                            {item.organization.location || ""}
-                          </span>
-                        }
-                      />
-                    </List.Item>
-                  )}
-                />
-              </div>
-              <div
-                className="project-detail-clients"
-                onClick={this.onToggleShowTeam}
-              >
-                <h5>Team:</h5>
-                <List
-                  itemLayout="horizontal"
-                  className="project-list mt-1"
-                  dataSource={participants}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={
-                          <Avatar
-                            src={item.participant.profile.photo || UserIcon}
-                          />
-                        }
-                        title={
-                          <b>
-                            {item.participant.profile.first_name}{" "}
-                            {item.participant.profile.last_name}
-                          </b>
-                        }
-                        description={
-                          <span>{item.participant.profile.org_name || ""}</span>
-                        }
-                      />
-                    </List.Item>
-                  )}
-                />
+                        </List.Item>
+                      )}
+                    />
+                  </div>
+                ))}
               </div>
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowTech}
+                style={{cursor: "pointer"}}
               >
                 <h5>Technology:</h5>
                 <ul>

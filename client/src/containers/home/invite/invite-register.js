@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Form, Input, Col, Row, message, Select } from "antd";
+import { Form, Input, Col, Row, message } from "antd";
 import Avatar from "../../../components/template/upload";
-import { getFieldData } from "../../../utils/helper";
 import { registerInvitedUser } from "../../../actions/auth";
 import { ModalSpinner } from "../../../components/pages/spinner";
 import history from "../../../history";
@@ -12,7 +11,6 @@ export const InviteRegisterForm = ({
   values,
   setAvatar,
   avatarURL,
-  userRoles,
 }) => {
   const onFinish = (value) => {
     if (value.password !== value.conf_password) {
@@ -23,6 +21,7 @@ export const InviteRegisterForm = ({
     value.organization = value.organization || null;
     value.project_id = values.project_id;
     value.project_role = values.project_role;
+    value.role = values.role;
     onSubmit(value);
   };
 
@@ -86,26 +85,6 @@ export const InviteRegisterForm = ({
             <Input size="large" placeholder="Phone" />
           </Form.Item>
           <Form.Item
-            name="role"
-            rules={[
-              {
-                required: true,
-                message: "Please choose the role!",
-              },
-            ]}
-          >
-            <Select placeholder="User Role​" size="large">
-              {userRoles.length > 0 &&
-                userRoles.map((item, index) => {
-                  return (
-                    <Select.Option key={index} value={item.value}>
-                      {item.value}
-                    </Select.Option>
-                  );
-                })}
-            </Select>
-          </Form.Item>
-          <Form.Item
             name="password"
             rules={[
               {
@@ -138,7 +117,6 @@ export const InviteRegisterForm = ({
           </div>
         </Col>
       </Row>
-
       <div className="signup-btn flex mt-5">
         <button type="submit" className="main-btn">
           Next
@@ -168,8 +146,7 @@ class InviteRegister extends React.Component {
   };
 
   render() {
-    const { fieldData, pdfData } = this.props;
-    const userRoles = getFieldData(fieldData, "user_role");
+    const { pdfData } = this.props;
 
     return (
       <React.Fragment>
@@ -179,7 +156,6 @@ class InviteRegister extends React.Component {
           values={pdfData}
           setAvatar={this.setAvatar}
           avatarURL={this.state.avatarURL}
-          userRoles={userRoles}
         />
         <ModalSpinner visible={this.state.loading} />
       </React.Fragment>

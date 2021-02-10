@@ -66,6 +66,7 @@
   .ant-avatar {
     width: 60px;
     height: 60px;
+    border-radius: 5px;
   }
 
   .ant-list-item-meta-title {
@@ -95,23 +96,42 @@
   }
 }
 
-.project-detail-head {
-  display: flex;
+.project-info-box {
+  box-shadow: 1px 1px 5px var(--shadow_color);
+  padding: 15px 20px;
+  width: 100%;
+  min-height: 14vh;
+  margin-bottom: 20px;
+  
+  span {
+    font-size: 14px;
+  }
 
+  .project-detail-head {
+    display: flex;
+    margin-bottom: 20px;
+
+
+    .project-img-box {
+      margin-right: 20px;
+      display: flex;
+      align-items: center;
+      width: 90px;
+      height: 90px;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.project-org-side {
+  display: flex;
   img {
     width: 100px;
-    height: 100px;
+    height: auto;
     margin-right: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  .project-detail-headerbox {
-    // border: 1px solid var(--primary_color);
-    box-shadow: 1px 1px 5px var(--shadow_color);
-    padding: 10px 15px;
-    width: 100%;
-    min-height: 14vh;
-    margin-bottom: 20px;
   }
 }
 
@@ -152,14 +172,28 @@
 .project-detail-clients {
   // border: 1px solid var(--primary_color);
   box-shadow: 1px 1px 5px var(--shadow_color);
-  padding: 10px 15px;
+  padding: 15px 10px;
   width: 100%;
   min-height: 21vh;
   margin-bottom: 20px;
-  cursor: pointer;
-  // &:hover {
-  //   box-shadow: 1px 1px 5px $gray-500;
-  // }
+  
+  .project-team-box {
+    border: 1px dotted var(--primary_color);
+    padding: 20px;
+    margin-bottom: 10px;
+
+    .project-org-box {
+      display: flex;
+      margin-bottom: 20px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .ant-avatar {
+      border-radius: 3px;
+    }
+  }
 
   .ant-avatar {
     width: 40px;
@@ -173,27 +207,22 @@
   }
 }
 
-.project-org-box {
-  display: flex;
-  margin-bottom: 40px;
-  img {
-    width: 120px;
-    height: auto;
-    margin-right: 20px;
-    border-radius: 50%;
-  }
-}
+
 
 .project-general-box {
   box-shadow: 1px 1px 5px var(--shadow_color);
-  padding: 10px 15px;
+  padding: 15px 20px;
   width: 100%;
   min-height: 50px;
   display: flex;
   img {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    border-radius: 3px;
+  }
+
+  &:hover {
+    text-decoration: none;
   }
 }
 
@@ -222,11 +251,6 @@
 @media screen and (max-width: 768px) {
   .template-btn {
     width: 200px;
-  }
-  .project-org-box {
-    img {
-      width: 80px;
-    }
   }
   .project-detail-desc {
     .timeline-list {

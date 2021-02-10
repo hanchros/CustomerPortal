@@ -127,7 +127,7 @@ class ProjectTech extends Component {
         <Skeleton active loading={loading} />
         <ul className="timeline-list">
           {timelines.map((tl, index) => (
-            <li key={tl.title}>
+            <li key={index}>
               <div className="timeline-item">
                 <div className="timeline-title">
                   <span>

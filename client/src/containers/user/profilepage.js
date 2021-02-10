@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Header } from "../../components/template";
 import { listSimpleOrg } from "../../actions/organization";
 import { updateProfile } from "../../actions/auth";
 import { getFieldData } from "../../utils/helper";
@@ -33,21 +32,18 @@ class ProfilePage extends Component {
     const roles = getFieldData(fieldData, "user_role");
 
     return (
-      <React.Fragment>
-        <Header />
-        <div className="container ">
-          <h1 className="mt-5 mb-4 center">My Profile</h1>
-          <ProfileForm
-            onSubmit={this.onUpdateProfile}
-            profile={profile}
-            orgs={organization.simpleOrgs}
-            setAvatar={this.setAvatar}
-            avatarURL={this.state.avatarURL || profile.photo}
-            roles={roles}
-            fieldData={fieldData}
-          />
-        </div>
-      </React.Fragment>
+      <div className="container ">
+        <h1 className="mt-5 mb-4 center">My Profile</h1>
+        <ProfileForm
+          onSubmit={this.onUpdateProfile}
+          profile={profile}
+          orgs={organization.simpleOrgs}
+          setAvatar={this.setAvatar}
+          avatarURL={this.state.avatarURL || profile.photo}
+          roles={roles}
+          fieldData={fieldData}
+        />
+      </div>
     );
   };
 }

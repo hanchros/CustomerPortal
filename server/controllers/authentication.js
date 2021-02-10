@@ -302,3 +302,19 @@ exports.resendVerification = function (req, res, next) {
     }
   });
 };
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    let user = await User.findById(req.user._id);
+    user.comparePassword(req.body.oldPassword, (err, isMatch) => {
+      if (err || !isMatch) {
+        return res.status(401).json({ error: "Password mismatch" });
+      }
+      user.password = req.body.newPassword;
+      user.save();
+      return res.status(200).json({ message: "success" });
+    });
+  } catch (err) {
+    return next(err);
+  }
+};

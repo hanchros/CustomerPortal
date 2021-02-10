@@ -6,7 +6,6 @@ import {
   UNAUTH_USER,
   FETCH_USER,
   FETCH_USER_LIST,
-  FETCH_USER_SEARCH_LIST,
   SET_PDF_INVITE_DATA,
   SET_CURRENT_ORGANIZATION,
 } from "./types";
@@ -14,6 +13,8 @@ import history from "../history";
 import Client from "./api";
 import { setMessageUserId, fetchConversations } from "./message";
 import { fetchNotifications } from "./notification";
+import { message } from "antd";
+
 //= ===============================
 // Authentication actions
 //= ===============================
@@ -286,8 +287,18 @@ export function resendVerification() {
   };
 }
 
-export function clearSearch() {
-  return (dispatch) => {
-    dispatch({ type: FETCH_USER_SEARCH_LIST, participants: [], searchTxt: "" });
+export function changePassword(oldPassword, newPassword) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      let res = await client.post(`${API_URL}/auth/change-password`, {
+        oldPassword,
+        newPassword,
+      });
+      message.success("Password has been changed successfully!");
+      return res.data.message;
+    } catch (err) {
+      createNotification("Change password", errorMessage(err));
+    }
   };
 }

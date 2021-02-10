@@ -82,7 +82,8 @@ module.exports = function (app) {
   authRoutes.post("/verify", AuthenticationController.confirmEmail);
   // Resend verification route
   authRoutes.post("/resend", AuthenticationController.resendVerification);
-
+  // password change route
+  authRoutes.post("/change-password", requireAuth, AuthenticationController.changePassword);
 
   //= ========================
   // User Routes
@@ -94,8 +95,6 @@ module.exports = function (app) {
   userRoutes.delete("/:userId", requireAuth, UserController.deleteProfile);
   // Update user profile route
   userRoutes.post("/", requireAuth, UserController.updateProfile);
-  //Get All user profile route
-  userRoutes.post("/list/:count", requireAuth, UserController.listAllUsers);
   // Test protected route
   apiRoutes.get("/protected", requireAuth, UserController.getUserSession);
 

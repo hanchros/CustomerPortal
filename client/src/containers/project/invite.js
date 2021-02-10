@@ -1,22 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import {
-  Form,
-  Input,
-  Select,
-  Button,
-  Modal,
-  Tabs,
-  List,
-  Avatar,
-  Row,
-  Col,
-} from "antd";
+import { Input, Button, Modal, Tabs, List, Avatar, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sendInvite, joinOrgProject } from "../../actions/project";
 import { Header, Footer } from "../../components/template";
-import { listSimpleOrg, listOrgReport } from "../../actions/organization";
+import { listOrgReport } from "../../actions/organization";
 import { listMailByOrg } from "../../actions/mail";
 import {
   getInviteContent,
@@ -24,75 +13,13 @@ import {
   getParticipant,
   listOrgByProject,
 } from "../../actions/project";
+import { fetchUserByEmail } from "../../actions/user";
 import { ModalSpinner } from "../../components/pages/spinner";
 import ChallengeLogo from "../../assets/icon/challenge.png";
 import UserIcon from "../../assets/img/user-avatar.png";
+import { OrgInviteForm, TeamInviteForm } from "./invite-forms";
 
 const { TabPane } = Tabs;
-
-const OrgInviteForm = ({ onSubmit, project }) => {
-  const onFinish = (values) => {
-    values.project_name = project.name;
-    values.project_id = project._id;
-    onSubmit(values);
-  };
-  return (
-    <Form name="invite" className="register-form" onFinish={onFinish}>
-      <span>Organization name:</span>
-      <Form.Item
-        name="organization"
-        rules={[
-          {
-            required: true,
-            message: "Please input the organization!",
-          },
-        ]}
-      >
-        <Input size="large" placeholder="Organization" />
-      </Form.Item>
-      <span>Leader:</span>
-      <Form.Item
-        name="first_name"
-        rules={[
-          {
-            required: true,
-            message: "Please input first name!",
-          },
-        ]}
-      >
-        <Input size="large" placeholder="First Name" />
-      </Form.Item>
-      <Form.Item
-        name="last_name"
-        rules={[
-          {
-            required: true,
-            message: "Please input last name!",
-          },
-        ]}
-      >
-        <Input size="large" placeholder="Last Name" />
-      </Form.Item>
-      <span>E-mail:</span>
-      <Form.Item
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: "Please input your Email!",
-          },
-        ]}
-      >
-        <Input size="large" type="email" placeholder="E-mail" />
-      </Form.Item>
-      <div className="signup-btn mt-4">
-        <button type="submit" className="main-btn template-btn">
-          Invite
-        </button>
-      </div>
-    </Form>
-  );
-};
 
 class Invite extends Component {
   constructor() {
@@ -103,22 +30,20 @@ class Invite extends Component {
       visible: false,
       content: "",
       formVaule: {},
-      selectedOrg: {},
-      isNewOrg: false,
+      showExUser: false,
+      exUser: {},
     };
   }
 
   componentDidMount = () => {
     const {
       organization,
-      listSimpleOrg,
       listMailByOrg,
       listOrgReport,
       getParticipant,
       listOrgByProject,
     } = this.props;
     const curProj = this.props.project.project;
-    listSimpleOrg();
     listOrgReport();
     listMailByOrg(organization.currentOrganization._id);
     getParticipant(curProj._id);
@@ -128,7 +53,7 @@ class Invite extends Component {
   onSendOrgInvite = async () => {
     this.setState({ loading: true });
     await this.props.sendInvite(this.state.formVaule);
-    this.setState({ loading: false, isNewOrg: false });
+    this.setState({ loading: false });
     this.onHidePreview();
     this.props.goback();
   };
@@ -152,6 +77,26 @@ class Invite extends Component {
       content: mail.html,
       formVaule: values,
     });
+  };
+
+  onSendTeamInvite = async (values) => {
+    const { fetchUserByEmail } = this.props;
+    let exUser = await fetchUserByEmail(values.email);
+    if (!exUser) {
+      await this.onShowPreview(values);
+      return;
+    }
+    this.setState({ showExUser: true, exUser });
+  };
+
+  onHideExUserModal = () => {
+    this.setState({ showExUser: false, exUser: {} });
+  };
+
+  onSendInviteExuser = async () => {
+    const curProj = this.props.project.project;
+    await this.onJoinOrg(curProj._id, this.state.exUser._id);
+    this.onHideExUserModal();
   };
 
   onJoinOrg = async (projectId, userId, orgId) => {
@@ -234,30 +179,26 @@ class Invite extends Component {
     );
   };
 
-  getExOrgs = () => {
+  getExMembers = () => {
     const { organization, project } = this.props;
-    const projOrgs = project.organizations;
-    const orgReports = organization.adminOrganizations;
-    let result = [];
-    for (let org of orgReports) {
-      let filtOrgs = projOrgs.filter(
-        (item) => item.organization._id === org._id
-      );
-      if (filtOrgs.length > 0) result.push(org);
-    }
-    return result;
-  };
-
-  onSelectOrg = (orgId) => {
-    const { organization } = this.props;
+    const participants = project.participants;
+    let members = [],
+      result = [];
     const orgReports = organization.adminOrganizations;
     for (let org of orgReports) {
-      if (org._id === orgId) {
-        this.setState({ selectedOrg: org });
+      if (org._id === organization.currentOrganization._id) {
+        members = org.members;
         break;
       }
     }
-    this.setState({ isNewOrg: false });
+    for (let mem of members) {
+      if (
+        participants.filter((pt) => pt.participant._id === mem._id).length === 0
+      ) {
+        result.push(mem);
+      }
+    }
+    return result;
   };
 
   renderOrgInviteTab = () => {
@@ -276,9 +217,9 @@ class Invite extends Component {
   };
 
   renderTeamInviteTab = () => {
-    const { selectedOrg } = this.state;
-    const exOrgs = this.getExOrgs();
-    const curProj = this.props.project.project;
+    const { project, organization } = this.props;
+    const curProj = project.project;
+    const exMembers = this.getExMembers();
     return (
       <div className="org-invite-box">
         <p>
@@ -288,19 +229,17 @@ class Invite extends Component {
           “Invite Organization” tab.
         </p>
         <div className="org-invite-header">
-          <Select placeholder="Organization" onChange={this.onSelectOrg}>
-            {exOrgs.map((item) => (
-              <Select.Option key={item._id} value={item._id}>
-                {item.org_name}
-              </Select.Option>
-            ))}
-          </Select>
+          <Input
+            type="text"
+            value={organization.currentOrganization.org_name}
+            disabled
+          />
         </div>
-        {selectedOrg.members && selectedOrg.members.length > 0 && (
+        {exMembers.length > 0 && (
           <List
             itemLayout="horizontal"
             className="project-list"
-            dataSource={selectedOrg.members}
+            dataSource={exMembers}
             renderItem={(item) => (
               <List.Item
                 actions={[
@@ -325,12 +264,35 @@ class Invite extends Component {
             )}
           />
         )}
+        <div className="project-teaminvite-box">
+          <p>Invite new member</p>
+          <TeamInviteForm
+            onSubmit={this.onSendTeamInvite}
+            project={curProj}
+            org={organization.currentOrganization}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  renderExUser = () => {
+    const { exUser } = this.state;
+    return (
+      <div className="project-exuser-box">
+        <Avatar src={exUser.profile.photo || UserIcon} />
+        <div className="ml-3">
+          <b>
+            {exUser.profile.first_name} {exUser.profile.last_name}
+          </b> <br />
+          <span>organization: {exUser.profile.org_name}</span>
+        </div>
       </div>
     );
   };
 
   render() {
-    const { loading, visible, content } = this.state;
+    const { loading, visible, content, showExUser } = this.state;
     const { invite } = this.props;
     return (
       <React.Fragment>
@@ -377,6 +339,28 @@ class Invite extends Component {
               <ModalSpinner visible={loading} />
             </Modal>
           )}
+          {showExUser && (
+            <Modal
+              title={"There is a user with the email"}
+              visible={showExUser}
+              width={600}
+              footer={false}
+              onCancel={this.onHideExUserModal}
+            >
+              {this.renderExUser()}
+              <div className="flex mt-4">
+                <Button
+                  type="primary"
+                  onClick={this.onSendInviteExuser}
+                  className="mr-4"
+                >
+                  Send
+                </Button>
+                <Button onClick={this.onHideExUserModal}>Cancel</Button>
+              </div>
+              <ModalSpinner visible={loading} />
+            </Modal>
+          )}
         </Container>
         <Footer />
       </React.Fragment>
@@ -394,7 +378,6 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   sendInvite,
-  listSimpleOrg,
   joinOrgProject,
   listMailByOrg,
   getInviteContent,
@@ -402,4 +385,5 @@ export default connect(mapStateToProps, {
   listOrgReport,
   getParticipant,
   listOrgByProject,
+  fetchUserByEmail,
 })(Invite);

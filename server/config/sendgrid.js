@@ -164,7 +164,9 @@ function notificationFactory(title, content, senderName, senderPhoto) {
 function inviteFactory(values) {
   const link = `${mainURL}/${encodeURIComponent(
     values.sender_organization
-  )}/email-invite?project=${encodeURIComponent(values.project_name)}`;
+  )}/email-invite?project=${encodeURIComponent(values.project_name)}&intro=${
+    values.intro
+  }`;
   const mailData = Object.assign(values, { link });
   let template = fs.readFileSync("template/OrgInvite.html", {
     encoding: "utf-8",
@@ -174,7 +176,7 @@ function inviteFactory(values) {
 }
 
 function inviteOrgMemberFactory(values) {
-  const link = `${mainURL}/org-invite/${values.org_id}/${values.encode_email}?fn=${values.first_name}&ln=${values.last_name}`;
+  const link = `${mainURL}/org-invite/${values.org_id}/${values.encode_email}?fn=${values.first_name}&ln=${values.last_name}&role=${values.role}`;
   const mailData = Object.assign(values, { link });
   const template = fs.readFileSync("template/OrgMemberInvite.html", {
     encoding: "utf-8",

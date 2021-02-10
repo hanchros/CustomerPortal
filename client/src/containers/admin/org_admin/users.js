@@ -76,6 +76,17 @@ const InviteForm = ({ onSubmit, org, user, onCancel }) => {
       >
         <Input placeholder="E-mail" type="email" size="large" />
       </Form.Item>
+      <Form.Item
+        name="role"
+        rules={[
+          {
+            required: true,
+            message: "Please input the role!",
+          },
+        ]}
+      >
+        <Input placeholder="Role" type="text" size="large" />
+      </Form.Item>
       <div className="signup-btn">
         <Button type="primary" className="mr-3" htmlType="submit">
           Submit

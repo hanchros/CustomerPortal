@@ -15,8 +15,6 @@ import InvitePage from "./containers/intro/invite";
 import InviteHomePage from "./containers/home/invite";
 
 // Import organization pages
-// import Organization from "./containers/organization/dashboard";
-// import OrgProfile from "./containers/organization/profile";
 import OrgInviteMember from "./containers/home/invite/org-invite";
 
 // Import project pages
@@ -41,10 +39,7 @@ import ConfirmEmail from "./containers/auth/confirm-email";
 
 // Import user related Pages
 import Dashboard from "./containers/dashboard";
-import Participant from "./containers/user/user";
-import Profile from "./containers/user/profilepage";
-// import ParticipantsList from "./containers/user/list";
-// import OrganizationList from "./containers/organization/list";
+import Account from "./containers/user";
 
 // Import chat related pages
 import MessageBox from "./containers/message";
@@ -99,17 +94,7 @@ class Routes extends React.Component {
           />
           <Route path="/resend" component={Resend} />
           <Route path="/email-verify/:mode/:token" component={ConfirmEmail} />
-          <Route path="/profile" component={RequireAuth(Profile)} />
-
-          {/* <Route path="/organizations" component={OrganizationList} /> */}
-          {/* <Route
-            path="/organization/:id"
-            component={RequireAuth(Organization)}
-          />
-          <Route path="/org-profile" component={OrgProfile} />
-
-          <Route path="/participants" component={ParticipantsList} /> */}
-          <Route path="/participant/:id" component={Participant} />
+          <Route path="/account" component={RequireAuth(Account)} />
 
           <Route path="/:org/projects" component={RequireAuth(Projectslist)} />
           <Route path="/:org/project/:id" component={RequireAuth(Project)} />

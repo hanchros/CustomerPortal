@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Card, CardBody } from "reactstrap";
-import {
-  listAdminParticipants,
-  deleteParticipant,
-} from "../../../actions/admin";
+import { listAdminParticipants } from "../../../actions/admin";
+import { deleteUser } from "../../../actions/user";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {
   Search,
@@ -18,7 +16,6 @@ import AdminAction from "../admin_action";
 import UserProfile from "./user-edit";
 
 class Participants extends Component {
-  _isMounted = false;
   constructor(props) {
     super(props);
 
@@ -45,27 +42,25 @@ class Participants extends Component {
 
   componentDidMount = async () => {
     const { admin, listAdminParticipants } = this.props;
-    this._isMounted = true;
     if (!admin.partcipants || admin.partcipants.length === 0) {
       this.setState({ loading: true });
       await listAdminParticipants();
-      if (!this._isMounted) return;
       this.setState({ loading: false });
     }
   };
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  deleteParticipant(userid) {
-    this.props.deleteParticipant(userid);
-  }
+  deleteParticipant = async (userid) => {
+    const { deleteUser, listAdminParticipants } = this.props;
+    this.setState({ loading: true });
+    await deleteUser(userid);
+    await listAdminParticipants();
+    this.setState({ loading: false });
+  };
 
   render() {
     const { admin, isSuper } = this.props;
     const participants = admin.participants || [];
-    const { loading } = this.state;
+    const { loading, visible, userid } = this.state;
     const { SearchBar } = Search;
     const { ExportCSVButton } = CSVExport;
     const paginationOptions = {
@@ -149,17 +144,9 @@ class Participants extends Component {
         text: "Country",
       },
       {
-        dataField: "usertype",
-        text: "Type",
-      },
-      {
         dataField: "role",
         text: "Role",
         formatter: roleFormatter,
-      },
-      {
-        dataField: "verified",
-        text: "Verified",
       },
       {
         dataField: "",
@@ -218,20 +205,19 @@ class Participants extends Component {
                 </ToolkitProvider>
               </CardBody>
             </Card>
-            <Modal
-              title={`Participant Profile`}
-              visible={this.state.visible}
-              width={800}
-              footer={false}
-              onCancel={this.hideModal}
-            >
-              {this.state.userid && (
-                <UserProfile
-                  id={this.state.userid}
-                  hideModal={this.hideModal}
-                />
-              )}
-            </Modal>
+            {visible && (
+              <Modal
+                title={`Participant Profile`}
+                visible={visible}
+                width={800}
+                footer={false}
+                onCancel={this.hideModal}
+              >
+                {userid && (
+                  <UserProfile id={userid} hideModal={this.hideModal} />
+                )}
+              </Modal>
+            )}
           </Col>
         </Row>
       </div>
@@ -248,5 +234,5 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   listAdminParticipants,
-  deleteParticipant,
+  deleteUser,
 })(Participants);

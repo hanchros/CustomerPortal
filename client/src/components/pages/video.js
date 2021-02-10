@@ -7,7 +7,7 @@ class Video extends Component {
         <ReactPlayer
           className="react-player"
           url={this.props.url}
-          playing={true}
+          playing={false}
           controls={true}
           loop={true}
         />

@@ -67,20 +67,22 @@ exports.updateProfile = async (req, res, next) => {
   }
 };
 
-exports.deleteProfile = (req, res, next) => {
-  User.deleteOne({ _id: req.params.userId }).exec((err, user) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      user,
-    });
-  });
+exports.deleteProfile = async (req, res, next) => {
+  try {
+    let user = await User.deleteOne({ _id: req.params.userId });
+    await ProjectMember.deleteMany({ participant: req.params.userId });
+    return res.status(200).json({ user });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.getUserByEmail = async (req, res, next) => {
   try {
-    let user = await User.findOne({ email: req.body.email }, "_id profile");
+    let user = await User.findOne(
+      { email: req.body.email },
+      "_id profile"
+    ).populate("profile.org");
     return res.status(200).json({ user });
   } catch (err) {
     return next(err);
@@ -98,74 +100,6 @@ exports.orgUsers = (req, res, next) => {
         participants: users,
       });
     });
-};
-
-exports.listAllUsers = async (req, res, next) => {
-  let curNum = parseInt(req.params.count) || 0;
-  try {
-    let sortFilter = req.body.filter_sort || "";
-    let searchStr = req.body.searchStr || "";
-    delete req.body.loading;
-    delete req.body.searchStr;
-    delete req.body.filter_sort;
-    let filter = {};
-    let tags = [];
-    for (let k of Object.keys(req.body)) {
-      if (req.body[k] && req.body[k].length > 0) {
-        tags = [...tags, ...req.body[k]];
-      }
-    }
-    if (tags.length > 0) filter["profile.tags"] = { $all: tags };
-    if (searchStr.length > 2)
-      filter["$or"] = [
-        { "profile.first_name": { $regex: searchStr, $options: "i" } },
-        { "profile.last_name": { $regex: searchStr, $options: "i" } },
-        { "profile.org_name": { $regex: searchStr, $options: "i" } },
-        { "profile.country": { $regex: searchStr, $options: "i" } },
-        { "profile.personal_statement": { $regex: searchStr, $options: "i" } },
-        { "profile.role": { $regex: searchStr, $options: "i" } },
-      ];
-    let sort = { createdAt: -1 };
-    switch (sortFilter) {
-      case "A-Z":
-        sort = { "profile.first_name": 1 };
-        break;
-      case "Z-A":
-        sort = { "profile.first_name": -1 };
-        break;
-      case "Oldest-Newest":
-        sort = { createdAt: 1 };
-        break;
-      default:
-        sort = sort;
-    }
-
-    let total = await User.find(filter).countDocuments();
-    let users = await User.find(filter, "_id profile")
-      .sort(sort)
-      .skip(curNum)
-      .limit(16);
-    let result = [];
-    for (let user of users) {
-      let proj_count = await Project.where({
-        participant: user._id,
-      }).countDocuments();
-      let pm_count = await ProjectMember.where({
-        participant: user._id,
-      }).countDocuments();
-      let newUser = {
-        ...user,
-        projects: proj_count + pm_count,
-      };
-      result.push(newUser);
-    }
-    return res.status(201).json({
-      participants: result,
-      total,
-    });
-  } catch (err) {
-    return next(err);
-  }
 };
 
 exports.listSimpleParticipants = async (req, res, next) => {

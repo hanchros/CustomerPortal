@@ -42,6 +42,9 @@ const ArticleSchema = new Schema(
       type: String,
       default: "Go To Site",
     },
+    icon: {
+      type: String,
+    },
   },
   {
     timestamps: true,

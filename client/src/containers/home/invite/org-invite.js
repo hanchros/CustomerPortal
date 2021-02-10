@@ -66,6 +66,7 @@ class OrgInviteMember extends React.Component {
       organization: org.org_name,
       first_name: params.get("fn"),
       last_name: params.get("ln"),
+      role: params.get("role"),
     };
     return (
       <HomeHOC>

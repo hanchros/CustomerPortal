@@ -1,13 +1,13 @@
 import React from "react";
-import { Button } from "antd";
-import { FormOutlined } from "@ant-design/icons";
+import { Button, Popconfirm } from "antd";
+import { FormOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const AdminAction = ({ onEdit }) => (
+const AdminAction = ({ onEdit, onDelete }) => (
   <div className="flex admin-action">
     <Button type="link" onClick={onEdit} title="Edit">
       <FormOutlined />
     </Button>
-    {/* <Popconfirm
+    <Popconfirm
       title="Are you sure delete this item?"
       onConfirm={onDelete}
       okText="Yes"
@@ -16,7 +16,7 @@ const AdminAction = ({ onEdit }) => (
       <Button type="link" style={{ color: "red" }} title="Delete">
         <DeleteOutlined />
       </Button>
-    </Popconfirm> */}
+    </Popconfirm>
   </div>
 );
 

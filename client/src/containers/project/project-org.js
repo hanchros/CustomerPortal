@@ -44,7 +44,7 @@ class ProjectOrgs extends Component {
           <Row gutter={50}>
             <Col md={16} sm={24}>
               {organizations.map((org) => (
-                <div key={org._id} className="project-org-box">
+                <div key={org._id} className="project-org-side">
                   <div>
                     <img
                       src={org.organization.logo || ChallengeLogo}

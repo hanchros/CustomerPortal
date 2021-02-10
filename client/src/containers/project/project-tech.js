@@ -4,16 +4,14 @@ import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { extractContent } from "../../utils/helper";
 import TechImg from "../../assets/img/technology.png";
+import { Link } from "react-router-dom";
 
 class ProjectTech extends Component {
   render = () => {
-    const { project, goback } = this.props;
-    // let isCreator =
-    //   project.project.participant &&
-    //   project.project.participant._id === user._id;
+    const { project, goback, organization } = this.props;
     const curProj = project.project;
+    const curOrg = organization.currentOrganization;
     return (
       <React.Fragment>
         <Header />
@@ -21,18 +19,26 @@ class ProjectTech extends Component {
           <Button className="mb-4" type="link" onClick={goback}>
             <ArrowLeftOutlined /> Back
           </Button>
-          <h4 className="mb-4">{curProj.name} Technology</h4>
+          <h4 className="mb-5">{curProj.name} Technology</h4>
+          <span>
+            To add or remove technology from this project use "Edit" function on
+            the project's main page
+          </span>
+          <p className="mb-4" />
           {curProj.technologies &&
             curProj.technologies.map((tech, index) => (
-              <div className="project-general-box mb-4" key={index}>
+              <Link
+                to={`/${curOrg.org_name}/techhub?tab=3`}
+                className="project-general-box mb-4"
+                key={index}
+              >
                 <div className="pr-4">
                   <img src={tech.image || TechImg} alt="" />
                 </div>
                 <div>
-                  <h5>{tech.title}</h5>
-                  <span>{extractContent(tech.content, true)}</span>
+                  <h5 className="mt-2">{tech.title}</h5>
                 </div>
-              </div>
+              </Link>
             ))}
         </Container>
         <Footer />
@@ -43,11 +49,8 @@ class ProjectTech extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.profile,
-    isAdmin: state.user.isAdmin,
-    auth: state.auth,
     project: state.project,
-    fieldData: state.profile.fieldData,
+    organization: state.organization,
   };
 };
 

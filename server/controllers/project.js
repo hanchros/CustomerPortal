@@ -8,7 +8,6 @@ const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const utils = require("./util");
-const Article = require("../models/article");
 
 exports.createProject = async (req, res, next) => {
   try {
@@ -222,6 +221,7 @@ exports.sendInvite = async (req, res, next) => {
       email: values.email,
       sender_organization,
       project_name: values.project_name,
+      intro: values.intro,
     };
     const project = await Project.findById(values.project_id);
     utils.createPDFDoc(values, project.description);

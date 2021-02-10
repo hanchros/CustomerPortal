@@ -5,6 +5,8 @@ import { List, Collapse } from "antd";
 import { Row, Col } from "reactstrap";
 import { getFieldDataByNameValue } from "../../utils/helper";
 import Video from "../../components/pages/video";
+import ImageHolder from "../../assets/icon/challenge.png";
+import Avatar from "antd/lib/avatar/avatar";
 
 const { Panel } = Collapse;
 
@@ -15,24 +17,26 @@ class ArticlePage extends React.Component {
     this.state = {
       topic: "",
       curArticles: [],
-      curArticle: {},
     };
   }
 
+  componentDidMount() {
+    const result = this.getTitles();
+    if (result.length > 0) {
+      this.setState({
+        topic: result[0].topic,
+        curArticles: result[0].articles,
+      });
+    }
+  }
+
   onSelectTitle = (tp) => {
-    const { articles, fieldData, tag } = this.props;
-    const techTag = getFieldDataByNameValue(fieldData, "article_tag", tag);
-    let arts = [];
-    if (!techTag) return arts;
-    for (let article of articles) {
-      if (
-        article.tag === techTag._id &&
-        article.topic.toLowerCase() === tp.toLowerCase()
-      ) {
-        arts.push(article);
+    const result = this.getTitles();
+    for (let group of result) {
+      if (group.topic === tp) {
+        this.setState({ topic: tp, curArticles: group.articles });
       }
     }
-    this.setState({ topic: tp, curArticles: arts });
   };
 
   getTitles = () => {
@@ -41,8 +45,17 @@ class ArticlePage extends React.Component {
     const techTag = getFieldDataByNameValue(fieldData, "article_tag", tag);
     if (!techTag) return result;
     for (let article of articles) {
-      if (article.tag === techTag._id && result.indexOf(article.topic) === -1) {
-        result.push(article.topic);
+      if (article.tag !== techTag._id) continue;
+      let flt = result.filter((item) => item.topic === article.topic);
+      if (flt.length === 0) {
+        result.push({
+          topic: article.topic,
+          icon: article.icon || ImageHolder,
+          articles: [article],
+        });
+      } else {
+        flt[0].articles.push(article);
+        flt[0].icon = article.icon || flt[0].icon;
       }
     }
     return result;
@@ -50,10 +63,12 @@ class ArticlePage extends React.Component {
 
   renderTitleItem = (item) => (
     <List.Item
-      onClick={() => this.onSelectTitle(item)}
-      className={this.state.topic === item && "active"}
+      onClick={() => this.onSelectTitle(item.topic)}
+      className={this.state.topic === item.topic && "active"}
     >
-      {item}
+      <Avatar src={item.icon} />
+      &nbsp;&nbsp;
+      {item.topic}
     </List.Item>
   );
 

@@ -10,13 +10,15 @@ import { createArticle } from "../../actions/article";
 import RichTextEditor from "../../components/pages/editor";
 import UploadLogo from "../../components/template/upload";
 
-const TechnologyForm = ({ addTech, onCancel, tagId }) => {
+const TechnologyForm = ({ addTech, onCancel, tagId, topicname, icon }) => {
   const [avatarURL, setAvatar] = useState("");
 
   const onFinish = async (values) => {
     values.tag = tagId;
-    values.topic = "Technology";
+    values.topic = topicname;
     values.image = avatarURL;
+    values.order = -1;
+    values.icon = icon;
     addTech(values);
   };
 
@@ -113,14 +115,17 @@ class Technology extends React.Component {
   };
 
   render() {
-    const { articles, fieldData } = this.props;
+    const { articles, fieldData, organization } = this.props;
     const { showForm, technologies, exTech, visible } = this.state;
     const techTag = getFieldDataByNameValue(
       fieldData,
       "article_tag",
       "application"
     );
-    const exTechs = articles.filter((item) => item.tag === techTag._id);
+    const topicname = `${organization.currentOrganization.org_name} Applications`;
+    const exTechs = articles.filter(
+      (item) => item.tag === techTag._id && item.topic === topicname
+    );
 
     return (
       <div className="create-tech-box">
@@ -194,6 +199,8 @@ class Technology extends React.Component {
               addTech={this.createTech}
               onCancel={this.onToggleModal}
               tagId={techTag._id}
+              topicname={topicname}
+              icon={organization.currentOrganization.logo}
             />
           </Modal>
         )}
@@ -206,6 +213,7 @@ function mapStateToProps(state) {
   return {
     articles: state.article.articles,
     fieldData: state.profile.fieldData,
+    organization: state.organization,
   };
 }
 

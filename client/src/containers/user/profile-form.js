@@ -107,6 +107,9 @@ const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item name="org_name">
+            <Input placeholder="Org Name" size="large" disabled />
+          </Form.Item>
         </Col>
       </Row>
 
