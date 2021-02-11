@@ -5,7 +5,7 @@ import {
   listOrgReport,
   deleteOrganization,
 } from "../../../actions/organization";
-import { SettingOutlined } from "@ant-design/icons";
+import { SettingOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   Collapse,
   Skeleton,
@@ -19,6 +19,7 @@ import {
   Descriptions,
   List,
   Avatar,
+  Popconfirm,
 } from "antd";
 import { Link } from "react-router-dom";
 import ChallengeIcon from "../../../assets/icon/challenge.png";
@@ -103,17 +104,32 @@ class OrgReport extends Component {
   };
 
   genExtra = (org) => (
-    <Tooltip title="Edit">
-      <SettingOutlined
-        onClick={(event) => {
-          event.stopPropagation();
-          this.setState({
-            visible: true,
-            curOrg: org,
-          });
-        }}
-      />
-    </Tooltip>
+    <span
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+    >
+      <Tooltip title="Edit">
+        <SettingOutlined
+          onClick={() => {
+            this.setState({
+              visible: true,
+              curOrg: org,
+            });
+          }}
+        />
+      </Tooltip>
+      <Tooltip title="Delete">
+        <Popconfirm
+          title="Are you sure delete this organization?"
+          onConfirm={() => this.deleteOrganization(org._id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <DeleteOutlined className="ml-2" style={{ color: "red" }} />
+        </Popconfirm>
+      </Tooltip>
+    </span>
   );
 
   renderContent = (org) => (
@@ -140,7 +156,6 @@ class OrgReport extends Component {
                 <span className="ml-1">text:</span>
                 <br />
                 <Search
-                  placeholder="input search text"
                   onSearch={this.onChangeSearch}
                   style={{ width: 150 }}
                   allowClear
@@ -150,7 +165,6 @@ class OrgReport extends Component {
                 <span className="ml-1">type:</span>
                 <br />
                 <Select
-                  placeholder="Organization Type​"
                   style={{ width: 150 }}
                   onChange={this.onChangeFiltType}
                   allowClear
@@ -213,7 +227,7 @@ class OrgReport extends Component {
                       title={
                         <Link to="#">
                           <b>
-                            {item.profile.first_name} {item.profile.first_name}
+                            {item.profile.first_name} {item.profile.last_name}
                           </b>
                         </Link>
                       }

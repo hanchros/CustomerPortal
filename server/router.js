@@ -136,7 +136,7 @@ module.exports = function (app) {
   organizationRoutes.get("/list-simple/:count", OrganizationController.listSimpleOrgs);
   // Delete organization route
   organizationRoutes.delete(
-    "/:org_id",
+    "/:org_id", requireAuth, 
     OrganizationController.deleteOrganization
   );
   // Get organization by name route
@@ -171,7 +171,9 @@ module.exports = function (app) {
   // Vote project route
   projectRoutes.post("/upvote/:id", requireAuth, ProjectController.voteProject);
   // Admin project list route
-  projectRoutes.get("/admin/list", ProjectController.listAllProject);
+  projectRoutes.get("/admin/list/:org_id", ProjectController.listAllProject);
+  // Admin project archive route
+  projectRoutes.post("/admin/archive/:id", ProjectController.archiveProject);
   // send orginvitation route
   projectRoutes.post("/send-invite", requireAuth, ProjectController.sendInvite);
   // Get invite mail template route

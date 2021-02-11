@@ -10,15 +10,15 @@ import { createArticle } from "../../actions/article";
 import RichTextEditor from "../../components/pages/editor";
 import UploadLogo from "../../components/template/upload";
 
-const TechnologyForm = ({ addTech, onCancel, tagId, topicname, icon }) => {
+const TechnologyForm = ({ addTech, onCancel, tagId, topicname, org }) => {
   const [avatarURL, setAvatar] = useState("");
 
   const onFinish = async (values) => {
     values.tag = tagId;
     values.topic = topicname;
-    values.image = avatarURL;
+    values.icon = avatarURL;
     values.order = -1;
-    values.icon = icon;
+    values.organization = org._id;
     addTech(values);
   };
 
@@ -114,19 +114,28 @@ class Technology extends React.Component {
     this.props.onChangeTechs(newTechArr);
   };
 
+  getExTechs = (tagId, orgId) => {
+    const { articles } = this.props;
+    let exTechs = articles.filter(
+      (item) => item.tag === tagId && item.organization === orgId
+    );
+    let globalTechs = articles.filter(
+      (item) => item.tag === tagId && !item.organization
+    );
+    return [...exTechs, ...globalTechs];
+  };
+
   render() {
-    const { articles, fieldData, organization } = this.props;
+    const { fieldData, organization } = this.props;
     const { showForm, technologies, exTech, visible } = this.state;
     const techTag = getFieldDataByNameValue(
       fieldData,
       "article_tag",
       "application"
     );
-    const topicname = `${organization.currentOrganization.org_name} Applications`;
-    const exTechs = articles.filter(
-      (item) => item.tag === techTag._id && item.topic === topicname
-    );
-
+    const curOrg = organization.currentOrganization;
+    const topicname = `${curOrg.org_name} Applications`;
+    const exTechs = this.getExTechs(techTag._id, curOrg._id);
     return (
       <div className="create-tech-box">
         <List
@@ -142,7 +151,7 @@ class Technology extends React.Component {
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={item.image || TechImg} />}
+                avatar={<Avatar src={item.icon || item.image || TechImg} />}
                 title={<b>{item.title}</b>}
                 description={<span>{extractContent(item.content, true)}</span>}
               />
@@ -200,7 +209,7 @@ class Technology extends React.Component {
               onCancel={this.onToggleModal}
               tagId={techTag._id}
               topicname={topicname}
-              icon={organization.currentOrganization.logo}
+              org={curOrg}
             />
           </Modal>
         )}

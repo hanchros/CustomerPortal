@@ -7,6 +7,7 @@ import {
   PicLeftOutlined,
   UsergroupAddOutlined,
   MailOutlined,
+  ProjectOutlined,
 } from "@ant-design/icons";
 import { Header } from "../../components/template";
 import { getOrganization } from "../../actions/organization";
@@ -15,6 +16,7 @@ import OrgBasics from "./org_admin/basic";
 import OrgBranding from "./org_admin/branding";
 import OrgTemplate from "./org_admin/template";
 import OrgUsers from "./org_admin/users";
+import Projects from "./org_admin/project";
 
 const { Content, Sider } = Layout;
 
@@ -31,10 +33,10 @@ class AdminDashboard extends Component {
 
   componentDidMount = async () => {
     const { getOrganization, user } = this.props;
-    if (!user.profile) return
+    if (!user.profile) return;
     await getOrganization(user.profile.org._id);
     this.setState({
-      pageTitle: "Basics",
+      pageTitle: "Profile",
       submenu: "Organization",
     });
   };
@@ -59,14 +61,18 @@ class AdminDashboard extends Component {
               collapsed={this.state.collapsed}
               onCollapse={this.onCollapse}
             >
-              <Menu theme="dark" defaultSelectedKeys={["org-basic"]} mode="inline">
+              <Menu
+                theme="dark"
+                defaultSelectedKeys={["org-basic"]}
+                mode="inline"
+              >
                 <Menu.Item
                   key="org-basic"
-                  onClick={() => this.switchPage("Organization", "Basics")}
+                  onClick={() => this.switchPage("Organization", "Profile")}
                 >
                   <span>
                     <ProfileOutlined />
-                    <span>Basics</span>
+                    <span>Organization profile</span>
                   </span>
                 </Menu.Item>
                 <Menu.Item
@@ -94,6 +100,15 @@ class AdminDashboard extends Component {
                   <span>
                     <UsergroupAddOutlined />
                     <span>Users</span>
+                  </span>
+                </Menu.Item>
+                <Menu.Item
+                  key="org-projects"
+                  onClick={() => this.switchPage("Organization", "Projects")}
+                >
+                  <span>
+                    <ProjectOutlined />
+                    <span>Projects</span>
                   </span>
                 </Menu.Item>
                 <Menu.Item
@@ -126,7 +141,7 @@ class AdminDashboard extends Component {
     const { pageTitle, submenu } = this.state;
     let pageName = `${submenu} ${pageTitle}`;
     switch (pageName) {
-      case "Organization Basics":
+      case "Organization Profile":
         return <OrgBasics />;
       case "Organization Branding":
         return <OrgBranding />;
@@ -134,6 +149,8 @@ class AdminDashboard extends Component {
         return <OrgTemplate />;
       case "Organization Users":
         return <OrgUsers />;
+      case "Organization Projects":
+        return <Projects />;
       case "Organization Emails":
         return <OrgEmailTemplate />;
       default:

@@ -1,7 +1,6 @@
 import React from "react";
 import { Tabs } from "antd";
 import { Header, Footer } from "../../components/template";
-import LearnHub from "./learnhub";
 import ArticlePage from "./article";
 
 const { TabPane } = Tabs;
@@ -14,7 +13,7 @@ class Learn extends React.Component {
         <div className="container-fluid content">
           <Tabs type="card" className="techhub-tab">
             <TabPane tab="Learning Hub" key="1">
-              <LearnHub />
+              <ArticlePage tag="learnhub" />
             </TabPane>
             <TabPane tab="Help Center" key="2">
               <ArticlePage tag="helpcenter" />

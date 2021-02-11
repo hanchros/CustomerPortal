@@ -61,6 +61,42 @@ class ArticlePage extends React.Component {
     return result;
   };
 
+  getTechTitles = () => {
+    const { fieldData, articles, organization, tag } = this.props;
+    let result = [];
+    const curOrg = organization.currentOrganization;
+    const topicname = `${curOrg.org_name} Applications`;
+    const techTag = getFieldDataByNameValue(fieldData, "article_tag", tag);
+    if (!techTag) return result;
+
+    let exTechs = articles.filter(
+      (item) => item.tag === techTag._id && item.organization === curOrg._id
+    );
+    let globalTechs = articles.filter(
+      (item) => item.tag === techTag._id && !item.organization
+    );
+    result.push({
+      topic: topicname,
+      icon: curOrg.logo || ImageHolder,
+      articles: exTechs,
+    });
+
+    for (let article of globalTechs) {
+      let flt = result.filter((item) => item.topic === article.topic);
+      if (flt.length === 0) {
+        result.push({
+          topic: article.topic,
+          icon: article.icon || ImageHolder,
+          articles: [article],
+        });
+      } else {
+        flt[0].articles.push(article);
+        flt[0].icon = article.icon || flt[0].icon;
+      }
+    }
+    return result;
+  };
+
   renderTitleItem = (item) => (
     <List.Item
       onClick={() => this.onSelectTitle(item.topic)}
@@ -211,7 +247,10 @@ class ArticlePage extends React.Component {
   };
 
   render() {
-    const techTitleTags = this.getTitles();
+    let techTitleTags = this.getTitles();
+    if (this.props.tag === "application") {
+      techTitleTags = this.getTechTitles();
+    }
     return (
       <React.Fragment>
         <Row>
@@ -236,6 +275,7 @@ function mapStateToProps(state) {
   return {
     articles: state.article.articles,
     fieldData: state.profile.fieldData,
+    organization: state.organization,
   };
 }
 

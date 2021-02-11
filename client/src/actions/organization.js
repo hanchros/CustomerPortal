@@ -256,12 +256,11 @@ export function getOrgByName(org_name) {
   };
 }
 
-export function testColorChange(profile, logo, org_name) {
+export function testColorChange(profile, org_name) {
   return (dispatch) => {
     dispatch({
       type: SET_ORG_SETTINGS,
       profile,
-      logo,
       org_name,
     });
   };

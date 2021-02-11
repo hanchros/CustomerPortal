@@ -33,7 +33,7 @@ class ProjectTech extends Component {
                 key={index}
               >
                 <div className="pr-4">
-                  <img src={tech.image || TechImg} alt="" />
+                  <img src={tech.icon || TechImg} alt="" />
                 </div>
                 <div>
                   <h5 className="mt-2">{tech.title}</h5>

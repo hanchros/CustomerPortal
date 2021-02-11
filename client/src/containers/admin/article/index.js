@@ -274,7 +274,6 @@ class AdminArticle extends React.Component {
                 <span className="ml-1">text:</span>
                 <br />
                 <Search
-                  placeholder="input search text"
                   onSearch={this.onChangeSearch}
                   style={{ width: 150 }}
                   allowClear
@@ -284,7 +283,6 @@ class AdminArticle extends React.Component {
                 <span className="ml-1">tag:</span>
                 <br />
                 <Select
-                  placeholder="Article Type​"
                   style={{ width: 150 }}
                   onChange={this.onChangeFiltTag}
                   allowClear
@@ -302,7 +300,6 @@ class AdminArticle extends React.Component {
                 <span className="ml-1">topic:</span>
                 <br />
                 <Select
-                  placeholder="Article Topic"
                   style={{ width: 150 }}
                   onChange={this.onChangeFiltTopic}
                   allowClear

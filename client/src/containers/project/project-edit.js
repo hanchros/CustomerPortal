@@ -60,11 +60,11 @@ const CreateForm = ({
               },
             ]}
           >
-            <Input type="text" className="name" placeholder={`Name`} />
+            <Input type="text" className="name" />
           </Form.Item>
           <span>Short description:</span>
           <Form.Item name="objective">
-            <Input placeholder="Objective" />
+            <Input />
           </Form.Item>
         </Col>
         <Col md={6} sm={24}>
@@ -75,7 +75,7 @@ const CreateForm = ({
       </Row>
       <span>Detailed description:</span>
       <Form.Item name="description">
-        <Input.TextArea rows={3} placeholder="Description" />
+        <Input.TextArea rows={3} />
       </Form.Item>
       <span>Technology:</span>
       <Technology technologies={technologies} onChangeTechs={setTechnologies} />

@@ -205,17 +205,29 @@ export function contactProjectCreator({ id, email, phone, gallery, message }) {
   };
 }
 
-export function listProjectDetails() {
+export function listProjectDetails(orgId) {
   return async (dispatch) => {
     const client = Client(true);
     try {
-      let res = await client.get(`${API_URL}/project/admin/list`);
+      let res = await client.get(`${API_URL}/project/admin/list/${orgId}`);
       dispatch({
         type: FETCH_PROJECT_DETAIL_LIST,
         projectDetails: res.data.projects,
       });
     } catch (err) {
       createNotification("List Project Details", errorMessage(err));
+    }
+  };
+}
+
+export function archiveProject(id) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/project/admin/archive/${id}`);
+      message.success("Project has been archived successfully");
+    } catch (err) {
+      createNotification("Project Archive", errorMessage(err));
     }
   };
 }

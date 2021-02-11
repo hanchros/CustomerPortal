@@ -29,7 +29,7 @@ const ProjectSchema = new Schema(
     },
     status: {
       type: String,
-      default: "In Progress",
+      default: "Live",
     },
     technologies: [{ type: Schema.Types.ObjectId, ref: " Article" }],
     template: {

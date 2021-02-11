@@ -108,7 +108,7 @@ export default function (state = INITIAL_STATE, action) {
         title_page_description:
           action.profile.title_page_description ||
           org_consts.title_page_description,
-        logo: action.logo || org_consts.logo,
+        logo: action.logo || state.orgSettings.logo,
         org_name: action.org_name,
       };
       astyle.setProperty("--primary_color", aost.primary_color);

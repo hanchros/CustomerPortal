@@ -19,6 +19,10 @@
 .create-tech-box {
   border: 1px solid #eee;
   padding: 20px;
+
+  .ant-avatar {
+    border-radius: 3px;
+  }
 }
 
 .template-listitem {

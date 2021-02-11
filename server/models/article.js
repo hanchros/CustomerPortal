@@ -45,6 +45,7 @@ const ArticleSchema = new Schema(
     icon: {
       type: String,
     },
+    organization: { type: Schema.Types.ObjectId, ref: "Organization" },
   },
   {
     timestamps: true,

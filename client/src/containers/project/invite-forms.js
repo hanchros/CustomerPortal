@@ -20,7 +20,7 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
           },
         ]}
       >
-        <Input size="large" placeholder="Organization" />
+        <Input size="large" />
       </Form.Item>
       <span>Leader:</span>
       <Form.Item
@@ -55,11 +55,11 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
           },
         ]}
       >
-        <Input size="large" type="email" placeholder="E-mail" />
+        <Input size="large" type="email" />
       </Form.Item>
       <span>Introduction:</span>
       <Form.Item name="intro">
-        <Input.TextArea rows={3} size="large" placeholder="Introduction" />
+        <Input.TextArea rows={3} size="large" />
       </Form.Item>
       <div className="signup-btn mt-4">
         <button type="submit" className="main-btn template-btn">

@@ -21,7 +21,7 @@ exports.updateTemplate = async (req, res, next) => {
     const template = await Template.findById(id)
       .populate("creator")
       .populate("technologies");
-    const projects = await Project.find({ template: id });
+    const projects = await Project.find({ template: id, status: "Live" });
     res.send({ template, projects });
   } catch (err) {
     return next(err);
@@ -57,7 +57,10 @@ exports.getTemplate = async (req, res, next) => {
     let template = await Template.findById(req.params.id)
       .populate("creator")
       .populate("technologies");
-    const projects = await Project.find({ template: req.params.id });
+    const projects = await Project.find({
+      template: req.params.id,
+      status: "Live",
+    });
     res.status(201).json({ template, projects });
   } catch (err) {
     return next(err);

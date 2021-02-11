@@ -37,10 +37,10 @@ const MailForm = ({ curMail, createMail, updateMail, hideModal }) => {
           },
         ]}
       >
-        <Select placeholder="Mail name">
+        <Select>
           {mailtemplates.map((item, index) => {
             return (
-              <Select.Option key={item} value={item}>
+              <Select.Option key={index} value={item}>
                 {item}
               </Select.Option>
             );
@@ -50,7 +50,7 @@ const MailForm = ({ curMail, createMail, updateMail, hideModal }) => {
 
       <span>Content:</span>
       <Form.Item name="content">
-        <RichTextEditor placeholder="Content" />
+        <RichTextEditor />
       </Form.Item>
       <span style={{ color: "#003366" }}>
         <b>Note: </b>You shouldn't change the variable names in bracket because

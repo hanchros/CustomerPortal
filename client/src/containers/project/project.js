@@ -15,6 +15,7 @@ import ProjectTeam from "./project-team";
 import ProjectTech from "./project-tech";
 import ProjectEdit from "./project-edit";
 import Timeline from "./project-timeline";
+import TechImg from "../../assets/img/technology.png";
 
 class Project extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class Project extends Component {
   };
 
   onToggleShowTeam = (e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     this.setState({ showTeam: !this.state.showTeam });
   };
 
@@ -144,48 +145,62 @@ class Project extends Component {
                         </span>
                       </div>
                     </div>
-                    <List
-                      itemLayout="horizontal"
-                      className="project-list pl-2"
-                      dataSource={this.getTeamMembers(
-                        org.organization.org_name
-                      )}
-                      renderItem={(item) => (
-                        <List.Item onClick={this.onToggleShowTeam}>
-                          <List.Item.Meta
-                            avatar={
-                              <Avatar
-                                src={item.participant.profile.photo || UserIcon}
-                              />
-                            }
-                            title={
-                              <b>
-                                {item.participant.profile.first_name}{" "}
-                                {item.participant.profile.last_name}
-                              </b>
-                            }
-                            description={
-                              <span>{item.participant.profile.role || ""}</span>
-                            }
-                          />
-                        </List.Item>
-                      )}
-                    />
+                    {this.getTeamMembers(org.organization.org_name).length >
+                      0 && (
+                      <List
+                        itemLayout="horizontal"
+                        className="project-list pl-2"
+                        dataSource={this.getTeamMembers(
+                          org.organization.org_name
+                        )}
+                        renderItem={(item) => (
+                          <List.Item onClick={this.onToggleShowTeam}>
+                            <List.Item.Meta
+                              avatar={
+                                <Avatar
+                                  src={
+                                    item.participant.profile.photo || UserIcon
+                                  }
+                                />
+                              }
+                              title={
+                                <b>
+                                  {item.participant.profile.first_name}{" "}
+                                  {item.participant.profile.last_name}
+                                </b>
+                              }
+                              description={
+                                <span>
+                                  {item.participant.profile.role || ""}
+                                </span>
+                              }
+                            />
+                          </List.Item>
+                        )}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
               <div
                 className="project-detail-clients"
                 onClick={this.onToggleShowTech}
-                style={{cursor: "pointer"}}
+                style={{ cursor: "pointer" }}
               >
-                <h5>Technology:</h5>
-                <ul>
-                  {curProj.technologies &&
-                    curProj.technologies.map((tech, index) => (
-                      <li key={index}>{tech.title}</li>
-                    ))}
-                </ul>
+                <h5>&nbsp; Technology:</h5>
+                <List
+                  itemLayout="horizontal"
+                  className="project-list pl-2"
+                  dataSource={curProj.technologies}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={<Avatar src={item.icon || TechImg} />}
+                        title={<b>{item.title}</b>}
+                      />
+                    </List.Item>
+                  )}
+                />
               </div>
             </Col>
           </Row>

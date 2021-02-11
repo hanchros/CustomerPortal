@@ -17,6 +17,7 @@ const OrgSchema = new Schema(
     org_type: { type: String },
     location: { type: String },
     social: { type: String },
+    linkedin: { type: String },
     logo: { type: String },
     bio: { type: String },
     creator: {

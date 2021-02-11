@@ -56,18 +56,18 @@ const TemplateForm = ({
           },
         ]}
       >
-        <Input type="text" className="name" placeholder={`Name`} />
+        <Input type="text" className="name" />
       </Form.Item>
 
       <span>Objective:</span>
       <Form.Item name="objective">
-        <Input placeholder="Objective" />
+        <Input />
       </Form.Item>
       <p>What are you automating? Contracts, invoices, etc</p>
       <p className="mb-4"></p>
       <span>Description:</span>
       <Form.Item name="description">
-        <Input.TextArea rows={3} placeholder="Description" />
+        <Input.TextArea rows={3} />
       </Form.Item>
       <p className="mb-4"></p>
       <span>Technology:</span>

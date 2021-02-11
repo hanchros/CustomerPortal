@@ -12,7 +12,7 @@ export const TemplateForm = ({
   updateTemplate,
   goback,
   org,
-  setTemplate
+  setTemplate,
 }) => {
   const [technologies, setTechnologies] = useState(
     curTemplate.technologies || []
@@ -26,7 +26,7 @@ export const TemplateForm = ({
     if (curTemplate._id) {
       values._id = curTemplate._id;
       let newTemp = await updateTemplate(values);
-      setTemplate(newTemp)
+      setTemplate(newTemp);
     } else {
       await createTemplate(values);
     }
@@ -50,18 +50,18 @@ export const TemplateForm = ({
           },
         ]}
       >
-        <Input type="text" className="name" placeholder={`Name`} />
+        <Input type="text" className="name" />
       </Form.Item>
 
       <span>Objective:</span>
       <Form.Item name="objective">
-        <Input placeholder="Objective" />
+        <Input />
       </Form.Item>
       <p>What are you automating? Contracts, invoices, etc</p>
       <p className="mb-4"></p>
       <span>Description:</span>
       <Form.Item name="description">
-        <Input.TextArea rows={3} placeholder="Description" />
+        <Input.TextArea rows={3} />
       </Form.Item>
       <p className="mb-4"></p>
       <span>Technology:</span>
@@ -92,7 +92,7 @@ class Template extends Component {
       updateTemplate,
       goback,
       organization,
-      setTemplate
+      setTemplate,
     } = this.props;
     return (
       <React.Fragment>

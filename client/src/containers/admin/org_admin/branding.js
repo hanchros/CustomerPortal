@@ -7,7 +7,6 @@ import {
   testColorChange,
 } from "../../../actions/organization";
 import { org_consts } from "../../../constants";
-import Avatar from "../../../components/template/upload";
 import { ModalSpinner } from "../../../components/pages/spinner";
 
 class OrgBasics extends React.Component {
@@ -15,7 +14,6 @@ class OrgBasics extends React.Component {
     super(props);
 
     this.state = {
-      avatarURL: props.organization.currentOrganization.logo,
       primary_color: "",
       secondary_color: "",
       background_color: "",
@@ -32,7 +30,6 @@ class OrgBasics extends React.Component {
   componentDidMount = () => {
     const org = this.props.organization.currentOrganization;
     this.setState({
-      avatarURL: org.logo,
       primary_color: org.profile.primary_color || org_consts.primary_color,
       secondary_color:
         org.profile.secondary_color || org_consts.secondary_color,
@@ -48,15 +45,11 @@ class OrgBasics extends React.Component {
     });
   };
 
-  setAvatar = (url) => {
-    this.setState({ avatarURL: url });
-  };
-
   onChangeOrgValue = (name, value) => {
     let org_name = this.props.organization.currentOrganization.org_name;
     let states = this.state;
     states[name] = value;
-    this.props.testColorChange(states, states.avatarURL, org_name);
+    this.props.testColorChange(states, org_name);
     this.setState({ [name]: value });
   };
 
@@ -70,7 +63,7 @@ class OrgBasics extends React.Component {
     states.shadow_color = org_consts.shadow_color;
     states.font_color = org_consts.font_color;
     states.link_color = org_consts.link_color;
-    this.props.testColorChange(states, states.avatarURL, org_name);
+    this.props.testColorChange(states, org_name);
     this.setState({
       primary_color: org_consts.primary_color,
       secondary_color: org_consts.secondary_color,
@@ -91,7 +84,6 @@ class OrgBasics extends React.Component {
 
   updateOrg = async () => {
     const {
-      avatarURL,
       primary_color,
       secondary_color,
       background_color,
@@ -106,7 +98,6 @@ class OrgBasics extends React.Component {
     this.setState({ loading: true });
     await this.props.updateOrganization({
       _id: org._id,
-      logo: avatarURL,
       profile: {
         primary_color,
         secondary_color,
@@ -124,7 +115,6 @@ class OrgBasics extends React.Component {
 
   checkEdited = () => {
     const {
-      avatarURL,
       primary_color,
       secondary_color,
       background_color,
@@ -137,7 +127,6 @@ class OrgBasics extends React.Component {
     } = this.state;
     const org = this.props.organization.currentOrganization;
     if (
-      avatarURL !== org.logo ||
       primary_color !== org.profile.primary_color ||
       secondary_color !== org.profile.secondary_color ||
       background_color !== org.profile.background_color ||
@@ -156,7 +145,6 @@ class OrgBasics extends React.Component {
     const org = this.props.organization.currentOrganization;
     const org_name = this.props.organization.currentOrganization.org_name;
     const newState = {
-      avatarURL: org.logo,
       primary_color: org.profile.primary_color || org_consts.primary_color,
       secondary_color:
         org.profile.secondary_color || org_consts.secondary_color,
@@ -170,13 +158,12 @@ class OrgBasics extends React.Component {
       title_page_description:
         org.profile.title_page_description || org_consts.title_page_description,
     };
-    this.props.testColorChange(newState, newState.avatarURL, org_name);
+    this.props.testColorChange(newState, org_name);
     this.setState(newState);
   };
 
   render() {
     const {
-      avatarURL,
       primary_color,
       secondary_color,
       background_color,
@@ -190,124 +177,114 @@ class OrgBasics extends React.Component {
     } = this.state;
     return (
       <div className="admin-org-box container">
-        <Row gutter={50} className="mb-5">
-          <Col md={8}>
-            <div className="center mt-5">
-              <Avatar setAvatar={this.setAvatar} imageUrl={avatarURL} />
+        <Row gutter={20} className="mb-4">
+          <Col md={12}>
+            <div className="color-picker-box">
+              <span>Primary Color:</span>
+              <ColorPicker
+                color={primary_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("primary_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Background Color:</span>
+              <ColorPicker
+                color={background_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("background_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Menu Bar Color:</span>
+              <ColorPicker
+                color={secondary_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("secondary_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Menu Text Color:</span>
+              <ColorPicker
+                color={menufont_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("menufont_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
             </div>
           </Col>
-          <Col md={16}>
-            <Row gutter={20}>
-              <Col md={12}>
-                <div className="color-picker-box">
-                  <span>Primary Color:</span>
-                  <ColorPicker
-                    color={primary_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("primary_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-                <div className="color-picker-box">
-                  <span>Background Color:</span>
-                  <ColorPicker
-                    color={background_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("background_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-                <div className="color-picker-box">
-                  <span>Menu Bar Color:</span>
-                  <ColorPicker
-                    color={secondary_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("secondary_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-                <div className="color-picker-box">
-                  <span>Menu Text Color:</span>
-                  <ColorPicker
-                    color={menufont_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("menufont_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-              </Col>
-              <Col md={12}>
-                <div className="color-picker-box">
-                  <span>Main Font Color:</span>
-                  <ColorPicker
-                    color={font_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("font_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-                <div className="color-picker-box">
-                  <span>Main Link Color:</span>
-                  <ColorPicker
-                    color={link_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("link_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-                <div className="color-picker-box">
-                  <span>Main Shadow Color:</span>
-                  <ColorPicker
-                    color={shadow_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      this.onChangeOrgValue("shadow_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                </div>
-              </Col>
-            </Row>
+          <Col md={12}>
+            <div className="color-picker-box">
+              <span>Main Font Color:</span>
+              <ColorPicker
+                color={font_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("font_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Main Link Color:</span>
+              <ColorPicker
+                color={link_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("link_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
+            <div className="color-picker-box">
+              <span>Main Shadow Color:</span>
+              <ColorPicker
+                color={shadow_color}
+                alpha={100}
+                onClose={(colors) =>
+                  this.onChangeOrgValue("shadow_color", colors.color)
+                }
+                placement="topLeft"
+                className="some-class"
+              >
+                <span className="rc-color-picker-trigger" />
+              </ColorPicker>
+            </div>
           </Col>
         </Row>
         <div className="admin-org-homebox">
           <span>Title page name:</span>
           <Input
             value={title_page}
-            placeholder="Title Page Name"
             onChange={(e) =>
               this.onChangeOrgValue("title_page", e.target.value)
             }
@@ -317,7 +294,6 @@ class OrgBasics extends React.Component {
           <Input.TextArea
             rows={5}
             value={title_page_description}
-            placeholder="Title Page Description"
             onChange={(e) =>
               this.onChangeOrgValue("title_page_description", e.target.value)
             }

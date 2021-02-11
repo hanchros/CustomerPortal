@@ -9,7 +9,7 @@ class Intro extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: getOneFieldData(this.props.fieldData, this.props.field)
+      value: getOneFieldData(this.props.fieldData, this.props.field),
     };
   }
 
@@ -20,14 +20,13 @@ class Intro extends React.Component {
   onSaveIntro = () => {
     const { updateFieldData, field } = this.props;
     updateFieldData({ field, value: this.state.value });
-  }
+  };
 
   render() {
     return (
       <div className="admin-intro-block mt-5">
         <span>Introduction</span>
         <RichTextEditor
-          placeholder="Indroduction"
           onChange={this.onChangeIntro}
           value={this.state.value}
         />

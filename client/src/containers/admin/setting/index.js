@@ -35,7 +35,6 @@ class SiteSetting extends React.Component {
           <Col md={12}>
             <span>Introduce Page Content</span>
             <RichTextEditor
-              placeholder="Indroduction"
               onChange={this.onChangeIntro}
               value={this.state.value}
             />

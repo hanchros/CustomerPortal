@@ -1,13 +1,17 @@
-import React from "react";
-import { PageHeader, Button, Descriptions, Form, Input, Select } from "antd";
-import moment from "moment";
+import React, { useState } from "react";
+import { Button, Form, Input, Select } from "antd";
 import { connect } from "react-redux";
 import { updateOrganization } from "../../../actions/organization";
 import { getFieldData } from "../../../utils/helper";
+import ChallengeLogo from "../../../assets/icon/challenge.png";
+import Avatar from "../../../components/template/upload";
 
 const EditForm = ({ onUpdateOrg, org, orgTypes, onCancel }) => {
+  const [avatarURL, setAvatar] = useState(org.logo || "");
+
   const onFinish = async (values) => {
     values._id = org._id || null;
+    values.logo = avatarURL;
     await onUpdateOrg(values);
     onCancel();
   };
@@ -15,11 +19,14 @@ const EditForm = ({ onUpdateOrg, org, orgTypes, onCancel }) => {
   return (
     <Form
       name="org_register"
-      className="org-form mt-5"
+      className="org-form"
       onFinish={onFinish}
       initialValues={{ ...org }}
     >
       <h5 className="mb-5">Edit Organization</h5>
+      <div className="center mt-4 mb-4">
+        <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
+      </div>
       <Form.Item
         name="org_name"
         rules={[
@@ -73,6 +80,9 @@ const EditForm = ({ onUpdateOrg, org, orgTypes, onCancel }) => {
       >
         <Input placeholder="Add social media" size="large" />
       </Form.Item>
+      <Form.Item name="linkedin">
+        <Input placeholder="Add Linkedin Link" size="large" />
+      </Form.Item>
       <Form.Item name="bio">
         <Input.TextArea rows={5} size="large" placeholder="Bio" />
       </Form.Item>
@@ -124,31 +134,39 @@ class OrgBasics extends React.Component {
           />
         )}
         {!isEdit && (
-          <PageHeader
-            ghost={false}
-            title={org.org_name}
-            extra={[<Button key={3} onClick={this.onToggleEdit}>Edit</Button>]}
-          >
-            <Descriptions size="default" column={2}>
-              <Descriptions.Item label="Creator">
-                {org.creator.profile.first_name} {org.creator.profile.last_name}
-              </Descriptions.Item>
-              <Descriptions.Item label="Type">{org.org_type}</Descriptions.Item>
-              <Descriptions.Item label="Creation Time">
-                {moment(org.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-              </Descriptions.Item>
-              <Descriptions.Item label="Location">
-                {org.location}
-              </Descriptions.Item>
-              <Descriptions.Item label="Social">
-                <a href={org.social} target="_blank" rel="noopener noreferrer">
-                  {org.social}
-                </a>
-              </Descriptions.Item>
-            </Descriptions>
-            <span>Bio:</span>
-            <div className="org-bio-box">{org.bio}</div>
-          </PageHeader>
+          <div className="flex">
+            <div className="admin-org-logobox">
+              <img src={org.logo || ChallengeLogo} alt="" />
+            </div>
+            <div className="admin-org-body">
+              <h4 className="mb-4">
+                <b>{org.org_name}</b>
+              </h4>
+              <p>
+                <b>Type:</b> {org.org_type}
+              </p>
+              <p>
+                <b>Headquarters:</b> {org.location}
+              </p>
+              <p>
+                <b>Website:</b> {org.social}
+              </p>
+              <p>
+                <b>Linkedin:</b> {org.linkedin}
+              </p>
+              <p>
+                <b>Creator:</b>{" "}
+                {org.creator
+                  ? `${org.creator.profile.first_name} ${org.creator.profile.last_name}`
+                  : ""}
+              </p>
+              <b>About:</b>
+              <div className="org-bio-box">{org.bio}</div>
+              <button className="main-btn mt-4" onClick={this.onToggleEdit}>
+                EDIT
+              </button>
+            </div>
+          </div>
         )}
       </div>
     );

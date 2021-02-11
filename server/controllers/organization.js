@@ -48,7 +48,6 @@ exports.updateOrganization = async (req, res, next) => {
       select: "_id profile",
     });
     let users = await User.find({ "profile.org": org._id });
-    console.log("users", users)
     for (let user of users) {
       user.profile.org_name = org.org_name;
       await user.save();
@@ -175,15 +174,15 @@ exports.listSimpleOrgs = async (req, res, next) => {
   }
 };
 
-exports.deleteOrganization = (req, res, next) => {
-  Organization.deleteOne({ _id: req.params.org_id }).exec((err, org) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      organization: org,
-    });
-  });
+exports.deleteOrganization = async (req, res, next) => {
+  try {
+    await Organization.deleteOne({ _id: req.params.org_id });
+    await User.deleteMany({ "profile.org": req.params.org_id });
+    await ProjectOrg.deleteMany({ organization: req.params.org_id });
+    res.status(201).json({ message: "success" });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.adminOrgReports = async (req, res, next) => {

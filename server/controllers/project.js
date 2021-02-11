@@ -4,6 +4,7 @@ const Notification = require("../models/notification");
 const ProjectMember = require("../models/projectmember");
 const ProjectOrg = require("../models/projectorg");
 const Timeline = require("../models/timeline");
+const User = require("../models/user");
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
@@ -125,7 +126,7 @@ exports.listProject = async (req, res, next) => {
       .sort({ createdAt: "desc" });
     let projects = [];
     pms.map((pm) => {
-      if (!pm.project) return;
+      if (!pm.project || pm.project.status === "Archived") return;
       projects.push(pm.project);
     });
     res.status(201).json({ projects });
@@ -187,21 +188,32 @@ exports.contactCreator = async (req, res, next) => {
 // for admin
 exports.listAllProject = async (req, res, next) => {
   try {
-    let projects = await Project.find({});
-    let result = [];
-    for (let proj of projects) {
-      result.push({
-        project_name: proj.name,
-        logo: proj.logo,
-        objective: proj.objective,
-        status: proj.status,
-        contact_detail: proj.contact_detail,
-        _id: proj._id,
+    let projects = [];
+    let users = await User.find({ "profile.org": req.params.org_id });
+    for (let user of users) {
+      let ups = await Project.find({ participant: user._id }).populate({
+        path: "participant",
+        select: "_id profile",
       });
+      projects = [...projects, ...ups];
     }
-    return res.status(201).json({
-      projects: result,
+    projects = projects.sort((a, b) => {
+      if (a.createdAt > b.createdAt) return 1;
+      return 0;
     });
+
+    return res.status(201).json({
+      projects,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.archiveProject = async (req, res, next) => {
+  try {
+    await Project.findByIdAndUpdate(req.params.id, { status: "Archived" });
+    return res.status(201).json({ message: "success" });
   } catch (err) {
     return next(err);
   }
