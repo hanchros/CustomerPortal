@@ -28,7 +28,13 @@ exports.leaveProject = (req, res, next) => {
 
 exports.listProject = (req, res, next) => {
   ProjectMember.find({ participant: req.params.userId })
-    .populate("project")
+    .populate({
+      path: "project",
+      populate: {
+        path: "participant",
+        select: "_id profile",
+      },
+    })
     .sort({ createdAt: "desc" })
     .exec((err, pms) => {
       if (err) {
@@ -36,8 +42,8 @@ exports.listProject = (req, res, next) => {
       }
       let projects = [];
       pms.map((pm) => {
-        if (!pm.project) return;
-        projects.push(pm);
+        if (!pm.project || pm.project.status === "Archived") return;
+        projects.push(pm.project);
       });
       res.status(201).json({ projects });
     });

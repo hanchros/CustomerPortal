@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
-import { Skeleton, Row, Col, List, Avatar } from "antd";
+import { Skeleton, Row, Col, List, Avatar, Collapse, Button } from "antd";
+import {
+  PlusOutlined,
+  InfoCircleFilled,
+  MessageOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import {
   getProject,
   getParticipant,
@@ -10,12 +16,14 @@ import {
 } from "../../actions/project";
 import ChallengeLogo from "../../assets/icon/challenge.png";
 import UserIcon from "../../assets/img/user-avatar.png";
-import ProjectOrgs from "./project-org";
-import ProjectTeam from "./project-team";
-import ProjectTech from "./project-tech";
 import ProjectEdit from "./project-edit";
 import Timeline from "./project-timeline";
 import TechImg from "../../assets/img/technology.png";
+import history from "../../history";
+import Invite from "./invite";
+import { createTeamChat, setChannel } from "../../actions/message";
+
+const { Panel } = Collapse;
 
 class Project extends Component {
   constructor(props) {
@@ -25,27 +33,10 @@ class Project extends Component {
       loading: false,
       showOrgs: false,
       showTeam: false,
-      showTech: false,
       showEdit: false,
+      showInvite: false,
     };
   }
-
-  onToggleShowOrgs = () => {
-    this.setState({ showOrgs: !this.state.showOrgs });
-  };
-
-  onToggleShowTeam = (e) => {
-    e.stopPropagation();
-    this.setState({ showTeam: !this.state.showTeam });
-  };
-
-  onToggleShowTech = () => {
-    this.setState({ showTech: !this.state.showTech });
-  };
-
-  onToggleEdit = () => {
-    this.setState({ showEdit: !this.state.showEdit });
-  };
 
   componentDidMount = async () => {
     const { getProject, getParticipant, listOrgByProject, match } = this.props;
@@ -56,32 +47,107 @@ class Project extends Component {
     this.setState({ loading: false });
   };
 
-  getTeamMembers = (org_name) => {
+  onToggleInvite = () => {
+    this.setState({ showInvite: !this.state.showInvite });
+  };
+
+  onToggleEdit = () => {
+    this.setState({ showEdit: !this.state.showEdit });
+  };
+
+  goTeamChat = async () => {
+    const { project, message, createTeamChat, setChannel } = this.props;
+    const curProj = project.project;
+    let conversations = message.conversations;
+    for (let cv of conversations) {
+      if (cv.project && cv.project === curProj._id) {
+        setChannel(cv._id);
+        history.push("/messages");
+        return;
+      }
+    }
+    const cvId = await createTeamChat(curProj.name, curProj._id);
+    setChannel(cvId);
+    history.push("/messages");
+  };
+
+  onGotoTech = (item) => {
+    const curOrg = this.props.organization.currentOrganization;
+    let tab = 3;
+    if (item.organization) {
+      tab = 4;
+    }
+    history.push(`/${curOrg.org_name}/techhub?tab=${tab}&id=${item._id}`);
+  };
+
+  onGotoUser = (user) => {
+    const { project } = this.props;
+    const curProj = project.project;
+    history.push(`/user/${user._id}?project=${curProj._id}`);
+  };
+
+  getTeamMemberGroup = () => {
     const { project } = this.props;
     if (project.participants.length === 0) return [];
-    return project.participants.filter(
-      (pm) => pm.participant.profile.org_name === org_name
-    );
+    let result = [];
+    for (let pt of project.participants) {
+      let flts = result.filter(
+        (item) => item.org === pt.participant.profile.org_name
+      );
+      if (flts.length === 0) {
+        result.push({
+          org: pt.participant.profile.org_name,
+          participants: [pt.participant],
+        });
+      } else {
+        flts[0].participants.push(pt.participant);
+      }
+    }
+    return result;
+  };
+
+  renderOrgMembers = () => {
+    const groups = this.getTeamMemberGroup();
+    if (groups.length === 0) return null;
+    return groups.map((group) => (
+      <div key={group.org} className="project-team-box">
+        <span className="project-span">
+          {group.org || "Unknown organization"}{" "}
+          <InfoCircleFilled style={{ fontSize: "12px", color: "gray" }} />
+        </span>
+        <List
+          itemLayout="horizontal"
+          dataSource={group.participants}
+          renderItem={(item) => (
+            <List.Item onClick={() => this.onGotoUser(item)}>
+              <List.Item.Meta
+                avatar={<Avatar src={item.profile.photo || UserIcon} />}
+                title={
+                  <b>
+                    {item.profile.first_name} {item.profile.last_name}
+                  </b>
+                }
+                description={<span>{item.profile.role || ""}</span>}
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+    ));
   };
 
   render = () => {
-    const { loading, showOrgs, showTeam, showTech, showEdit } = this.state;
+    const { loading, showEdit, showInvite } = this.state;
     const { project, user, match } = this.props;
     const curProj = project.project;
-    const organizations = project.organizations;
     let isCreator = curProj.participant && curProj.participant._id === user._id;
 
-    if (showOrgs) {
-      return <ProjectOrgs goback={this.onToggleShowOrgs} />;
-    }
-    if (showTeam) {
-      return <ProjectTeam goback={this.onToggleShowTeam} />;
-    }
-    if (showTech) {
-      return <ProjectTech goback={this.onToggleShowTech} />;
-    }
     if (showEdit) {
       return <ProjectEdit goback={this.onToggleEdit} curProject={curProj} />;
+    }
+
+    if (showInvite) {
+      return <Invite goback={this.onToggleInvite} invite="team" />;
     }
 
     return (
@@ -91,117 +157,87 @@ class Project extends Component {
           <Skeleton active loading={loading} />
           <Row gutter={50}>
             <Col md={16} sm={24}>
-              <div className="project-info-box">
-                <div className="project-detail-head">
-                  <div className="project-img-box">
-                    <img src={curProj.logo || ChallengeLogo} alt="" />
-                  </div>
-                  <div>
+              <div className="project-info">
+                <div className="project-info-box">
+                  <div className="project-detail-head">
                     <h3>{curProj.name}</h3>
                     {curProj.participant && (
                       <span>
                         leader: {curProj.participant.profile.first_name}{" "}
-                        {curProj.participant.profile.last_name} -{" "}
+                        {curProj.participant.profile.last_name},{" "}
                         {curProj.participant.profile.org_name}
+                        <span className="ml-5">
+                          <i className="online-symbol">●</i>
+                          {curProj.status}
+                        </span>
                       </span>
                     )}
-                    <br />
-                    <b>status: {curProj.status}</b>
+                    <p className="mt-4">{curProj.objective}</p>
+                  </div>
+                  <div className="project-img-box">
+                    <img src={curProj.logo || ChallengeLogo} alt="" />
                   </div>
                 </div>
-                <span>Short Description:</span>
-                <p>{curProj.objective}</p>
-                <span>Long Description:</span>
-                <p>{curProj.description} </p>
+                <Collapse accordion className="project-desc-collapse">
+                  <Panel header={"show full description"}>
+                    <p>{curProj.description} </p>
+                  </Panel>
+                </Collapse>
+                <Timeline id={match.params.id} />
               </div>
-              <Timeline id={match.params.id} />
-              {isCreator && (
-                <div className="mt-5 mb-4 flex">
-                  <button
-                    className="main-btn template-btn mr-4"
-                    onClick={this.onToggleEdit}
-                  >
-                    Edit
-                  </button>
-                </div>
-              )}
             </Col>
             <Col md={8} sm={24}>
-              <div
-                className="project-detail-clients"
-                onClick={this.onToggleShowOrgs}
-              >
-                <h5>&nbsp; Project Team:</h5>
-                {organizations.map((org) => (
-                  <div key={org._id} className="project-team-box">
-                    <div className="project-org-box">
-                      <Avatar src={org.organization.logo || ChallengeLogo} />
-                      <div className="ml-3">
-                        <b>{org.organization.org_name}</b>
-                        <br />
-                        <span style={{ fontSize: "14px" }}>
-                          {org.organization.org_type || ""}{" "}
-                          {org.organization.location || ""}
-                        </span>
-                      </div>
-                    </div>
-                    {this.getTeamMembers(org.organization.org_name).length >
-                      0 && (
-                      <List
-                        itemLayout="horizontal"
-                        className="project-list pl-2"
-                        dataSource={this.getTeamMembers(
-                          org.organization.org_name
-                        )}
-                        renderItem={(item) => (
-                          <List.Item onClick={this.onToggleShowTeam}>
-                            <List.Item.Meta
-                              avatar={
-                                <Avatar
-                                  src={
-                                    item.participant.profile.photo || UserIcon
-                                  }
-                                />
-                              }
-                              title={
-                                <b>
-                                  {item.participant.profile.first_name}{" "}
-                                  {item.participant.profile.last_name}
-                                </b>
-                              }
-                              description={
-                                <span>
-                                  {item.participant.profile.role || ""}
-                                </span>
-                              }
-                            />
-                          </List.Item>
-                        )}
-                      />
-                    )}
-                  </div>
-                ))}
+              <div className="project-team-header">
+                <h5>
+                  <b>Team</b>
+                </h5>
+                <Button
+                  onClick={this.onToggleInvite}
+                  type="ghost"
+                  className="ghost-btn"
+                >
+                  <PlusOutlined /> INVITE NEW MEMBER
+                </Button>
               </div>
-              <div
-                className="project-detail-clients"
-                onClick={this.onToggleShowTech}
-                style={{ cursor: "pointer" }}
-              >
-                <h5>&nbsp; Technology:</h5>
-                <List
-                  itemLayout="horizontal"
-                  className="project-list pl-2"
-                  dataSource={curProj.technologies}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<Avatar src={item.icon || TechImg} />}
-                        title={<b>{item.title}</b>}
-                      />
-                    </List.Item>
-                  )}
-                />
+              {this.renderOrgMembers()}
+              {isCreator && (
+                <Button
+                  type="ghost"
+                  style={{ width: "100%" }}
+                  className="mt-4 mb-5 black-btn"
+                  onClick={this.goTeamChat}
+                >
+                  <MessageOutlined style={{ fontSize: "16px" }} /> start team
+                  chat
+                </Button>
+              )}
+              <div className="project-team-header mt-4 mb-4">
+                <h5>
+                  <b>Technologies</b>
+                </h5>
+                <Button onClick={() => {}} type="ghost" className="ghost-btn">
+                  <PlusOutlined /> Add New
+                </Button>
               </div>
+              <ul className="project-tech-items">
+                {curProj.technologies &&
+                  curProj.technologies.map((item) => (
+                    <li key={item._id} onClick={() => this.onGotoTech(item)}>
+                      <Avatar src={item.icon || TechImg} />
+                      <b>{item.title}</b>
+                    </li>
+                  ))}
+              </ul>
+              {isCreator && (
+                <Button
+                  onClick={this.onToggleEdit}
+                  type="ghost"
+                  className="black-btn mt-4 mb-4"
+                  style={{ float: "right" }}
+                >
+                  <EditOutlined /> Edit
+                </Button>
+              )}
             </Col>
           </Row>
         </Container>
@@ -214,10 +250,9 @@ class Project extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user.profile,
-    isAdmin: state.user.isAdmin,
-    auth: state.auth,
     project: state.project,
-    fieldData: state.profile.fieldData,
+    message: state.message,
+    organization: state.organization,
   };
 };
 
@@ -225,4 +260,6 @@ export default connect(mapStateToProps, {
   getProject,
   getParticipant,
   listOrgByProject,
+  createTeamChat,
+  setChannel,
 })(Project);

@@ -134,7 +134,7 @@ class ProjectTeam extends Component {
                 </div>
                 <span>
                   {pt.participant.profile.first_name}{" "}
-                  {pt.participant.profile.last_name} -{" "}
+                  {pt.participant.profile.last_name},{" "}
                   {pt.participant.profile.org_name}
                 </span>
                 <br />

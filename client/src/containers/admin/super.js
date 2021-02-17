@@ -10,6 +10,7 @@ import {
   QuestionCircleOutlined,
   SettingOutlined,
   UsergroupAddOutlined,
+  NotificationOutlined
 } from "@ant-design/icons";
 import { Header } from "../../components/template";
 import { getOrganization } from "../../actions/organization";
@@ -21,6 +22,7 @@ import SupTemplate from "./template";
 import Faq from "./faq";
 import Settings from "./setting";
 import InviteRequests from "./inviteRequest";
+import Message from "./user/message";
 
 const { Content, Sider } = Layout;
 
@@ -114,6 +116,15 @@ class AdminDashboard extends Component {
                   </span>
                 </Menu.Item>
                 <Menu.Item
+                  key="sup-message"
+                  onClick={() => this.switchPage("Super", "Message")}
+                >
+                  <span>
+                    <NotificationOutlined />
+                    <span>Messages</span>
+                  </span>
+                </Menu.Item>
+                <Menu.Item
                   key="sup-invite"
                   onClick={() => this.switchPage("Super", "Invite")}
                 >
@@ -177,6 +188,8 @@ class AdminDashboard extends Component {
         return <Settings />;
       case "Super Invite":
         return <InviteRequests />;
+      case "Super Message":
+        return <Message />
       default:
         return null;
     }

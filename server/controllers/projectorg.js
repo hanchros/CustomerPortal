@@ -79,7 +79,13 @@ exports.leaveProject = (req, res, next) => {
 
 exports.listProject = (req, res, next) => {
   ProjectOrg.find({ organization: req.params.orgId })
-    .populate("project")
+    .populate({
+      path: "project",
+      populate: {
+        path: "participant",
+        select: "_id profile",
+      },
+    })
     .sort({ createdAt: "desc" })
     .exec((err, pos) => {
       if (err) {
@@ -87,8 +93,8 @@ exports.listProject = (req, res, next) => {
       }
       let projects = [];
       pos.map((po) => {
-        if (!po.project) return;
-        projects.push(po);
+        if (!po.project || po.project.status === "Archived") return;
+        projects.push(po.project);
       });
       res.status(201).json({ projects });
     });

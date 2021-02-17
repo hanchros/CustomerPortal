@@ -32,7 +32,11 @@ export function createArticle(values) {
         type: CREATE_ARTICLE,
         article: res.data.article,
       });
-      message.success("New article has been created successfully!");
+      if (values.topic && values.topic.includes("Applications")) {
+        message.success("New technology has been created successfully!");
+      } else {
+        message.success("New article has been created successfully!");
+      }
       return res.data.article;
     } catch (err) {
       createNotification("Create Article", errorMessage(err));

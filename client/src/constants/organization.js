@@ -1,7 +1,7 @@
 import ChallengeIcon from "../assets/icon/challenge.png";
 
 export const org_consts = {
-  primary_color: "#4472c4",
+  primary_color: "#3C76EE",
   secondary_color: "#6d73c1",
   background_color: "#fff",
   menufont_color: "#fff",

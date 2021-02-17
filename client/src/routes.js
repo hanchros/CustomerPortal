@@ -44,6 +44,8 @@ import Account from "./containers/user";
 // Import chat related pages
 import MessageBox from "./containers/message";
 
+import UserDashboard from "./containers/user/dashboard";
+
 // Import admin related Pages
 import AdminDashboard from "./containers/admin";
 import SuperAdminDashboard from "./containers/admin/super";
@@ -95,6 +97,8 @@ class Routes extends React.Component {
           <Route path="/resend" component={Resend} />
           <Route path="/email-verify/:mode/:token" component={ConfirmEmail} />
           <Route path="/account" component={RequireAuth(Account)} />
+
+          <Route path="/user/:user_id" component={RequireAuth(UserDashboard)} />
 
           <Route path="/:org/projects" component={RequireAuth(Projectslist)} />
           <Route path="/:org/project/:id" component={RequireAuth(Project)} />

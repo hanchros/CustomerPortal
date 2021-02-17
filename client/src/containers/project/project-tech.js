@@ -5,13 +5,11 @@ import { Header, Footer } from "../../components/template";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import TechImg from "../../assets/img/technology.png";
-import { Link } from "react-router-dom";
 
 class ProjectTech extends Component {
   render = () => {
-    const { project, goback, organization } = this.props;
+    const { project, goback } = this.props;
     const curProj = project.project;
-    const curOrg = organization.currentOrganization;
     return (
       <React.Fragment>
         <Header />
@@ -27,18 +25,15 @@ class ProjectTech extends Component {
           <p className="mb-4" />
           {curProj.technologies &&
             curProj.technologies.map((tech, index) => (
-              <Link
-                to={`/${curOrg.org_name}/techhub?tab=3`}
-                className="project-general-box mb-4"
-                key={index}
-              >
+              <div className="project-general-box mb-4" key={index}>
                 <div className="pr-4">
                   <img src={tech.icon || TechImg} alt="" />
                 </div>
                 <div>
                   <h5 className="mt-2">{tech.title}</h5>
+                  <div dangerouslySetInnerHTML={{ __html: tech.content }} />
                 </div>
-              </Link>
+              </div>
             ))}
         </Container>
         <Footer />
@@ -50,7 +45,6 @@ class ProjectTech extends Component {
 const mapStateToProps = (state) => {
   return {
     project: state.project,
-    organization: state.organization,
   };
 };
 

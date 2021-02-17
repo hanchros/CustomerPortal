@@ -1,8 +1,8 @@
 const Notification = require("../models/notification"),
   User = require("../models/user"),
   Organization = require("../models/organization"),
-  Project = require("../models/project")
-  sockets = require("../socket"),
+  Project = require("../models/project");
+const sockets = require("../socket"),
   utils = require("./util"),
   sendgrid = require("../config/sendgrid");
 
@@ -30,7 +30,12 @@ exports.notifyAllUsers = async (req, res, next) => {
     }
     for (let pt of participants) {
       if (!receptors.some((r) => utils.compareIds(r, pt._id))) {
-        this.sendNotificationMail(req.user, pt, req.body.title, req.body.content);
+        this.sendNotificationMail(
+          req.user,
+          pt,
+          req.body.title,
+          req.body.content
+        );
       }
     }
     return res.status(200).json({ message: "Notification sent successfully" });
@@ -42,7 +47,7 @@ exports.notifyAllUsers = async (req, res, next) => {
 
 exports.notifyProjectCreators = async (req, res, next) => {
   try {
-    let projects = await Project.find({})
+    let projects = await Project.find({ status: "Live" })
       .populate("participant")
       .select("_id email");
     let participants = [],
@@ -79,7 +84,12 @@ exports.notifyProjectCreators = async (req, res, next) => {
     }
     for (let pt of participants) {
       if (!receptors.some((r) => utils.compareIds(r, pt._id))) {
-        this.sendNotificationMail(req.user, pt, req.body.title, req.body.content);
+        this.sendNotificationMail(
+          req.user,
+          pt,
+          req.body.title,
+          req.body.content
+        );
       }
     }
     return res.status(200).json({ message: "Notification sent successfully" });
@@ -91,10 +101,12 @@ exports.notifyProjectCreators = async (req, res, next) => {
 
 exports.notifyOrganizations = async (req, res, next) => {
   try {
-    let orgs = await Organization.find({}).select("_id contact_email");
+    let orgs = await Organization.find({}).populate("creator");
     let oIds = [];
     for (let org of orgs) {
-      oIds.push(org._id);
+      if (org.creator) {
+        oIds.push(org.creator._id);
+      }
     }
 
     let notif = new Notification({
@@ -107,12 +119,14 @@ exports.notifyOrganizations = async (req, res, next) => {
     notif = await notif.save();
 
     for (let org of orgs) {
-      this.sendNotificationMail(
-        req.user,
-        { email: org.contact_email },
-        req.body.title,
-        req.body.content
-      );
+      if (org.creator) {
+        this.sendNotificationMail(
+          req.user,
+          org.creator,
+          req.body.title,
+          req.body.content
+        );
+      }
     }
     return res.status(200).json({ message: "Notification sent successfully" });
   } catch (err) {

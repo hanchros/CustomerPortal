@@ -1,9 +1,13 @@
 import React from "react";
-import FooterImg from "../../assets/img/home-footer.png";
+import { Container } from "reactstrap"
+import FooterImg from "../../assets/img/integra.svg";
 
 const Footer = () => (
   <div className="footer-box">
-    <img src={FooterImg} alt="" />
+    <Container>
+      Powered by
+      <img src={FooterImg} alt="" />
+    </Container>
   </div>
 );
 

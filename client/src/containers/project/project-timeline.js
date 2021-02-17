@@ -117,11 +117,17 @@ class ProjectTech extends Component {
     const timelines = timeline.timelines;
 
     return (
-      <div className="project-detail-desc">
+      <div className="project-timeline">
         <div className="timeline-header">
-          <h5>Project Timeline:</h5>
-          <Button type="ghost" onClick={this.onCreateNote}>
-            <EditOutlined /> Add Note
+          <h5>
+            <b>Timeline</b>
+          </h5>
+          <Button
+            type="ghost"
+            className="ghost-btn"
+            onClick={this.onCreateNote}
+          >
+            <EditOutlined /> WRITE NOTE
           </Button>
         </div>
         <Skeleton active loading={loading} />
@@ -171,25 +177,29 @@ class ProjectTech extends Component {
                       </Popconfirm>
                     </React.Fragment>
                   )}
-                  {moment(tl.createdAt).format("YYYY-MM-DD")}
+                  <span style={{ opacity: 0.7 }}>
+                    {moment(tl.createdAt).format("YYYY-MM-DD")}
+                  </span>
                 </span>
               </div>
             </li>
           ))}
         </ul>
-        <Modal
-          title={`${note._id ? "Update" : "Create"} Note`}
-          visible={visible}
-          width={800}
-          footer={false}
-          onCancel={this.hideModal}
-        >
-          <NoteForm
-            onSubmit={this.submitForm}
-            note={note}
+        {visible && (
+          <Modal
+            title={`${note._id ? "Update" : "Create"} Note`}
+            visible={visible}
+            width={800}
+            footer={false}
             onCancel={this.hideModal}
-          />
-        </Modal>
+          >
+            <NoteForm
+              onSubmit={this.submitForm}
+              note={note}
+              onCancel={this.hideModal}
+            />
+          </Modal>
+        )}
       </div>
     );
   };

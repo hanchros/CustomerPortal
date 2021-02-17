@@ -16,6 +16,24 @@
   }
 }
 
+.sub-header {
+  background-color: white;
+  height: 60px;
+  box-shadow: 0 2px 5px #bbb;
+
+  .sub-link {
+    padding-top: 25px;
+    a {
+      font-size: 12px;
+      color: inherit;
+    }
+    .anticon {
+      margin: 0 5px;
+      font-size: 12px;
+    }
+  }
+}
+
 @media screen and (max-width: 768px) {
   .detail-desc .project-follow {
     width: 80%;

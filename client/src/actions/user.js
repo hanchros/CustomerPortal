@@ -4,16 +4,13 @@ import { FETCH_USER } from "./types";
 
 export function fetchUser(uid) {
   const client = Client(true);
-  return function (dispatch) {
-    client
-      .get(`${API_URL}/user/${uid}`)
-      .then((response) => {
-        dispatch({
-          type: FETCH_USER,
-          payload: response.data.user,
-        });
-      })
-      .catch((err) => console.log(err));
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/user/${uid}`);
+      return res.data.user;
+    } catch (err) {
+      console.log(err);
+    }
   };
 }
 
@@ -63,6 +60,18 @@ export function allSimpleUsers() {
       return res.data.participants;
     } catch (err) {
       createNotification("Get Participant List", errorMessage(err));
+    }
+  };
+}
+
+export function listUserProjects(userId) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      let res = await client.get(`${API_URL}/projectmember/project/${userId}`);
+      return res.data.projects;
+    } catch (err) {
+      console.log(err);
     }
   };
 }

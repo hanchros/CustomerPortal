@@ -1,6 +1,7 @@
 import { FETCH_NOTIFICATIONS, READ_ONE_NOTIFICATION } from "./types";
 import Client from "./api";
 import { API_URL, createNotification, errorMessage } from "./index";
+import { message } from "antd";
 
 //= ===============================
 // Notification actions
@@ -55,7 +56,7 @@ export function sendAllNotification(data) {
     try {
       if (!data.title || !data.content) return;
       let res = await client.post(`${API_URL}/notification/all`, data);
-      createNotification("Broadcast Notification", res.data.message);
+      message.success(res.data.message);
     } catch (err) {
       createNotification("Broadcast Notification", errorMessage(err));
     }
@@ -71,7 +72,7 @@ export function sendProjectCreatorNotification(data) {
         `${API_URL}/notification/project-creator`,
         data
       );
-      createNotification("Broadcast Notification", res.data.message);
+      message.success(res.data.message);
     } catch (err) {
       createNotification("Broadcast Notification", errorMessage(err));
     }
@@ -84,7 +85,7 @@ export function sendOrgNotification(data) {
     try {
       if (!data.title || !data.content) return;
       let res = await client.post(`${API_URL}/notification/organization`, data);
-      createNotification("Broadcast Notification", res.data.message);
+      message.success(res.data.message);
     } catch (err) {
       createNotification("Broadcast Notification", errorMessage(err));
     }

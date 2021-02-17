@@ -21,7 +21,7 @@
 
   .ant-tabs-nav {
     margin-bottom: 30px !important;
-    .ant-tabs-tab-active .ant-tabs-tab-btn{
+    .ant-tabs-tab-active .ant-tabs-tab-btn {
       color: var(--link_color) !important;
     }
     .ant-tabs-tab {
@@ -59,6 +59,19 @@
     padding: 20px;
     min-height: 67vh;
     margin: 0 3px;
+  }
+}
+
+.tab-expand {
+  .ant-tabs-nav {
+    .ant-tabs-tab {
+      padding-top: 3px !important;
+      padding-bottom: 3px !important;
+      .ant-avatar {
+        border-radius: 3px;
+        margin-right: 5px;
+      }
+    }
   }
 }
 

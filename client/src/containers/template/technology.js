@@ -5,17 +5,17 @@ import { Link } from "react-router-dom";
 import { Row, Col } from "reactstrap";
 import TechImg from "../../assets/img/technology.png";
 import { PlusOutlined } from "@ant-design/icons";
-import { getFieldDataByNameValue, extractContent } from "../../utils/helper";
+import { getFieldDataByNameValue } from "../../utils/helper";
 import { createArticle } from "../../actions/article";
 import RichTextEditor from "../../components/pages/editor";
 import UploadLogo from "../../components/template/upload";
 
-const TechnologyForm = ({ addTech, onCancel, tagId, topicname, org }) => {
+const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
   const [avatarURL, setAvatar] = useState("");
 
   const onFinish = async (values) => {
     values.tag = tagId;
-    values.topic = topicname;
+    values.topic = values.title;
     values.icon = avatarURL;
     values.order = -1;
     values.organization = org._id;
@@ -134,7 +134,6 @@ class Technology extends React.Component {
       "application"
     );
     const curOrg = organization.currentOrganization;
-    const topicname = `${curOrg.org_name} Applications`;
     const exTechs = this.getExTechs(techTag._id, curOrg._id);
     return (
       <div className="create-tech-box">
@@ -153,7 +152,6 @@ class Technology extends React.Component {
               <List.Item.Meta
                 avatar={<Avatar src={item.icon || item.image || TechImg} />}
                 title={<b>{item.title}</b>}
-                description={<span>{extractContent(item.content, true)}</span>}
               />
             </List.Item>
           )}
@@ -208,7 +206,6 @@ class Technology extends React.Component {
               addTech={this.createTech}
               onCancel={this.onToggleModal}
               tagId={techTag._id}
-              topicname={topicname}
               org={curOrg}
             />
           </Modal>

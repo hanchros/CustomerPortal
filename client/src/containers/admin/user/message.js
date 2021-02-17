@@ -81,7 +81,7 @@ class Message extends Component {
                   All Participants
                 </Radio>
                 <Radio value={"project_creators"}>Project Owners</Radio>
-                <Radio value={"organizations"}>Organization</Radio>
+                <Radio value={"organizations"}>Organization Creators</Radio>
               </Radio.Group>
             </Col>
           </Row>

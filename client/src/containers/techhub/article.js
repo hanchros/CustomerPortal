@@ -7,6 +7,8 @@ import { getFieldDataByNameValue } from "../../utils/helper";
 import Video from "../../components/pages/video";
 import ImageHolder from "../../assets/icon/challenge.png";
 import Avatar from "antd/lib/avatar/avatar";
+import { listArticle } from "../../actions/article";
+import { listFieldData } from "../../actions/profile";
 
 const { Panel } = Collapse;
 
@@ -17,23 +19,53 @@ class ArticlePage extends React.Component {
     this.state = {
       topic: "",
       curArticles: [],
+      groups: [],
     };
   }
 
-  componentDidMount() {
-    const result = this.getTitles();
-    if (result.length > 0) {
+  componentDidMount = async () => {
+    const {
+      tag,
+      articles,
+      listArticle,
+      id,
+      listFieldData,
+      fieldData,
+    } = this.props;
+    if (articles.length === 0) {
+      await listArticle();
+    }
+    if (fieldData.length === 0) {
+      await listFieldData();
+    }
+    let groups = [];
+    if (tag === "application") groups = this.getTechTitles();
+    else groups = this.getTitles();
+    if (groups.length === 0) return;
+    if (id) {
+      for (let group of groups) {
+        if (group.articles[0]._id === id) {
+          this.setState({
+            topic: group.topic,
+            curArticles: group.articles,
+            groups,
+          });
+          return;
+        }
+      }
+    } else {
       this.setState({
-        topic: result[0].topic,
-        curArticles: result[0].articles,
+        topic: groups[0].topic,
+        curArticles: groups[0].articles,
+        groups,
       });
     }
-  }
+  };
 
-  onSelectTitle = (tp) => {
-    const result = this.getTitles();
+  onSelectTitle = (tp, title) => {
+    const result = this.state.groups;
     for (let group of result) {
-      if (group.topic === tp) {
+      if (group.topic === tp || group.topic === title) {
         this.setState({ topic: tp, curArticles: group.articles });
       }
     }
@@ -62,44 +94,35 @@ class ArticlePage extends React.Component {
   };
 
   getTechTitles = () => {
-    const { fieldData, articles, organization, tag } = this.props;
+    const { fieldData, articles, organization, tag, scope } = this.props;
     let result = [];
     const curOrg = organization.currentOrganization;
-    const topicname = `${curOrg.org_name} Applications`;
     const techTag = getFieldDataByNameValue(fieldData, "article_tag", tag);
     if (!techTag) return result;
 
-    let exTechs = articles.filter(
-      (item) => item.tag === techTag._id && item.organization === curOrg._id
-    );
-    let globalTechs = articles.filter(
-      (item) => item.tag === techTag._id && !item.organization
-    );
-    result.push({
-      topic: topicname,
-      icon: curOrg.logo || ImageHolder,
-      articles: exTechs,
-    });
-
-    for (let article of globalTechs) {
-      let flt = result.filter((item) => item.topic === article.topic);
-      if (flt.length === 0) {
-        result.push({
-          topic: article.topic,
-          icon: article.icon || ImageHolder,
-          articles: [article],
-        });
-      } else {
-        flt[0].articles.push(article);
-        flt[0].icon = article.icon || flt[0].icon;
-      }
+    let techs = [];
+    if (scope === "org") {
+      techs = articles.filter(
+        (item) => item.tag === techTag._id && item.organization === curOrg._id
+      );
+    } else {
+      techs = articles.filter(
+        (item) => item.tag === techTag._id && !item.organization
+      );
+    }
+    for (let article of techs) {
+      result.push({
+        topic: article.title,
+        icon: article.icon || ImageHolder,
+        articles: [article],
+      });
     }
     return result;
   };
 
   renderTitleItem = (item) => (
     <List.Item
-      onClick={() => this.onSelectTitle(item.topic)}
+      onClick={() => this.onSelectTitle(item.topic, item.title)}
       className={this.state.topic === item.topic && "active"}
     >
       <Avatar src={item.icon} />
@@ -247,10 +270,7 @@ class ArticlePage extends React.Component {
   };
 
   render() {
-    let techTitleTags = this.getTitles();
-    if (this.props.tag === "application") {
-      techTitleTags = this.getTechTitles();
-    }
+    const techTitleTags = this.state.groups;
     return (
       <React.Fragment>
         <Row>
@@ -279,4 +299,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {})(ArticlePage);
+export default connect(mapStateToProps, { listArticle, listFieldData })(
+  ArticlePage
+);

@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const setUserInfo = require("../helpers").setUserInfo;
-const Project = require("../models/project");
 const ProjectMember = require("../models/projectmember");
 
 //= =======================================
@@ -9,7 +8,7 @@ const ProjectMember = require("../models/projectmember");
 exports.viewProfile = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const user = User.findById(userId, "_id profile").populate({
+    const user = await User.findById(userId, "_id email profile").populate({
       path: "profile.org",
       populate: {
         path: "creator",

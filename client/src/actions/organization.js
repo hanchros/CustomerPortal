@@ -61,6 +61,18 @@ export function listOrgUsers(orgId) {
   };
 }
 
+export function listOrgProjects(orgId) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      let res = await client.get(`${API_URL}/projectorg/project/${orgId}`);
+      return res.data.projects;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
 export function removeOrgUser(userId) {
   return async (dispatch) => {
     const client = Client(true);
