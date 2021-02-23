@@ -1,14 +1,11 @@
 import React from "react";
-import Policy from "../../../node_modules/react-s3/lib/Policy";
-import Signature from "../../../node_modules/react-s3/lib/Signature";
-import { xAmzDate, dateYMD } from "../../../node_modules/react-s3/lib/Date";
+import Policy from "react-s3/lib/Policy";
+import Signature from "react-s3/lib/Signature";
+import { xAmzDate, dateYMD } from "react-s3/lib/Date";
 import { v4 as uuidv4 } from "uuid";
 import { Upload, message, Tooltip } from "antd";
-import {
-  LoadingOutlined,
-  PlusOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import UploadUser from "../../assets/icon/upload_user.svg";
 
 const config = {
   bucketName: process.env.REACT_APP_S3_BUCKET,
@@ -109,18 +106,26 @@ class Avatar extends React.Component {
   };
 
   render() {
+    const { imageUrl, loading } = this.state;
     const uploadButton = (
       <div>
-        {this.state.loading ? <LoadingOutlined /> : <PlusOutlined />}
-        <div className="ant-upload-text">Upload Image</div>
+        {loading ? (
+          <LoadingOutlined style={{ fontSize: "50px" }} />
+        ) : (
+          <img src={UploadUser} alt="" />
+        )}
+        <div className="ant-upload-text">
+          Drag and drop profile photo here or{" "}
+          <span className="underscore">choose file manually</span>
+        </div>
       </div>
     );
-    const { imageUrl } = this.state;
+
     return (
       <Upload
         name="avatar"
         listType="picture-card"
-        className="avatar-uploader"
+        className="big-uploader"
         showUploadList={false}
         beforeUpload={beforeUpload}
         data={this.handleChange}

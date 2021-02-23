@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Input, Switch, Button } from "antd";
+import { Input, Switch, Button } from "antd";
+import { Col, Row } from "reactstrap";
 import { connect } from "react-redux";
 import ColorPicker from "rc-color-picker";
 import {
@@ -177,8 +178,8 @@ class OrgBasics extends React.Component {
     } = this.state;
     return (
       <div className="admin-org-box container">
-        <Row gutter={20} className="mb-4">
-          <Col md={12}>
+        <Row className="mb-4">
+          <Col md={6}>
             <div className="color-picker-box">
               <span>Primary Color:</span>
               <ColorPicker
@@ -236,7 +237,7 @@ class OrgBasics extends React.Component {
               </ColorPicker>
             </div>
           </Col>
-          <Col md={12}>
+          <Col md={6}>
             <div className="color-picker-box">
               <span>Main Font Color:</span>
               <ColorPicker

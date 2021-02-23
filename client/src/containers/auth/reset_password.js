@@ -71,15 +71,17 @@ class ResetPassword extends Component {
     const { resetPassword, resetPasswordSecurity, message, match } = this.props;
     return (
       <HomeHOC>
-        <div className="main-background-title">Reset Password</div>
-        <p className="mt-5" />
-        <ResetPasswordForm
-          resetPassword={resetPassword}
-          resetPasswordSecurity={resetPasswordSecurity}
-          message={message}
-          token={match.params.resetToken}
-          mode={match.params.mode}
-        />
+        <div className="flex-colume-center">
+          <div className="main-background-title">Reset Password</div>
+          <p className="mt-5" />
+          <ResetPasswordForm
+            resetPassword={resetPassword}
+            resetPasswordSecurity={resetPasswordSecurity}
+            message={message}
+            token={match.params.resetToken}
+            mode={match.params.mode}
+          />
+        </div>
       </HomeHOC>
     );
   }

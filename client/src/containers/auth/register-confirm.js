@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import HomeHOC from "../../components/template/home-hoc";
-import InviteRequest from "../home/invite/request-invite"
-import history from "../../history"
+import InviteRequest from "../home/invite/request-invite";
+import history from "../../history";
 
 class RegisterConfirm extends Component {
   state = {
@@ -25,8 +25,8 @@ class RegisterConfirm extends Component {
   };
 
   goNext = () => {
-    history.push("/")
-  }
+    history.push("/");
+  };
 
   renderInvConfirm = () => (
     <React.Fragment>
@@ -50,7 +50,7 @@ class RegisterConfirm extends Component {
     return (
       <HomeHOC>
         {has_invitation && this.renderInvConfirm()}
-        {!has_invitation && <InviteRequest goNext={this.goNext}/>}
+        {!has_invitation && <InviteRequest goNext={this.goNext} />}
       </HomeHOC>
     );
   }

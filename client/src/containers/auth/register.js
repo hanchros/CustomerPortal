@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Form, Input, message, Row, Col } from "antd";
+import { Form, Input, message } from "antd";
+import { Col, Row } from "reactstrap";
 import { LeftOutlined } from "@ant-design/icons";
 import { registerUser } from "../../actions/auth";
 import { Link } from "react-router-dom";
@@ -18,8 +19,8 @@ const SignupForm = ({ onSubmit }) => {
 
   return (
     <Form name="register" className="register-form mt-5" onFinish={onFinish}>
-      <Row gutter={30}>
-        <Col md={12} sm={24}>
+      <Row>
+        <Col md={6}>
           <Form.Item
             name="first_name"
             rules={[
@@ -32,7 +33,7 @@ const SignupForm = ({ onSubmit }) => {
             <Input size="large" placeholder="First Name" />
           </Form.Item>
         </Col>
-        <Col md={12} sm={24}>
+        <Col md={6}>
           <Form.Item
             name="last_name"
             rules={[
@@ -46,8 +47,8 @@ const SignupForm = ({ onSubmit }) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={30}>
-        <Col md={12} sm={24}>
+      <Row>
+        <Col md={6}>
           <Form.Item
             name="email"
             rules={[
@@ -61,8 +62,8 @@ const SignupForm = ({ onSubmit }) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={30}>
-        <Col md={12} sm={24}>
+      <Row>
+        <Col md={6}>
           <Form.Item
             name="password"
             rules={[
@@ -75,7 +76,7 @@ const SignupForm = ({ onSubmit }) => {
             <Input size="large" type="password" placeholder="Password" />
           </Form.Item>
         </Col>
-        <Col md={12} sm={24}>
+        <Col md={6}>
           <Form.Item
             name="conf_password"
             rules={[
@@ -115,8 +116,10 @@ class Register extends Component {
   render() {
     return (
       <HomeHOC>
-        <div className="main-background-title">REGISTRATION</div>
-        <SignupForm onSubmit={this.onSubmit} />
+        <div className="flex-colume-center">
+          <div className="main-background-title">REGISTRATION</div>
+          <SignupForm onSubmit={this.onSubmit} />
+        </div>
       </HomeHOC>
     );
   }

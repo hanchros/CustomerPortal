@@ -18,6 +18,7 @@
 @import "./article.scss";
 @import "./invite.scss";
 @import "../assets/fonts/Poppins-Black.ttf";
+@import "./component.scss";
 
 @font-face {
   font-family: "Poppins";
@@ -173,6 +174,13 @@ body {
   }
 }
 
+.sub-content {
+  padding-top: 100px;
+  min-height: calc(100vh - 189px);
+  margin: 0 auto;
+  padding-bottom: 45px;
+}
+
 .footer-box {
   width: 100%;
   padding: 15px 0;
@@ -211,6 +219,9 @@ body {
 @media screen and (max-width: 768px) {
   .content {
     padding-top: 40px !important;
+  }
+  .sub-content {
+    padding-top: 50px !important;
   }
   h3 {
     font-size: 1.4rem !important;
@@ -266,5 +277,5 @@ body {
 @media (min-width: 1420px) {
   .container-half {
     max-width: 1400px !important;
-}
+  }
 }

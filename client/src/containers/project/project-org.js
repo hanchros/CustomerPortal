@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { Header, Footer } from "../../components/template";
-import { Button, Row, Col } from "antd";
+import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import ChallengeLogo from "../../assets/icon/challenge.png";
 import Invite from "./invite";
@@ -41,8 +41,8 @@ class ProjectOrgs extends Component {
             <ArrowLeftOutlined /> Back
           </Button>
           <h5 className="mb-4">{curProj.name} Organizations</h5>
-          <Row gutter={50}>
-            <Col md={16} sm={24}>
+          <Row>
+            <Col md={8}>
               {organizations.map((org) => (
                 <div key={org._id} className="project-org-side">
                   <div>
@@ -70,7 +70,7 @@ class ProjectOrgs extends Component {
               ))}
             </Col>
             {isCreator && (
-              <Col md={8} sm={24}>
+              <Col md={4}>
                 <div className="center">
                   <button
                     className="main-btn invite-org"

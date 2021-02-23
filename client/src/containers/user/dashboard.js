@@ -133,7 +133,7 @@ class UserDashboard extends Component {
               {profile.personal_statement && (
                 <div className="user-span">
                   <p>Best way to contact this person</p>
-                  <span>{profile.personal_statement}</span>
+                  <div className="user-personal" dangerouslySetInnerHTML={{ __html: profile.personal_statement }} />
                 </div>
               )}
               {profile.country && (

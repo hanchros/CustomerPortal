@@ -138,9 +138,18 @@
 }
 
 .login-form {
-  margin-top: 100px;
   width: 100%;
-  max-width: 500px;
+  min-width: 325px;
+}
+
+.forgot-password {
+  color: inherit;
+  font-size: 12px;
+}
+
+.underline-link {
+  color: inherit !important;
+  text-decoration: underline !important;
 }
 
 .home-child {
@@ -202,14 +211,6 @@
     width: 250px;
     margin: 50px auto;
   }
-
-  .file-drop-target {
-    padding: 10px;
-  }
-
-  .file-drop-dragging-over-target {
-    box-shadow: 0px 0px 5px $gray-500;
-  }
 }
 
 .fileread-modal {
@@ -254,7 +255,7 @@
 
   .home-child {
     .login-form {
-      margin-top: 60px;
+      min-width: 0;
     }
     .resend-intro {
       margin-top: 20vh;

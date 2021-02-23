@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { Header, Footer } from "../../components/template";
-import { Skeleton, Row, Col, List, Avatar, Collapse, Button } from "antd";
+import { Skeleton, List, Avatar, Collapse, Button } from "antd";
 import {
   PlusOutlined,
   InfoCircleFilled,
@@ -155,8 +155,8 @@ class Project extends Component {
         <Header />
         <Container className="content">
           <Skeleton active loading={loading} />
-          <Row gutter={50}>
-            <Col md={16} sm={24}>
+          <Row>
+            <Col md={8}>
               <div className="project-info">
                 <div className="project-info-box">
                   <div className="project-detail-head">
@@ -186,7 +186,7 @@ class Project extends Component {
                 <Timeline id={match.params.id} />
               </div>
             </Col>
-            <Col md={8} sm={24}>
+            <Col md={4}>
               <div className="project-team-header">
                 <h5>
                   <b>Team</b>

@@ -1,93 +1,134 @@
 .main-background {
   width: 100%;
   position: relative;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  letter-spacing: 1px;
-
-  a:hover {
-    text-decoration: none;
-  }
-
-  .home-bg {
-    width: 70vw;
-    position: absolute;
-    top: -40vw;
-    opacity: 0.2;
-  }
-
-  .home-footer {
-    height: 45px;
-    margin-bottom: 5px;
-    margin-top: 10px;
-  }
 
   .home-child {
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 125px);
+    padding-top: 80px;
 
-    .main-background-title {
-      margin-top: 70px;
-      color: var(--primary_color);
-      font-size: 70px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .invite-page-logo {
-      width: 150px;
-      height: auto;
-      border-radius: 5px;
-      margin-top: 50px;
-    }
-
-    .home-btn-group {
-      display: flex;
-      margin-top: 12vh;
-
-      .main-btn {
-        width: 230px;
-      }
-      .main-btn:nth-child(2) {
-        margin-left: 50px;
-      }
-    }
-
-    p {
-      font-size: 22px;
-    }
-
-    .home-intro {
-      margin-top: 15vh;
-    }
-
-    .is-btn {
-      margin-top: 150px;
-      display: flex;
-    }
-
-    .inv-btn {
-      position: absolute;
-      bottom: 70px;
+    .invite-home {
+      width: 96%;
+      max-width: 400px;
+      margin: auto;
+      padding: 70px 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 9px var(--shadow_color);
+      border-top: 3px solid var(--primary_color);
+      border-radius: 3px;
+      margin-bottom: 50px;
 
-      .inv-learn {
-        margin-top: 10px;
+      .invite-page-logo {
+        width: 80px;
+      }
+
+      .home-intro {
+        text-align: center;
         font-size: 20px;
-        &:hover {
-          text-decoration: unset;
-          color: var(--primary_color);
-        }
+        margin-bottom: 10px;
+      }
+
+      .home-span {
+        font-size: 13px;
       }
     }
   }
+}
+
+.pdf-home {
+  .file-drop {
+    width: 96%;
+    margin: auto;
+    box-shadow: 0 2px 9px var(--shadow_color);
+    border-top: 3px solid var(--primary_color);
+    border-radius: 3px;
+    background-color: white;
+
+    .file-drop-target {
+      padding: 50px;
+    }
+
+    .file-drop-dragging-over-target {
+      box-shadow: 0px 0px 5px $gray-500;
+    }
+
+    .invite-file-zone {
+      width: 100%;
+      height: 40vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 1px dashed #ccc;
+      border-radius: 3px;
+
+      span {
+        font-size: 18px;
+      }
+      label {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      #file_input_id {
+        display: none;
+      }
+    }
+  }
+}
+
+.confirm-file-read {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Poppins";
+
+  img {
+    margin-bottom: 30px;
+  }
+
+  p {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+  }
+
+  & > span {
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.home-invite-form {
+  box-shadow: 0 2px 9px var(--shadow_color);
+  border-top: 3px solid var(--primary_color);
+  border-radius: 3px;
+  padding: 40px;
+  background-color: white;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.main-background-title {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 40px;
+  text-align: center;
+  margin-top: 35px;
+  margin-bottom: 25px;
+}
+
+.main-home-title {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 40px;
 }
 
 .mt-big {
@@ -109,7 +150,20 @@
   }
 }
 
-.content a.main-btn, .home-child a.main-btn {
+.home-btn-group {
+  display: flex;
+  a:last-child {
+    margin-left: 30px;
+  }
+}
+
+.black-btn.wide,
+.ghost-btn.wide {
+  padding: 20px 30px !important;
+}
+
+.content a.main-btn,
+.home-child a.main-btn {
   color: white;
 }
 
@@ -123,52 +177,65 @@
   }
 }
 
-.invite-file-zone {
-  width: 90vw;
-  max-width: 1000px;
-  text-align: center;
-  background: var(--primary_color);
-  color: white;
-  padding: 60px 0;
-  cursor: pointer;
-}
-
 @media screen and (max-width: 768px) {
   .main-background {
-    .home-bg {
-      width: 90vw;
-      top: -45vw;
-    }
-
     .home-child {
-      .main-background-title {
-        font-size: 38px;
-        margin-top: 50px;
-      }
-
-      .home-btn-group {
-        .main-btn:nth-child(1) {
-          margin-right: 20px;
+      padding-top: 50px;
+      .invite-home {
+        padding: 30px 20px;
+        .home-intro {
+          font-size: 16px;
         }
-        .main-btn {
-          width: 150px;
+        .home-span {
+          text-align: center;
+          font-size: 12px;
         }
-      }
-
-      p {
-        font-size: 18px;
-      }
-
-      .inv-btn {
-        position: relative;
-        margin: 30px 0;
-        bottom: unset;
-
-        .main-btn {
-          width: 100%;
+        .black-btn.wide {
+          padding: 20px 30px !important;
         }
       }
     }
+  }
+
+  .pdf-home {
+    .file-drop {
+      width: 100%;
+      .file-drop-target {
+        padding: 20px;
+      }
+      .invite-file-zone {
+        span {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  .confirm-file-read {
+    padding: 10px;
+    img {
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 18px;
+      line-height: 25px;
+    }
+  }
+
+  .home-invite-form {
+    padding: 25px 30px;
+  }
+
+  .main-background-title {
+    font-size: 20px;
+    line-height: 30px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+  }
+
+  .main-home-title {
+    font-size: 20px;
+    line-height: 30px;
   }
 
   .main-btn {

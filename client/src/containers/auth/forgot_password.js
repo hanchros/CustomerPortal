@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { getForgotPasswordToken } from "../../actions/auth";
 import history from "../../history";
 import { Link } from "react-router-dom";
@@ -13,10 +13,13 @@ const ForgotForm = ({ sendMail }) => {
 
   return (
     <Form name="forgot" className="login-form" onFinish={onFinish}>
-      <div className="auth-title mb-4">
+      <div className="auth-title">
         <div />
-        <Link to="/">Back to Home</Link>
+        <Link to="/" className="underline-link">
+          Back to Home
+        </Link>
       </div>
+      <span className="form-label">Email*</span>
       <Form.Item
         name="email"
         rules={[
@@ -26,11 +29,11 @@ const ForgotForm = ({ sendMail }) => {
           },
         ]}
       >
-        <Input type="email" size="large" placeholder="Email" />
+        <Input type="email" size="large" />
       </Form.Item>
-      <button type="submit" className="main-btn mt-5">
+      <Button type="ghost" htmlType="submit" className="black-btn wide mt-5">
         Reset Password
-      </button>
+      </Button>
     </Form>
   );
 };
@@ -46,8 +49,16 @@ class ForgotPassword extends Component {
   render() {
     return (
       <HomeHOC>
-        <div className="main-background-title">Forgot Password</div>
-        <ForgotForm sendMail={this.props.getForgotPasswordToken} />
+        <div className="flex-colume-center">
+          <div className="account-form-box mb-4">
+            <div className="center mb-4">
+              <h3>
+                <b>Forgot Password</b>
+              </h3>
+            </div>
+            <ForgotForm sendMail={this.props.getForgotPasswordToken} />
+          </div>
+        </div>
       </HomeHOC>
     );
   }

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { Header, Footer } from "../../components/template";
-import { Button, Row, Col, Modal, Input } from "antd";
+import { Button, Modal, Input } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import UserIcon from "../../assets/img/user-avatar.png";
 import Invite from "./invite";
@@ -99,14 +99,14 @@ class ProjectTeam extends Component {
           <Button className="mb-4" type="link" onClick={goback}>
             <ArrowLeftOutlined /> Back
           </Button>
-          <Row gutter={50} className="mb-5">
-            <Col md={16} sm={24}>
+          <Row className="mb-5">
+            <Col md={8}>
               <div className="project-general-box mb-2">
                 <h5>{curProj.name} Team</h5>
               </div>
             </Col>
             {isCreator && (
-              <Col md={8} sm={24}>
+              <Col md={4}>
                 <div className="center">
                   <button className="main-btn" onClick={this.onToggleInvite}>
                     Invite New Member

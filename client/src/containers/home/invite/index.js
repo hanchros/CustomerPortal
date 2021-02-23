@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { message } from "antd";
+import { Col, Row } from "reactstrap";
+import { message, Button, Modal } from "antd";
 import HomeHOC from "../../../components/template/home-hoc";
 import { FileDrop } from "react-file-drop";
 import { ModalSpinner } from "../../../components/pages/spinner";
@@ -12,6 +12,8 @@ import ProjectRegister from "./project-register";
 import InviteComplete from "./invite-complete";
 import { getOrgByName } from "../../../actions/organization";
 import ChallengeIcon from "../../../assets/icon/challenge.png";
+import UploadIcon from "../../../assets/icon/upload.svg";
+import CryptFileIcon from "../../../assets/icon/crypted_file.svg";
 
 class InviteHomePage extends React.Component {
   constructor() {
@@ -21,6 +23,7 @@ class InviteHomePage extends React.Component {
       step: 0,
       pdfData: {},
       fileReading: false,
+      showConfModal: false,
     };
   }
 
@@ -57,61 +60,145 @@ class InviteHomePage extends React.Component {
       this.setState({ fileReading: false });
       return;
     }
-    this.setState({ step: 3, pdfData: res.data.result, fileReading: false });
+    this.setState({
+      pdfData: res.data.result,
+      fileReading: false,
+      showConfModal: true,
+    });
+  };
+
+  onSelectFile = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    this.setState({ fileReading: true });
+    const res = await this.props.dropRegFile(files[0]);
+    if (!res.data.result) {
+      message.error("Invalid file format!");
+      this.setState({ fileReading: false });
+      return;
+    }
+    this.setState({
+      pdfData: res.data.result,
+      fileReading: false,
+      showConfModal: true,
+    });
+  };
+
+  onConfirm = () => {
+    this.setState({ step: 3, showConfModal: false });
   };
 
   renderHome = () => {
     const { orgSettings, location } = this.props;
     const params = new URLSearchParams(location.search);
     return (
-      <React.Fragment>
-        <div className="main-background-title">AUTOMATION PLACE</div>
+      <div className="invite-home">
         <img
           className="invite-page-logo"
           src={orgSettings.logo || ChallengeIcon}
           alt=""
         />
-        <div className="mt-5">
-          <p className="home-intro">
-            {orgSettings.org_name} has invited you to join the{" "}
-            {params.get("project")} project. Click the "Begin" button below to
-            find out more information
-          </p>
-          <p className="home-intro mt-3">{window.atob(params.get("intro"))}</p>
+        <div className="main-background-title">
+          Welcome to the Automation Place
         </div>
-        <div className="home-btn-group mt-big">
-          <Link to="#" className="main-btn" onClick={this.onBegin}>
-            Begin
-          </Link>
+        <div className="home-intro">
+          {orgSettings.org_name} has invited you to join the{" "}
+          {params.get("project")} project.
         </div>
-      </React.Fragment>
+        <span className="home-span">
+          Join to project and find out more information
+        </span>
+        <Button
+          type="ghost"
+          className="black-btn wide mt-5"
+          onClick={this.onBegin}
+        >
+          start registration
+        </Button>
+      </div>
     );
   };
 
   renderRegisterStart = () => (
-    <React.Fragment>
-      <div className="main-background-title mb-5">REGISTRATION</div>
-      <FileDrop onDrop={this.handleDropFile}>
-        <div className="invite-file-zone">
-          <p>Did you receive an invitation?</p>
-          <p>Drag and drop it here​</p>
+    <Row className="pdf-home">
+      <Col md={3}>
+        <span>
+          <b>STEP 1 of 3</b>
+        </span>
+        <div className="main-home-title mt-2 mb-4">
+          Provide your PDF invitation
         </div>
-      </FileDrop>
-
-      <div className="mt-big" style={{ textAlign: "center" }}>
-        <p>Didn’t get an invitation?​​</p>
-        <Link to="#" className="main-btn" onClick={this.onRequestInvite}>
+        <p className="mt-4 mb-4">
+          Please check your email of an invitation letter. PDF file with
+          invitation should be attached there.
+        </p>
+        <hr />
+        <p className="mt-4">
+          <b>Didn’t get an invitation with PDF file?​​</b>
+        </p>
+        <Button
+          type="ghost"
+          className="ghost-btn wide mb-4"
+          onClick={this.onRequestInvite}
+        >
           Request an invitation​
-        </Link>
-      </div>
-      <ModalSpinner visible={this.state.fileReading} />
-    </React.Fragment>
+        </Button>
+        <ModalSpinner visible={this.state.fileReading} />
+        <Modal
+          visible={this.state.showConfModal}
+          width={400}
+          footer={false}
+          centered
+        >
+          <div className="confirm-file-read">
+            <img src={CryptFileIcon} alt="" />
+            <p>
+              You have just experienced blockchain "smart document" technology
+            </p>
+            <span>
+              This technology that allows ordinary documents to processed
+              automatically by almost any software
+            </span>
+            <Button
+              type="ghost"
+              className="black-btn wide mt-5"
+              onClick={this.onConfirm}
+            >
+              continue
+            </Button>
+          </div>
+        </Modal>
+      </Col>
+      <Col md={9} className="mb-4">
+        <FileDrop onDrop={this.handleDropFile}>
+          <div className="invite-file-zone">
+            <img src={UploadIcon} alt="" className="mb-4" />
+            <span>
+              <b>Drag and drop PDF invitation here</b>
+            </span>
+            <span>
+              <b>
+                or <label htmlFor="file_input_id"> choose file manually</label>
+                <input
+                  type="file"
+                  id="file_input_id"
+                  accept="application/pdf"
+                  onChange={this.onSelectFile}
+                ></input>
+              </b>
+            </span>
+          </div>
+        </FileDrop>
+      </Col>
+    </Row>
   );
 
   render() {
     const { step, pdfData } = this.state;
+    const { orgSettings } = this.props;
+
     return (
-      <HomeHOC>
+      <HomeHOC logo={orgSettings.logo} org_name={orgSettings.org_name}>
         {step === 0 && this.renderHome()}
         {step === 1 && this.renderRegisterStart()}
         {step === 2 && <RequestInvite goNext={this.onBegin} />}

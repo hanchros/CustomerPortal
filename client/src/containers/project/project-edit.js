@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Form, Input, Row, Col } from "antd";
+import { Container, Row, Col } from "reactstrap";
+import { Form, Input } from "antd";
 import { updateProject, createProject } from "../../actions/project";
 import { Header, Upload, Footer } from "../../components/template";
 import Technology from "../template/technology";
@@ -49,7 +49,7 @@ const CreateForm = ({
       initialValues={curProject._id ? { ...curProject } : { ...template }}
     >
       <Row className="mb-4">
-        <Col md={18} sm={24}>
+        <Col md={9}>
           <span>Name:</span>
           <Form.Item
             name="name"
@@ -67,7 +67,7 @@ const CreateForm = ({
             <Input />
           </Form.Item>
         </Col>
-        <Col md={6} sm={24}>
+        <Col md={3}>
           <div className="center mt-4">
             <Upload setAvatar={setAvatar} imageUrl={avatarURL} />
           </div>

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Input, Button, Modal, Tabs, List, Avatar, Row, Col } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { Container, Row, Col } from "reactstrap";
+import { Input, Button, Modal, Tabs, List, Avatar } from "antd";
 import { sendInvite, joinOrgProject } from "../../actions/project";
 import { Header, Footer } from "../../components/template";
 import { listOrgReport } from "../../actions/organization";
@@ -15,9 +14,9 @@ import {
 } from "../../actions/project";
 import { fetchUserByEmail } from "../../actions/user";
 import { ModalSpinner } from "../../components/pages/spinner";
-import ChallengeLogo from "../../assets/icon/challenge.png";
 import UserIcon from "../../assets/img/user-avatar.png";
 import { OrgInviteForm, TeamInviteForm } from "./invite-forms";
+import { getFieldData } from "../../utils/helper";
 
 const { TabPane } = Tabs;
 
@@ -113,72 +112,6 @@ class Invite extends Component {
     this.setState({ visible: false });
   };
 
-  renderExInvites = () => {
-    const { project } = this.props;
-    const participants = project.participants;
-    const organizations = project.organizations;
-    return (
-      <Row gutter={30}>
-        <Col md={12} sm={24}>
-          <div className="project-detail-clients mb-4">
-            <span>Client & Partner Organization:</span>
-            <List
-              itemLayout="horizontal"
-              className="project-list"
-              dataSource={organizations}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar src={item.organization.logo || ChallengeLogo} />
-                    }
-                    title={<b>{item.organization.org_name}</b>}
-                    description={
-                      <span>
-                        {item.organization.org_type || ""}{" "}
-                        {item.organization.location || ""}
-                      </span>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
-          </div>
-        </Col>
-        <Col md={12} sm={24}>
-          <div className="project-detail-clients mb-4">
-            <span>Team:</span>
-            <List
-              itemLayout="horizontal"
-              className="project-list"
-              dataSource={participants}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        src={item.participant.profile.photo || UserIcon}
-                      />
-                    }
-                    title={
-                      <b>
-                        {item.participant.profile.first_name}{" "}
-                        {item.participant.profile.last_name}
-                      </b>
-                    }
-                    description={
-                      <span>{item.participant.profile.org_name || ""}</span>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
-          </div>
-        </Col>
-      </Row>
-    );
-  };
-
   getExMembers = () => {
     const { organization, project } = this.props;
     const participants = project.participants;
@@ -211,15 +144,20 @@ class Invite extends Component {
           members can be added to the Organization by using the “Invite Team
           Member” tab.
         </p>
-        <OrgInviteForm onSubmit={this.onShowPreview} project={curProj} />
+        <OrgInviteForm
+          onSubmit={this.onShowPreview}
+          project={curProj}
+          goback={this.props.goback}
+        />
       </div>
     );
   };
 
   renderTeamInviteTab = () => {
-    const { project, organization } = this.props;
+    const { project, organization, fieldData } = this.props;
     const curProj = project.project;
     const exMembers = this.getExMembers();
+    const roles = getFieldData(fieldData, "user_role");
     return (
       <div className="org-invite-box">
         <p>
@@ -243,12 +181,13 @@ class Invite extends Component {
             renderItem={(item) => (
               <List.Item
                 actions={[
-                  <button
-                    className="main-btn"
+                  <Button
+                    type="ghost"
+                    className="black-btn"
                     onClick={() => this.onJoinOrg(curProj._id, item._id)}
                   >
                     Invite
-                  </button>,
+                  </Button>,
                 ]}
               >
                 <List.Item.Meta
@@ -270,6 +209,8 @@ class Invite extends Component {
             onSubmit={this.onSendTeamInvite}
             project={curProj}
             org={organization.currentOrganization}
+            roles={roles}
+            goback={this.props.goback}
           />
         </div>
       </div>
@@ -284,7 +225,8 @@ class Invite extends Component {
         <div className="ml-3">
           <b>
             {exUser.profile.first_name} {exUser.profile.last_name}
-          </b> <br />
+          </b>{" "}
+          <br />
           <span>organization: {exUser.profile.org_name}</span>
         </div>
       </div>
@@ -310,10 +252,6 @@ class Invite extends Component {
               {this.renderTeamInviteTab()}
             </TabPane>
           </Tabs>
-          {this.renderExInvites()}
-          <Button className="mt-4" type="link" onClick={this.props.goback}>
-            <ArrowLeftOutlined /> Back
-          </Button>
           {visible && (
             <Modal
               title={"Preview Invite Mail"}
@@ -373,6 +311,7 @@ function mapStateToProps(state) {
     authenticated: state.auth.authenticated,
     project: state.project,
     organization: state.organization,
+    fieldData: state.profile.fieldData,
   };
 }
 

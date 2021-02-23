@@ -32,8 +32,7 @@ class ProfilePage extends Component {
     const roles = getFieldData(fieldData, "user_role");
 
     return (
-      <div className="container ">
-        <h1 className="mt-5 mb-4 center">My Profile</h1>
+      <div className="container sub-content">
         <ProfileForm
           onSubmit={this.onUpdateProfile}
           profile={profile}

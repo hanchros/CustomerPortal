@@ -225,7 +225,7 @@
     padding: 5px 0;
     border-top: 1px solid #ddd;
     font-size: 14px;
-    
+
     &:hover {
       cursor: pointer;
     }
@@ -247,6 +247,9 @@
   font-weight: 600 !important;
   text-transform: uppercase;
   border: 1px solid var(--font_color) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .black-btn {
@@ -258,6 +261,7 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
+  border-radius: 4px !important;
 }
 
 .project-org-side {
@@ -344,7 +348,7 @@
       }
     }
   }
-  
+
   .project-info {
     margin-bottom: 40px;
     .project-info-box {
@@ -388,7 +392,7 @@
       padding: 5px 0;
       border-top: 1px solid #ddd;
       font-size: 14px;
-      
+
       &:hover {
         cursor: pointer;
       }
@@ -398,7 +402,6 @@
       }
     }
   }
-
 }
 
 .ant-result {

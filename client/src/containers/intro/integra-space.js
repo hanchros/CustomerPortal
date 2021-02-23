@@ -9,15 +9,14 @@ class IntegraSpace extends React.Component {
     const content = getOneFieldData(this.props.fieldData, "dash_intro");
     return (
       <HomeHOC>
-        <div className="main-background-title">What is AUTOMATION PLACE?</div>
-        <div
-          className="mt-5"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-        <div className="is-btn">
-          <Link to="/register" className="main-btn">
-            REGISTER
-          </Link>
+        <div className="flex-colume-center">
+          <div className="main-background-title">What is AUTOMATION PLACE?</div>
+          <div className="mt-5" dangerouslySetInnerHTML={{ __html: content }} />
+          <div className="is-btn">
+            <Link to="/register" className="main-btn">
+              REGISTER
+            </Link>
+          </div>
         </div>
       </HomeHOC>
     );

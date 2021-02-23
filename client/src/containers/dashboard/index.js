@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
-import { List, Avatar, Skeleton } from "antd";
-import { Link } from "react-router-dom";
+import { Avatar, Skeleton, Tabs } from "antd";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
 import UserAvatar from "../../assets/img/user-avatar.png";
 import { getOrgByName, listOrgUsers } from "../../actions/organization";
 import { listProjectDetails } from "../../actions/project";
 import history from "../../history";
+
+const { TabPane } = Tabs;
 
 class Dashboard extends Component {
   constructor() {
@@ -44,95 +45,117 @@ class Dashboard extends Component {
     history.push(`/user/${id}`);
   };
 
-  render() {
-    const { orgSettings, organization, project } = this.props;
-    const { loading } = this.state;
-    const users = organization.users;
+  renderProjects = () => {
+    const { project } = this.props;
     let projects = project.projectDetails;
     projects = projects.filter((proj) => proj.status !== "Archived");
+
+    return (
+      <Row className="mt-4">
+        <Col>
+          <div className="projects-table-header">
+            <span />
+            <span>name</span>
+            <span>organization</span>
+            <span>leader</span>
+            <span>status</span>
+          </div>
+          {projects.map((proj) => (
+            <div
+              className="project-table-item constracted"
+              key={proj._id}
+              onClick={() => this.goToProject(proj)}
+            >
+              <div className="cell0">
+                <Avatar src={proj.logo || OrgLogo} />
+              </div>
+              <div className="cell0">
+                <p>
+                  <b>{proj.name}</b>
+                </p>
+                <span>{proj.objective}</span>
+              </div>
+              <div className="cell0">{proj.participant.profile.org_name}</div>
+              <div className="cell0">
+                {proj.participant.profile.first_name}{" "}
+                {proj.participant.profile.last_name}
+              </div>
+              <div className="cell0">
+                <i className="online-symbol" style={{ fontSize: "14px" }}>
+                  ●
+                </i>
+                {proj.status}
+              </div>
+            </div>
+          ))}
+        </Col>
+      </Row>
+    );
+  };
+
+  renderUsers = () => {
+    const { organization } = this.props;
+    const users = organization.users;
+
+    return (
+      <Row className="mt-4">
+        {users.map((item) => (
+          <Col key={item._id} md={4} onClick={() => this.goToUser(item._id)}>
+            <div className="user-card">
+              <Avatar src={item.profile.photo || UserAvatar} />
+              <div className="ml-3">
+                <span>
+                  <b>{`${item.profile.first_name} ${item.profile.last_name}`}</b>
+                </span>
+                <br />
+                <span>{item.profile.role || ""}</span>
+              </div>
+            </div>
+          </Col>
+        ))}
+      </Row>
+    );
+  };
+
+  render() {
+    const { orgSettings } = this.props;
+    const { loading } = this.state;
     return (
       <React.Fragment>
         <Header />
         <Container className="content">
-          <Row>
-            <Col xl={4} md={5} className="mb-4">
+          <Row className="mb-5">
+            <Col md={8} className="mb-4">
+              <div className="detail-desc">
+                <h3>{orgSettings.title_page || orgSettings.org_name}</h3>
+                <p>{orgSettings.title_page_description}</p>
+              </div>
+            </Col>
+            <Col md={4}>
               <img
                 src={orgSettings.logo || OrgLogo}
                 alt="logo"
                 className="org-dashboard-logo"
               />
             </Col>
-            <Col xl={8} md={7}>
-              <div className="detail-desc">
-                <div className="project-header">
-                  <h3>{orgSettings.title_page || orgSettings.org_name}</h3>
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <div className="org-desc-box mt-4">
-                {orgSettings.title_page_description}
-              </div>
-            </Col>
           </Row>
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
-          <Row>
-            <Col md={6} sm={12}>
-              <h5 className="mt-5">Projects</h5>
-              <List
-                itemLayout="horizontal"
-                className="project-list mt-4"
-                dataSource={projects}
-                renderItem={(item) => (
-                  <List.Item
-                    onClick={() => this.goToProject(item)}
-                    actions={[<Link to="#">{item.status}</Link>]}
-                  >
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.logo || OrgLogo} />}
-                      title={<b>{item.name}</b>}
-                      description={
-                        <span>
-                          {item.participant && (
-                            <span>
-                              {item.participant.profile.first_name}{" "}
-                              {item.participant.profile.last_name} -{" "}
-                              {item.participant.profile.org_name}
-                            </span>
-                          )}
-                        </span>
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            </Col>
-            <Col md={6} sm={12}>
-              <h5 className="mt-5">Users</h5>
-              <List
-                itemLayout="horizontal"
-                className="project-list mt-4"
-                dataSource={users}
-                renderItem={(item) => (
-                  <List.Item
-                    actions={[<Link to="#">{item.profile.role}</Link>]}
-                    onClick={() => this.goToUser(item._id)}
-                  >
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.profile.photo || UserAvatar} />}
-                      title={
-                        <b>{`${item.profile.first_name} ${item.profile.last_name}`}</b>
-                      }
-                      description={`country: ${item.profile.country || ""}`}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Col>
-          </Row>
+          {!loading && (
+            <Tabs
+              defaultActiveKey="1"
+              type="card"
+              size="large"
+              className="custom-tabs"
+            >
+              <TabPane tab="PROJECTS" key="1">
+                {this.renderProjects()}
+              </TabPane>
+              <TabPane tab="USERS" key="2">
+                {this.renderUsers()}
+              </TabPane>
+            </Tabs>
+          )}
         </Container>
         <Footer />
       </React.Fragment>

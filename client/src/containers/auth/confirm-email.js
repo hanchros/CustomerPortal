@@ -26,17 +26,19 @@ class ConfirmEmail extends React.Component {
     const { loading, message } = this.state;
     return (
       <HomeHOC>
-        <div className="main-background-title">Email Confirmation</div>
-        <p className="mt-5" />
-        {loading && <h5>Verifing your accout ...</h5>}
-        {!loading && <h5>{message}</h5>}
-        {!loading && (
-          <div className="verify-redirect">
-            <Link className="main-btn" to={"/login"}>
-              LogIn
-            </Link>
-          </div>
-        )}
+        <div className="flex-colume-center">
+          <div className="main-background-title">Email Confirmation</div>
+          <p className="mt-5" />
+          {loading && <h5>Verifing your accout ...</h5>}
+          {!loading && <h5>{message}</h5>}
+          {!loading && (
+            <div className="verify-redirect">
+              <Link className="main-btn" to={"/login"}>
+                LogIn
+              </Link>
+            </div>
+          )}
+        </div>
       </HomeHOC>
     );
   }

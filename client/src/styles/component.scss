@@ -1,0 +1,26 @@
+.big-uploader {
+  max-width: 300px;
+  position: relative;
+
+  .ant-upload-select-picture-card {
+    width: 100% !important;
+    height: auto !important;
+    padding: 40px 30px !important;
+  }
+
+  .ant-upload-text {
+    margin-top: 20px;
+  }
+  .upload-remove {
+    position: absolute;
+    top: 26px;
+    right: 17px;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: .7s, .7s;
+  }
+}
+
+.big-uploader:hover .upload-remove {
+  opacity: 1;
+}

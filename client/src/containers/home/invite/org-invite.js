@@ -29,6 +29,7 @@ class OrgInviteMember extends React.Component {
     const org_id = match.params.org_id;
     this.setState({ loading: true });
     const org = await getOrganization(org_id);
+    if (!org) return;
     this.setState({ org });
     await getOrgByName(org.org_name);
     this.setState({ loading: false });
@@ -70,37 +71,39 @@ class OrgInviteMember extends React.Component {
     };
     return (
       <HomeHOC>
-        <div className="main-background-title">INVITATION</div>
-        <Skeleton active loading={loading} />
-        <Skeleton active loading={loading} />
-        <Skeleton active loading={loading} />
-        {!loading && !isCreate && (
-          <Result
-            title="You are invited"
-            subTitle="You can accept the invitation to join the organization, or ignore this invitation if you are not willing to join it"
-            extra={[
-              <Button
-                type="primary"
-                key="console"
-                onClick={this.onAcceptInvite}
-              >
-                Accept
-              </Button>,
-              <Button key="buy" onClick={this.onCancelInvite}>
-                Cancel
-              </Button>,
-            ]}
-          />
-        )}
-        {!loading && isCreate && (
-          <InviteRegisterForm
-            onSubmit={this.onRegisterInvitedUser}
-            values={values}
-            setAvatar={this.setAvatar}
-            avatarURL={avatarURL}
-            userRoles={userRoles}
-          />
-        )}
+        <div className="flex-colume-center">
+          <div className="main-background-title">INVITATION</div>
+          <Skeleton active loading={loading} />
+          <Skeleton active loading={loading} />
+          <Skeleton active loading={loading} />
+          {!loading && !isCreate && (
+            <Result
+              title="You are invited"
+              subTitle="You can accept the invitation to join the organization, or ignore this invitation if you are not willing to join it"
+              extra={[
+                <Button
+                  type="primary"
+                  key="console"
+                  onClick={this.onAcceptInvite}
+                >
+                  Accept
+                </Button>,
+                <Button key="buy" onClick={this.onCancelInvite}>
+                  Cancel
+                </Button>,
+              ]}
+            />
+          )}
+          {!loading && isCreate && (
+            <InviteRegisterForm
+              onSubmit={this.onRegisterInvitedUser}
+              values={values}
+              setAvatar={this.setAvatar}
+              avatarURL={avatarURL}
+              userRoles={userRoles}
+            />
+          )}
+        </div>
       </HomeHOC>
     );
   }

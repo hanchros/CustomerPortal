@@ -8,7 +8,7 @@ class InviteComplete extends React.Component {
     const { project } = this.props;
     const curProj = project.project;
     return (
-      <React.Fragment>
+      <div className="flex-colume-center">
         <div className="main-background-title">REGISTRATION</div>
         <div className="project-box">
           <div className="register-project-view">
@@ -36,7 +36,7 @@ class InviteComplete extends React.Component {
             Home
           </Link>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

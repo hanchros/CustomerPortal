@@ -5,6 +5,7 @@ import Upload from "./upload";
 import UploadFile from "./upload_file";
 import Footer from "./footer";
 import SubHeader from "./sub-header";
+import BigUpload from "./upload_big";
 
 export {
   Header,
@@ -14,4 +15,5 @@ export {
   UploadFile,
   Footer,
   SubHeader,
+  BigUpload,
 };

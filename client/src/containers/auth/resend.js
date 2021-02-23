@@ -8,20 +8,22 @@ class Resend extends React.Component {
   render() {
     return (
       <HomeHOC>
-        <div className="main-background-title">REGISTRATION</div>
-        <p className="resend-desc">
-          To continue please check your inbox and confirm your email.​
-        </p>
-        <p className="resend-intro">
-          Did not get an anything? Check your spam folder or{" "}
-          <Link
-            className="verify-link"
-            to="#"
-            onClick={this.props.resendVerification}
-          >
-            request another one
-          </Link>
-        </p>
+        <div className="flex-colume-center">
+          <div className="main-background-title">REGISTRATION</div>
+          <p className="resend-desc">
+            To continue please check your inbox and confirm your email.​
+          </p>
+          <p className="resend-intro">
+            Did not get an anything? Check your spam folder or{" "}
+            <Link
+              className="verify-link"
+              to="#"
+              onClick={this.props.resendVerification}
+            >
+              request another one
+            </Link>
+          </p>
+        </div>
       </HomeHOC>
     );
   }

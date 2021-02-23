@@ -52,7 +52,7 @@ class ProjectRegister extends React.Component {
     const curProj = project.project;
     const pdfData = auth.pdfData;
     return (
-      <React.Fragment>
+      <div className="flex-colume-center">
         <div className="main-background-title">REGISTRATION</div>
         <div className="project-box">
           <p className="mt-5">Explanation and overview of process</p>
@@ -89,7 +89,7 @@ class ProjectRegister extends React.Component {
         <Link to="#" className="main-btn mt-5" onClick={this.onGoNext}>
           Next
         </Link>
-      </React.Fragment>
+      </div>
     );
   }
 }

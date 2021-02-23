@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Select } from "antd";
 
 export const OrgInviteForm = ({ onSubmit, project }) => {
   const onFinish = (values) => {
@@ -70,7 +70,7 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
   );
 };
 
-export const TeamInviteForm = ({ onSubmit, project, org }) => {
+export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
   const onFinish = (values) => {
     values.project_name = project.name;
     values.project_id = project._id;
@@ -105,7 +105,13 @@ export const TeamInviteForm = ({ onSubmit, project, org }) => {
       </Form.Item>
       <span>Role:</span>
       <Form.Item name="project_role">
-        <Input size="large" placeholder="Role" />
+        <Select placeholder="Role" size="large">
+          {roles.map((item) => (
+            <Select.Option key={item._id} value={item.value}>
+              {item.value}
+            </Select.Option>
+          ))}
+        </Select>
       </Form.Item>
       <span>E-mail:</span>
       <Form.Item

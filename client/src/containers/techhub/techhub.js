@@ -1,11 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Tabs, Avatar } from "antd";
 import { Header, Footer } from "../../components/template";
 import ArticlePage from "./article";
-import ImageHolder from "../../assets/icon/challenge.png";
-
-const { TabPane } = Tabs;
+import { Link } from "react-router-dom";
+import { Container } from "reactstrap";
 
 class Techhub extends React.Component {
   constructor(props) {
@@ -28,44 +26,60 @@ class Techhub extends React.Component {
     this.setState({ tabId, artId: "" });
   };
 
-  render() {
+  renderTabHeader = () => {
     const curOrg = this.props.organization.currentOrganization;
+    const { tabId } = this.state;
+    return (
+      <div className="account-nav">
+        <Container className="subnav-responsive">
+          <Link
+            to="#"
+            onClick={() => this.onChange("1")}
+            className={tabId === "1" ? "active" : ""}
+          >
+            <p>Technical Documentation</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("2")}
+            className={`${tabId === "2" ? "active" : ""} ml-4`}
+          >
+            <p>Demos</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("3")}
+            className={`${tabId === "3" ? "active" : ""} ml-4`}
+          >
+            <p>Applications</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("4")}
+            className={`${tabId === "4" ? "active" : ""} ml-4`}
+          >
+            <p>{`${curOrg.org_name}'s Applications`}</p>
+          </Link>
+        </Container>
+      </div>
+    );
+  };
+
+  render() {
     const { tabId, artId } = this.state;
     return (
       <React.Fragment>
         <Header />
-        <div className="container-fluid content">
-          <Tabs
-            type="card"
-            className="techhub-tab tab-expand"
-            activeKey={tabId}
-            onChange={this.onChange}
-          >
-            <TabPane tab="Technical Documentation" key="1">
-              {tabId === "1" && <ArticlePage tag="techhub" />}
-            </TabPane>
-            <TabPane tab="Demos" key="2">
-              {tabId === "2" && <ArticlePage tag="demos" />}
-            </TabPane>
-            <TabPane tab="Applications" key="3">
-              {tabId === "3" && (
-                <ArticlePage tag="application" scope={"global"} id={artId} />
-              )}
-            </TabPane>
-            <TabPane
-              tab={
-                <span>
-                  <Avatar src={curOrg.logo || ImageHolder} />
-                  {`${curOrg.org_name}'s Applications`}
-                </span>
-              }
-              key="4"
-            >
-              {tabId === "4" && (
-                <ArticlePage tag="application" scope={"org"} id={artId} />
-              )}
-            </TabPane>
-          </Tabs>
+        {this.renderTabHeader()}
+        <div className="container sub-content">
+          {tabId === "1" && <ArticlePage tag="techhub" />}
+          {tabId === "2" && <ArticlePage tag="demos" />}
+          {tabId === "3" && (
+            <ArticlePage tag="application" scope={"global"} id={artId} />
+          )}
+          {tabId === "4" && (
+            <ArticlePage tag="application" scope={"org"} id={artId} />
+          )}
         </div>
         <Footer />
       </React.Fragment>

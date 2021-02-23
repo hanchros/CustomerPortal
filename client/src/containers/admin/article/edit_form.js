@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Popconfirm,
-  Divider,
-  Select,
-  Row,
-  Col,
-  Switch,
-} from "antd";
+import { Form, Input, Button, Popconfirm, Divider, Select, Switch } from "antd";
+import { Col, Row } from "reactstrap";
 import { PlusOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../../components/pages/editor";
 import Avatar from "../../../components/template/upload";
@@ -72,13 +63,13 @@ const EditArticle = ({
       onFinish={onFinish}
       initialValues={{ ...article }}
     >
-      <Row gutter="30" className="mb-3">
-        <Col md={6} sm={24}>
+      <Row className="mb-3">
+        <Col md={3}>
           <div className="center">
             <Avatar setAvatar={setIconURL} imageUrl={iconURL} />
           </div>
         </Col>
-        <Col md={18} sm={24} style={{ paddingTop: "33px" }}>
+        <Col md={9} style={{ paddingTop: "33px" }}>
           <Form.Item
             name="title"
             rules={[
@@ -99,8 +90,8 @@ const EditArticle = ({
         <Input type="text" placeholder="Video Link" />
       </Form.Item>
 
-      <Row gutter={30} className="mt-4">
-        <Col md={16}>
+      <Row className="mt-4">
+        <Col md={8}>
           <Form.Item
             name="tag"
             rules={[
@@ -164,7 +155,7 @@ const EditArticle = ({
             </Select>
           </Form.Item>
         </Col>
-        <Col md={8}>
+        <Col md={4}>
           <div className="center">
             <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
           </div>
@@ -179,8 +170,8 @@ const EditArticle = ({
       <br />
       <UploadFiles files={files} setFiles={setFiles} />
 
-      <Row gutter={30} className="mt-4">
-        <Col md={12}>
+      <Row className="mt-4">
+        <Col md={6}>
           <Form.Item
             name="show_iframe"
             label="Show Iframe"
@@ -189,7 +180,7 @@ const EditArticle = ({
             <Switch />
           </Form.Item>
         </Col>
-        <Col md={12}>
+        <Col md={6}>
           <Form.Item name="button_name" label="Go Button Caption">
             <Input type="text" placeholder="Go To Site" />
           </Form.Item>

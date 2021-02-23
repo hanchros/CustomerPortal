@@ -4,7 +4,7 @@ const ejs = require("ejs");
 const fs = require("fs");
 
 sgMail.setApiKey(config.sendgridApiKey);
-const mainURL = "https://www.automation.place";
+const mainURL = "https://www.collaborate.app";
 
 exports.userEmailVerification = function userEmailVerification(
   recipient,

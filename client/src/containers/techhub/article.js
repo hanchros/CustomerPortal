@@ -125,51 +125,12 @@ class ArticlePage extends React.Component {
       onClick={() => this.onSelectTitle(item.topic, item.title)}
       className={this.state.topic === item.topic && "active"}
     >
+      <span style={{ width: "80%" }}>{item.topic}</span>
       <Avatar src={item.icon} />
-      &nbsp;&nbsp;
-      {item.topic}
     </List.Item>
   );
 
   renderOneArticle = (article) => {
-    if (article.iframe && article.show_iframe)
-      return (
-        <Row>
-          <Col md={4}>
-            <h3 className="mb-3">
-              <b>{article.title}</b>
-            </h3>
-            <div dangerouslySetInnerHTML={{ __html: article.content }} />
-            {article.files && article.files.length > 0 && (
-              <div className="download-file-box">
-                <span>Documents for download</span>
-                <br />
-                {article.files.map((file) => (
-                  <div key={file}>
-                    <a
-                      href={file}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download
-                      title={file.replace(/^.*[\\/]/, "")}
-                    >
-                      {file.replace(/^.*[\\/]/, "")}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Col>
-          <Col md={8}>
-            <iframe
-              src={article.iframe}
-              is="x-frame-bypass"
-              title="demo-iframe"
-              style={{ width: "100%", height: "98%", minHeight: "60vh" }}
-            />
-          </Col>
-        </Row>
-      );
     return (
       <React.Fragment>
         <h3 className="mb-3">
@@ -202,7 +163,7 @@ class ArticlePage extends React.Component {
               ))}
             </div>
           )}
-          {article.iframe && (
+          {article.iframe && !article.show_iframe && (
             <div className="demo-site-link">
               <a
                 href={article.iframe}
@@ -215,6 +176,14 @@ class ArticlePage extends React.Component {
             </div>
           )}
         </div>
+        {article.iframe && article.show_iframe && (
+          <iframe
+            src={article.iframe}
+            is="x-frame-bypass"
+            title="demo-iframe"
+            style={{ width: "100%", height: "98%", minHeight: "60vh" }}
+          />
+        )}
       </React.Fragment>
     );
   };
@@ -261,8 +230,10 @@ class ArticlePage extends React.Component {
 
   renderArticles = () => {
     const { curArticles } = this.state;
+
+    if (curArticles.length === 0) return null;
     return (
-      <div className="tech-article-box">
+      <div className="account-form-box">
         {curArticles.length === 1 && this.renderOneArticle(curArticles[0])}
         {curArticles.length > 1 && this.renderMultiArticles(curArticles)}
       </div>

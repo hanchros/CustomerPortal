@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Col, Row } from "reactstrap";
 import { changePassword } from "../../actions/auth";
 import { Button, Form, Input, message } from "antd";
 
@@ -13,45 +14,63 @@ const ResetPasswordForm = ({ changePassword }) => {
   };
 
   return (
-    <Form name="reset" className="login-form" onFinish={onFinish}>
-      <Form.Item
-        name="old_password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your current password!",
-          },
-        ]}
-      >
-        <Input size="large" type="password" placeholder="Old Password" />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your new password!",
-          },
-        ]}
-      >
-        <Input size="large" type="password" placeholder="New Password" />
-      </Form.Item>
-      <Form.Item
-        name="conf_password"
-        rules={[
-          {
-            required: true,
-            message: "Please confirm your new password!",
-          },
-        ]}
-      >
-        <Input size="large" type="password" placeholder="Confirm Password" />
-      </Form.Item>
-      <div className="mt-4">
-        <Button type="primary" htmlType="submit">
-          Change Password
-        </Button>
+    <Form name="reset" className="org_register" onFinish={onFinish}>
+      <div className="account-form-box">
+        <Row>
+          <Col md={6}>
+            <span className="form-label">Old password</span>
+            <Form.Item
+              name="old_password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your current password!",
+                },
+              ]}
+            >
+              <Input size="large" type="password" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <span className="form-label">New password</span>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your new password!",
+                },
+              ]}
+            >
+              <Input size="large" type="password" />
+            </Form.Item>
+          </Col>
+          <Col md={6}>
+            <span className="form-label">Confirm new password</span>
+            <Form.Item
+              name="conf_password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please confirm your new password!",
+                },
+              ]}
+            >
+              <Input size="large" type="password" />
+            </Form.Item>
+          </Col>
+        </Row>
       </div>
+      <Button
+        type="ghost"
+        htmlType="submit"
+        className="black-btn wide mt-5"
+        style={{ float: "right" }}
+      >
+        Apply New Password
+      </Button>
     </Form>
   );
 };
@@ -60,11 +79,22 @@ class ResetPassword extends Component {
   render() {
     const { changePassword } = this.props;
     return (
-      <div className="container ">
-        <h1 className="mt-5 center">Change Password</h1>
-        <div className="flex mt-5" style={{justifyContent: "center"}}>
-          <ResetPasswordForm changePassword={changePassword} />
-        </div>
+      <div className="container sub-content">
+        <Row>
+          <Col md={4} className="mb-4">
+            <h4 className="mb-4">
+              <b>Change Password</b>
+            </h4>
+            <span>
+              Before changing the password, please provide your previous
+              password. We recommend using passwords longer than six characters,
+              using letters and numbers.
+            </span>
+          </Col>
+          <Col md={8}>
+            <ResetPasswordForm changePassword={changePassword} />
+          </Col>
+        </Row>
       </div>
     );
   }

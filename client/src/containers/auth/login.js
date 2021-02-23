@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Form, Input, Checkbox } from "antd";
-import { LeftOutlined } from "@ant-design/icons";
+import { Form, Input, Checkbox, Button } from "antd";
 import { Link } from "react-router-dom";
 import { loginUser } from "../../actions/auth";
 import history from "../../history";
 import HomeHOC from "../../components/template/home-hoc";
+import RequestInvite from "../home/invite/request-invite";
 
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit, onGoRI }) => {
   const onFinish = (values) => {
     onSubmit(values);
   };
@@ -19,6 +19,7 @@ const LoginForm = ({ onSubmit }) => {
       initialValues={{ remember: true }}
       onFinish={onFinish}
     >
+      <span className="form-label">Email address</span>
       <Form.Item
         name="email"
         rules={[
@@ -28,8 +29,9 @@ const LoginForm = ({ onSubmit }) => {
           },
         ]}
       >
-        <Input size="large" type="email" placeholder="Email" />
+        <Input size="large" type="email" />
       </Form.Item>
+      <span className="form-label">Password</span>
       <Form.Item
         name="password"
         rules={[
@@ -39,28 +41,34 @@ const LoginForm = ({ onSubmit }) => {
           },
         ]}
       >
-        <Input size="large" type="password" placeholder="Password" />
+        <Input size="large" type="password" />
       </Form.Item>
+      <Link to="/forgot-password/user" className="forgot-password">
+        Forgot password?
+      </Link>
       <div className="login-options">
         <Form.Item>
           <Form.Item name="remember" noStyle>
-            <div className="mt-2 login-remember">
-              <Checkbox>Remember me</Checkbox>
+            <div className="mt-4 login-remember">
+              <Checkbox>Remember me on this computer</Checkbox>
             </div>
           </Form.Item>
         </Form.Item>
-        <div className="mt-2">
-          <Link to="/forgot-password/user">Forgot password</Link>
-        </div>
       </div>
 
-      <div className="signup-btn mt-5">
-        <button type="submit" className="main-btn">
-          Log in
-        </button>
-        <div className="mt-5 v-center">
-          <LeftOutlined />
-          <Link to="/">&nbsp; RETURN TO HOME</Link>
+      <div className="center mt-4">
+        <Button
+          htmlType="submit"
+          className="black-btn wide"
+          style={{ width: "100%" }}
+        >
+          Sign me in
+        </Button>
+        <div className="mt-5 center">
+          <div>Don't have an account?</div>
+          <Link to="#" onClick={onGoRI} className="underline-link">
+            Request an access
+          </Link>
         </div>
       </div>
     </Form>
@@ -68,6 +76,17 @@ const LoginForm = ({ onSubmit }) => {
 };
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      showRI: false,
+    };
+  }
+
+  onToggleRI = () => {
+    this.setState({ showRI: !this.state.showRI });
+  };
+
   componentDidMount() {
     if (this.props.authenticated) {
       history.push(`/${this.props.curOrg.org_name}`);
@@ -77,10 +96,23 @@ class Login extends Component {
 
   render() {
     const { loginUser } = this.props;
+    const { showRI } = this.state;
+
     return (
       <HomeHOC>
-        <div className="main-background-title">LOG IN</div>
-        <LoginForm onSubmit={loginUser} />
+        {showRI && <RequestInvite goNext={this.onToggleRI} />}
+        {!showRI && (
+          <div className="flex-colume-center">
+            <div className="account-form-box mb-4">
+              <div className="center mb-4">
+                <h3>
+                  <b>Sign in</b>
+                </h3>
+              </div>
+              <LoginForm onSubmit={loginUser} onGoRI={this.onToggleRI} />
+            </div>
+          </div>
+        )}
       </HomeHOC>
     );
   }

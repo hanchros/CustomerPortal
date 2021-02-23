@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
+import { Col, Row, Container } from "reactstrap";
 // import { Link } from "react-router-dom";
-import { Col, Row, Button } from "antd";
+import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { getTemplate } from "../../actions/template";
 import { Header, Footer } from "../../components/template";
@@ -73,8 +73,8 @@ class Template extends Component {
           >
             <ArrowLeftOutlined /> Back
           </Button>
-          <Row gutter={50}>
-            <Col md={16} sm={24}>
+          <Row>
+            <Col md={8}>
               <div className="template-name-box">
                 <h2>{template.name}</h2>
                 {template.creator && (
@@ -86,7 +86,7 @@ class Template extends Component {
               </div>
               <div className="template-desc-box">{template.description}</div>
             </Col>
-            <Col md={8} sm={24}>
+            <Col md={4}>
               <button className="main-btn" onClick={this.onToggleUseTemplate}>
                 Use Template
               </button>

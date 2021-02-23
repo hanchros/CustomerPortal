@@ -139,6 +139,7 @@ export function updateProfile({ profile }) {
     client
       .post(`${API_URL}/user`, { profile })
       .then((response) => {
+        message.success("Profile details were updated successfully!");
         dispatch({ type: FETCH_USER, payload: response.data.user });
       })
       .catch((error) => {

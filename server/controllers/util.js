@@ -16,7 +16,7 @@ exports.compareIds = function (id1, id2) {
 exports.createPDFDoc = function (values, description) {
   const imgPath = `${__dirname}/../uploads/logo.png`;
   const pdfPath = `${__dirname}/../uploads/orginvite.pdf`;
-  const link = `https://www.automation.place/${encodeURIComponent(
+  const link = `https://www.collaborate.app/${encodeURIComponent(
     values.sender_organization
   )}/email-invite?project=${encodeURIComponent(values.project_name)}`;
 
@@ -49,7 +49,7 @@ exports.createPDFDoc = function (values, description) {
     pdfDoc
       .fillColor("black")
       .text(
-        "Once you click on the link, click “Begin” and drag and drop this document onto the area that reads “Did you receive an invitation?”.  What happens next is the power of blockchain authenticated smart documents.  Once the hash of the document has been to check to make sure it is authentic, the data contained within the document is extracted and mapped to the form on the site.  There is no database, just the document."
+        "Once you click on the link, click “Begin” and drag and drop this document onto the area that reads “Did you receive an invitation?”.  What happens next is the power of blockchain authenticated smart documents.  Once the hash of the document has been checked to make sure it is authentic, the data contained within the document is extracted and mapped to the form on the site.  There is no database, just the document."
       );
     pdfDoc.moveDown(0.5);
     pdfDoc.text("Excited to have you onboard!");

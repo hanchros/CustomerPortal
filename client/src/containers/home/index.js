@@ -4,18 +4,21 @@ import HomeHOC from "../../components/template/home-hoc";
 
 const HomePage = () => (
   <HomeHOC>
-    <div className="main-background-title mt-big">AUTOMATION PLACE</div>
-    <div className="home-btn-group">
-      <Link to="/login" className="main-btn">
-        LOG IN
-      </Link>
-      <Link to="/register" className="main-btn">
-        REGISTER
-      </Link>
+    <div className="flex-colume-center">
+      
+      <div className="main-background-title mt-5">AUTOMATION PLACE</div>
+      <div className="home-btn-group mt-5 mb-5">
+        <Link to="/login" className="main-btn">
+          LOG IN
+        </Link>
+        <Link to="/register" className="main-btn">
+          REGISTER
+        </Link>
+      </div>
+      <p className="home-intro">
+        <Link to="/integraspace">What is Automation Place?</Link>
+      </p>
     </div>
-    <p className="home-intro">
-      <Link to="/integraspace">What is Automation Place?</Link>
-    </p>
   </HomeHOC>
 );
 
