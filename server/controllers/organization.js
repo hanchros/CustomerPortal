@@ -76,7 +76,12 @@ exports.getOrganization = async (req, res, next) => {
 
 exports.getOrgByName = async (req, res, next) => {
   try {
-    const org = await Organization.findOne({ org_name: req.params.org_name });
+    const org = await Organization.findOne({
+      org_name: req.params.org_name,
+    }).populate({
+      path: "creator",
+      select: "_id profile",
+    });
     res.status(201).json({
       organization: org,
     });

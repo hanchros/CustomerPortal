@@ -43,7 +43,7 @@ const LoginForm = ({ onSubmit, onGoRI }) => {
       >
         <Input size="large" type="password" />
       </Form.Item>
-      <Link to="/forgot-password/user" className="forgot-password">
+      <Link to="/forgot-password/user" className="underline-link">
         Forgot password?
       </Link>
       <div className="login-options">
@@ -59,7 +59,7 @@ const LoginForm = ({ onSubmit, onGoRI }) => {
       <div className="center mt-4">
         <Button
           htmlType="submit"
-          className="black-btn wide"
+          className="black-btn"
           style={{ width: "100%" }}
         >
           Sign me in
@@ -89,7 +89,7 @@ class Login extends Component {
 
   componentDidMount() {
     if (this.props.authenticated) {
-      history.push(`/${this.props.curOrg.org_name}`);
+      history.push(`/dashboard`);
       return;
     }
   }

@@ -61,8 +61,7 @@ exports.updateProfile = async (req, res, next) => {
     });
     res.send({ user });
   } catch (err) {
-    console.log(err);
-    res.status(500).end();
+    return next(err);
   }
 };
 

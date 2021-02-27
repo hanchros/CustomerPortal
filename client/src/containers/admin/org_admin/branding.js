@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Switch, Button } from "antd";
+import { Switch, Button } from "antd";
 import { Col, Row } from "reactstrap";
 import { connect } from "react-redux";
 import ColorPicker from "rc-color-picker";
@@ -22,8 +22,6 @@ class OrgBasics extends React.Component {
       font_color: "",
       link_color: "",
       shadow_color: "",
-      title_page: "",
-      title_page_description: "",
       loading: false,
     };
   }
@@ -40,9 +38,6 @@ class OrgBasics extends React.Component {
       font_color: org.profile.font_color || org_consts.font_color,
       link_color: org.profile.link_color || org_consts.link_color,
       shadow_color: org.profile.shadow_color || org_consts.shadow_color,
-      title_page: org.profile.title_page || org_consts.title_page,
-      title_page_description:
-        org.profile.title_page_description || org_consts.title_page_description,
     });
   };
 
@@ -76,13 +71,6 @@ class OrgBasics extends React.Component {
     });
   };
 
-  onChangeDefaultHome = () => {
-    this.setState({
-      title_page: org_consts.title_page,
-      title_page_description: org_consts.title_page_description,
-    });
-  };
-
   updateOrg = async () => {
     const {
       primary_color,
@@ -92,8 +80,6 @@ class OrgBasics extends React.Component {
       font_color,
       link_color,
       shadow_color,
-      title_page,
-      title_page_description,
     } = this.state;
     const org = this.props.organization.currentOrganization;
     this.setState({ loading: true });
@@ -107,8 +93,6 @@ class OrgBasics extends React.Component {
         font_color,
         link_color,
         shadow_color,
-        title_page,
-        title_page_description,
       },
     });
     this.setState({ loading: false });
@@ -123,8 +107,6 @@ class OrgBasics extends React.Component {
       font_color,
       link_color,
       shadow_color,
-      title_page,
-      title_page_description,
     } = this.state;
     const org = this.props.organization.currentOrganization;
     if (
@@ -134,9 +116,7 @@ class OrgBasics extends React.Component {
       menufont_color !== org.profile.menufont_color ||
       font_color !== org.profile.font_color ||
       link_color !== org.profile.link_color ||
-      shadow_color !== org.profile.shadow_color ||
-      title_page !== org.profile.title_page ||
-      title_page_description !== org.profile.title_page_description
+      shadow_color !== org.profile.shadow_color
     )
       return true;
     return false;
@@ -155,9 +135,6 @@ class OrgBasics extends React.Component {
       font_color: org.profile.font_color || org_consts.font_color,
       link_color: org.profile.link_color || org_consts.link_color,
       shadow_color: org.profile.shadow_color || org_consts.shadow_color,
-      title_page: org.profile.title_page || org_consts.title_page,
-      title_page_description:
-        org.profile.title_page_description || org_consts.title_page_description,
     };
     this.props.testColorChange(newState, org_name);
     this.setState(newState);
@@ -172,8 +149,6 @@ class OrgBasics extends React.Component {
       font_color,
       link_color,
       shadow_color,
-      title_page,
-      title_page_description,
       loading,
     } = this.state;
     return (
@@ -282,30 +257,7 @@ class OrgBasics extends React.Component {
             </div>
           </Col>
         </Row>
-        <div className="admin-org-homebox">
-          <span>Title page name:</span>
-          <Input
-            value={title_page}
-            onChange={(e) =>
-              this.onChangeOrgValue("title_page", e.target.value)
-            }
-            className="mb-4"
-          />
-          <span>Title page description:</span>
-          <Input.TextArea
-            rows={5}
-            value={title_page_description}
-            onChange={(e) =>
-              this.onChangeOrgValue("title_page_description", e.target.value)
-            }
-            className="mb-4"
-          />
-        </div>
         <div className="admin-org-toggle">
-          <p>
-            Use default home page?​{" "}
-            <Switch onChange={this.onChangeDefaultHome} />
-          </p>
           <p>
             Use default colors? <Switch onChange={this.onChangeDefaultColor} />
           </p>

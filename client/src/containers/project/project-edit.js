@@ -1,10 +1,11 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
-import { Form, Input } from "antd";
+import { Form, Input, Button } from "antd";
+import { LeftOutlined } from "@ant-design/icons";
 import { updateProject, createProject } from "../../actions/project";
-import { Header, Upload, Footer } from "../../components/template";
-import Technology from "../template/technology";
+import { Header, BigUpload, Footer } from "../../components/template";
 import OrgInvite from "./invite";
 
 const CreateForm = ({
@@ -18,16 +19,11 @@ const CreateForm = ({
   user,
   template,
 }) => {
-  const [technologies, setTechnologies] = useState(
-    curProject.technologies || template.technologies || []
-  );
-
   const onFinish = async (values) => {
     values.participant = user._id;
     values.logo = avatarURL;
     values.likes = curProject.likes || [];
     values.status = curProject.status || "Live";
-    values.technologies = technologies;
     if (!curProject._id && template._id) {
       values.template = template._id;
     }
@@ -41,6 +37,11 @@ const CreateForm = ({
     }
   };
 
+  const onCancel = (e) => {
+    e.preventDefault();
+    goback();
+  };
+
   return (
     <Form
       name="create-project"
@@ -48,50 +49,44 @@ const CreateForm = ({
       onFinish={onFinish}
       initialValues={curProject._id ? { ...curProject } : { ...template }}
     >
-      <Row className="mb-4">
-        <Col md={9}>
-          <span>Name:</span>
-          <Form.Item
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: `Please input the project name!`,
-              },
-            ]}
-          >
-            <Input type="text" className="name" />
-          </Form.Item>
-          <span>Short description:</span>
-          <Form.Item name="objective">
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col md={3}>
-          <div className="center mt-4">
-            <Upload setAvatar={setAvatar} imageUrl={avatarURL} />
-          </div>
-        </Col>
-      </Row>
-      <span>Detailed description:</span>
-      <Form.Item name="description">
-        <Input.TextArea rows={3} />
-      </Form.Item>
-      <span>Technology:</span>
-      <Technology technologies={technologies} onChangeTechs={setTechnologies} />
-      <div className="flex mt-5">
-        <button type="submit" className="mr-4 main-btn">
-          Submit
-        </button>
-        <button
-          className="main-btn main-btn-secondary"
-          onClick={(e) => {
-            e.preventDefault();
-            goback();
-          }}
-        >
+      <div className="account-form-box">
+        <Row className="mb-4">
+          <Col md={6}>
+            <span className="form-label">Project name</span>
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: `Please input the project name!`,
+                },
+              ]}
+            >
+              <Input type="text" className="name" />
+            </Form.Item>
+            <span className="form-label">Short description</span>
+            <Form.Item name="objective">
+              <Input />
+            </Form.Item>
+            <span className="form-label">Detailed description</span>
+            <Form.Item name="description">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+          </Col>
+          <Col md={6}>
+            <div className="center mt-4">
+              <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+        <Button type="ghost" onClick={onCancel} className="ghost-btn">
           Cancel
-        </button>
+        </Button>
+        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          Save changes
+        </Button>
       </div>
     </Form>
   );
@@ -132,20 +127,40 @@ class EditProject extends Component {
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
-          {curProject._id && <h3>Update project</h3>}
-          {!curProject._id && <h3>Creating new project</h3>}
-          <CreateForm
-            createProject={createProject}
-            updateProject={updateProject}
-            setAvatar={this.setAvatar}
-            avatarURL={avatarURL || curProject.logo}
-            curProject={curProject}
-            goback={goback}
-            gonext={this.onGoInvitePage}
-            user={user}
-            template={template || {}}
-          />
+        <div className="account-nav">
+          <Container>
+            <Link to="#" onClick={goback}>
+              <p>
+                <LeftOutlined /> Back to Project
+              </p>
+            </Link>
+          </Container>
+        </div>
+        <Container className="sub-content">
+          <Row>
+            <Col md={4}>
+              <h4 className="mb-4">
+                <b>{curProject._id ? "Update" : "Create"} project</b>
+              </h4>
+              <span>
+                Some of the information was prefilled, but there might be some
+                fields you need to complete.
+              </span>
+            </Col>
+            <Col md={8}>
+              <CreateForm
+                createProject={createProject}
+                updateProject={updateProject}
+                setAvatar={this.setAvatar}
+                avatarURL={avatarURL || curProject.logo}
+                curProject={curProject}
+                goback={goback}
+                gonext={this.onGoInvitePage}
+                user={user}
+                template={template || {}}
+              />
+            </Col>
+          </Row>
         </Container>
         <Footer />
       </React.Fragment>

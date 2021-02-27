@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Form, Input, Select } from "antd";
 import { connect } from "react-redux";
 import { updateOrganization } from "../../../actions/organization";
-import { getFieldData } from "../../../utils/helper";
+import { getFieldData, processLink } from "../../../utils/helper";
 import ChallengeLogo from "../../../assets/icon/challenge.png";
 import Avatar from "../../../components/template/upload";
 
@@ -12,6 +12,8 @@ const EditForm = ({ onUpdateOrg, org, orgTypes, onCancel }) => {
   const onFinish = async (values) => {
     values._id = org._id || null;
     values.logo = avatarURL;
+    values.social = processLink(values.social);
+    values.linkedin = processLink(values.linkedin);
     await onUpdateOrg(values);
     onCancel();
   };

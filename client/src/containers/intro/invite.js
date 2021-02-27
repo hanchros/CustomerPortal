@@ -8,7 +8,7 @@ const InvitePage = () => (
       <div className="main-background-title">What is "an invitation"?</div>
       <p className="mt-5">
         This is a safe space where companies come to collaborate on documents
-        automation projects.​
+        collaboration projects.​
         <br /> Once you are registered – you can invite your partners and
         clients to work to collaborate or colleagues to join organization.​
         <br /> Invited party will receive an email link with personal invitation

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Button, Form, Input } from "antd";
 import { getForgotPasswordToken } from "../../actions/auth";
 import history from "../../history";
-import { Link } from "react-router-dom";
 import HomeHOC from "../../components/template/home-hoc";
 
 const ForgotForm = ({ sendMail }) => {
@@ -11,15 +10,14 @@ const ForgotForm = ({ sendMail }) => {
     sendMail(values.email);
   };
 
+  const goBack = (e) => {
+    e.preventDefault();
+    history.push("/login");
+  };
+
   return (
-    <Form name="forgot" className="login-form" onFinish={onFinish}>
-      <div className="auth-title">
-        <div />
-        <Link to="/" className="underline-link">
-          Back to Home
-        </Link>
-      </div>
-      <span className="form-label">Email*</span>
+    <Form name="forgot" onFinish={onFinish}>
+      <span className="form-label">Email address</span>
       <Form.Item
         name="email"
         rules={[
@@ -31,8 +29,22 @@ const ForgotForm = ({ sendMail }) => {
       >
         <Input type="email" size="large" />
       </Form.Item>
-      <Button type="ghost" htmlType="submit" className="black-btn wide mt-5">
+      <p>The reset password link will be sent to your email address.</p>
+      <Button
+        type="ghost"
+        htmlType="submit"
+        className="black-btn mt-5"
+        style={{ width: "100%" }}
+      >
         Reset Password
+      </Button>
+      <Button
+        type="ghost"
+        className="ghost-btn mt-3"
+        onClick={goBack}
+        style={{ width: "100%" }}
+      >
+        Cancel
       </Button>
     </Form>
   );
@@ -50,10 +62,10 @@ class ForgotPassword extends Component {
     return (
       <HomeHOC>
         <div className="flex-colume-center">
-          <div className="account-form-box mb-4">
+          <div className="account-form-box mb-4" style={{ maxWidth: "400px" }}>
             <div className="center mb-4">
               <h3>
-                <b>Forgot Password</b>
+                <b>Password Reset</b>
               </h3>
             </div>
             <ForgotForm sendMail={this.props.getForgotPasswordToken} />

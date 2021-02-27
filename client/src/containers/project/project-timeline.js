@@ -21,11 +21,11 @@ const NoteForm = ({ onSubmit, note, onCancel }) => {
   return (
     <Form
       name="create-note"
-      className="mt-4 register-form"
+      className="mt-4 register-form p-2"
       onFinish={onFinish}
       initialValues={{ ...note }}
     >
-      <span>Note:</span>
+      <span className="form-label">Note*</span>
       <Form.Item
         name="title"
         rules={[
@@ -38,24 +38,25 @@ const NoteForm = ({ onSubmit, note, onCancel }) => {
         <Input type="text" className="name" />
       </Form.Item>
 
-      <span>Description:</span>
+      <span className="form-label">Description</span>
       <Form.Item name="description">
         <Input.TextArea rows={3} />
       </Form.Item>
 
-      <div className="flex mt-5">
-        <button type="submit" className="mr-4 main-btn">
-          Submit
-        </button>
-        <button
-          className="main-btn main-btn-secondary"
+      <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+        <Button
+          type="ghost"
           onClick={(e) => {
             e.preventDefault();
             onCancel();
           }}
+          className="ghost-btn"
         >
           Cancel
-        </button>
+        </Button>
+        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          Submit
+        </Button>
       </div>
     </Form>
   );
@@ -119,12 +120,9 @@ class ProjectTech extends Component {
     return (
       <div className="project-timeline">
         <div className="timeline-header">
-          <h5>
-            <b>Timeline</b>
-          </h5>
           <Button
             type="ghost"
-            className="ghost-btn"
+            className="black-btn"
             onClick={this.onCreateNote}
           >
             <EditOutlined /> WRITE NOTE
@@ -189,7 +187,7 @@ class ProjectTech extends Component {
           <Modal
             title={`${note._id ? "Update" : "Create"} Note`}
             visible={visible}
-            width={800}
+            width={600}
             footer={false}
             onCancel={this.hideModal}
           >

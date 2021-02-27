@@ -10,7 +10,7 @@ class IntegraSpace extends React.Component {
     return (
       <HomeHOC>
         <div className="flex-colume-center">
-          <div className="main-background-title">What is AUTOMATION PLACE?</div>
+          <div className="main-background-title">What is Collaboration App ?</div>
           <div className="mt-5" dangerouslySetInnerHTML={{ __html: content }} />
           <div className="is-btn">
             <Link to="/register" className="main-btn">

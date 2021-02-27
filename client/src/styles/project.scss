@@ -67,27 +67,29 @@
 }
 
 .project-list {
-  .ant-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 5px;
-  }
-
   .ant-list-item-meta-title {
-    font-size: 20px;
+    font-size: 14px;
   }
 
   .ant-list-item-meta-description {
-    font-size: 16px;
+    font-size: 12px;
   }
 
   .ant-list-item {
-    padding: 12px 10px;
-    align-items: flex-start;
+    padding: 15px;
+    align-items: center;
     cursor: pointer;
+    box-shadow: 1px 1px 8px #ddd;
+    margin-bottom: 15px;
+    background-color: white;
 
     &:hover {
-      box-shadow: 1px 1px 5px var(--shadow_color);
+      box-shadow: 1px 1px 8px #ccc;
+    }
+    .ant-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
     }
   }
 
@@ -100,81 +102,109 @@
   }
 }
 
-.project-info {
-  box-shadow: 1px 1px 5px var(--shadow_color);
-  border-top: 3px solid var(--primary_color);
-  border-radius: 3px;
-  background-color: white;
+.project-info-box {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
 
-  .project-info-box {
+  .project-img-box {
+    width: 200px;
+    img {
+      width: 100%;
+      border-radius: 3px;
+    }
+  }
+
+  span {
+    font-size: 14px;
+  }
+
+  .project-detail-head {
     display: flex;
-    justify-content: space-between;
-    padding: 40px;
+    margin-bottom: 20px;
     width: 100%;
-    min-height: 14vh;
-
-    .project-img-box {
-      width: 150px;
-      padding: 20px;
-      img {
-        width: 100%;
-      }
+    padding-right: 20px;
+    img {
+      margin-right: 30px;
+      height: 37px;
+    }
+    h3 {
+      font-size: 38px;
+      font-weight: 600;
+      margin-bottom: 0;
     }
 
-    span {
+    .form-label {
+      font-size: 12px;
+    }
+
+    a {
+      color: inherit;
       font-size: 14px;
+      text-decoration: underline;
     }
 
-    .project-detail-head {
-      h3 {
-        font-size: 28px;
-        font-weight: 600;
-      }
-      p {
-        font-size: 20px;
-      }
-    }
-  }
+    .org-link-box {
+      display: flex;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      width: fit-content;
 
-  .project-desc-collapse {
-    border: 0;
-    .ant-collapse-header {
-      background-color: black;
-      color: white !important;
-      text-transform: uppercase;
-      text-align: center;
-      font-size: 13px !important;
-      .anticon {
-        display: none !important;
+      a {
+        padding: 13px 15px;
+        border-left: none;
+        .anticon {
+          font-size: 20px;
+        }
+      }
+      a:first-child {
+        border-right: 1px solid #ddd;
       }
     }
   }
+}
 
-  .project-timeline {
-    padding: 20px 0;
+.project-desc-collapse {
+  border: 0;
+  .ant-collapse-header {
+    background-color: black;
+    color: white !important;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 13px !important;
+    .anticon {
+      display: none !important;
+    }
+  }
+}
 
-    .timeline-header {
+.project-timeline {
+  .timeline-header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 40px;
+  }
+
+  .timeline-list {
+    max-height: 300px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    box-shadow: 1px 1px 5px var(--shadow_color);
+    margin: 5px 3px;
+
+    li:last-child {
+      border-bottom: 1px solid #eee;
+    }
+    .timeline-item {
+      font-size: 14px;
       display: flex;
       justify-content: space-between;
-      padding: 40px;
-    }
-
-    .timeline-list {
-      max-height: 300px;
-      overflow-y: auto;
-      list-style: none;
-      padding: 0;
-
-      li:last-child {
-        border-bottom: 1px solid #eee;
-      }
-      .timeline-item {
-        font-size: 14px;
-        display: flex;
-        justify-content: space-between;
-        border-top: 1px solid #eee;
-        padding: 7px 40px;
-      }
+      border-top: 1px solid #eee;
+      padding: 13px 40px;
+      background-color: white;
     }
   }
 }
@@ -214,24 +244,29 @@
 .project-tech-items {
   list-style: none;
   padding: 0;
+  box-shadow: 1px 1px 5px var(--shadow_color);
+  margin: 5px 3px;
 
   &:last-child {
-    border-bottom: 1px solid #ddd;
+    border-bottom: none;
   }
 
   li {
     display: flex;
     align-items: center;
-    padding: 5px 0;
-    border-top: 1px solid #ddd;
+    padding: 10px 30px;
+    border-bottom: 1px solid #ddd;
     font-size: 14px;
+    background-color: white;
 
     &:hover {
       cursor: pointer;
     }
     .ant-avatar {
+      width: 30px;
+      height: 30px;
       border-radius: 3px;
-      margin-right: 10px;
+      margin-right: 15px;
     }
   }
 }
@@ -250,6 +285,8 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
+  border-radius: 3px !important;
+  height: 42px !important;
 }
 
 .black-btn {
@@ -261,7 +298,9 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
-  border-radius: 4px !important;
+  border-radius: 3px !important;
+  border: 1px solid black !important;
+  height: 42px !important;
 }
 
 .project-org-side {
@@ -323,6 +362,42 @@
   width: 200px;
 }
 
+.invite-tab {
+  max-width: 736px;
+  margin: auto !important;
+  background-color: white;
+
+  .ant-tabs-tab {
+    background-color: black !important;
+    color: white;
+    font-weight: bold;
+    margin-right: 0 !important;
+    border: none !important;
+    .ant-tabs-tab-btn {
+      font-weight: bold !important;
+      padding: 8px 0;
+      text-transform: uppercase;
+    }
+  }
+
+  .ant-tabs-tab-active {
+    background-color: white !important;
+    .ant-tabs-tab-btn {
+      color: black !important;
+    }
+  }
+
+  .ant-tabs-content-holder {
+    padding: 35px;
+  }
+}
+
+.tech-btns {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+}
+
 @media screen and (min-width: 768px) {
   .invite-tab {
     .ant-tabs-nav-list {
@@ -339,67 +414,51 @@
   .template-btn {
     width: 200px;
   }
-  .project-detail-desc {
+
+  .project-info-box {
+    flex-direction: column;
+    padding: 0 10px;
+    .project-img-box {
+      padding: 10px 5px;
+    }
+    .project-detail-head {
+      img {
+        display: none;
+      }
+      .flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        margin-bottom: 20px !important;
+        .ml-5 {
+          margin-left: 0 !important;
+        }
+      }
+    }
+  }
+
+  .project-timeline {
     .timeline-list {
       .timeline-item {
         font-size: 13px;
-        margin-bottom: 12px;
         flex-direction: column;
+        padding: 7px 20px;
       }
     }
   }
 
-  .project-info {
-    margin-bottom: 40px;
-    .project-info-box {
-      padding: 20px;
-      .project-img-box {
-        width: 100px;
-        padding: 10px 5px;
-      }
-      .project-detail-head {
-        p {
-          font-size: 16px;
-        }
-      }
-    }
-
-    .project-timeline {
-      .timeline-header {
-        padding: 20px;
-      }
-      .timeline-list {
-        .timeline-item {
-          font-size: 13px;
-          flex-direction: column;
-          padding: 7px 20px;
-        }
-      }
+  .tech-btns {
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+    button {
+      margin-bottom: 10px;
+      width: 70%;
     }
   }
 
-  .project-tech-items {
-    list-style: none;
-    padding: 0;
-
-    &:last-child {
-      border-bottom: 1px solid #ddd;
-    }
-
-    li {
-      display: flex;
-      align-items: center;
-      padding: 5px 0;
-      border-top: 1px solid #ddd;
-      font-size: 14px;
-
-      &:hover {
-        cursor: pointer;
-      }
-      .ant-avatar {
-        border-radius: 3px;
-        margin-right: 10px;
-      }
+  .invite-tab {
+    .ant-tabs-content-holder {
+      padding: 10px;
     }
   }
 }

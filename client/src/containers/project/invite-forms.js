@@ -1,16 +1,22 @@
 import React from "react";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, Button } from "antd";
 
-export const OrgInviteForm = ({ onSubmit, project }) => {
+export const OrgInviteForm = ({ onSubmit, project, goback }) => {
   const onFinish = (values) => {
     values.project_name = project.name;
     values.project_id = project._id;
     values.intro = window.btoa(values.intro || "");
     onSubmit(values);
   };
+
+  const onCancel = (e) => {
+    e.preventDefault();
+    goback();
+  };
+
   return (
     <Form name="invite" className="register-form" onFinish={onFinish}>
-      <span>Organization name:</span>
+      <span className="form-label">Organization name*</span>
       <Form.Item
         name="organization"
         rules={[
@@ -22,7 +28,10 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
       >
         <Input size="large" />
       </Form.Item>
-      <span>Leader:</span>
+      <p className="mt-5">
+        <b>Organization leader</b>
+      </p>
+      <span className="form-label">First name*</span>
       <Form.Item
         name="first_name"
         rules={[
@@ -32,8 +41,9 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
           },
         ]}
       >
-        <Input size="large" placeholder="First Name" />
+        <Input size="large" />
       </Form.Item>
+      <span className="form-label">Last name*</span>
       <Form.Item
         name="last_name"
         rules={[
@@ -43,9 +53,9 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
           },
         ]}
       >
-        <Input size="large" placeholder="Last Name" />
+        <Input size="large" />
       </Form.Item>
-      <span>E-mail:</span>
+      <span className="form-label">Email*</span>
       <Form.Item
         name="email"
         rules={[
@@ -57,20 +67,23 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
       >
         <Input size="large" type="email" />
       </Form.Item>
-      <span>Introduction:</span>
+      <span className="form-label">Introduction</span>
       <Form.Item name="intro">
         <Input.TextArea rows={3} size="large" />
       </Form.Item>
-      <div className="signup-btn mt-4">
-        <button type="submit" className="main-btn template-btn">
-          Invite
-        </button>
+      <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+        <Button type="ghost" onClick={onCancel} className="ghost-btn">
+          Cancel
+        </Button>
+        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          Send Invite
+        </Button>
       </div>
     </Form>
   );
 };
 
-export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
+export const TeamInviteForm = ({ onSubmit, project, org, roles, goback }) => {
   const onFinish = (values) => {
     values.project_name = project.name;
     values.project_id = project._id;
@@ -78,9 +91,15 @@ export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
     values.intro = window.btoa(values.intro || "");
     onSubmit(values);
   };
+
+  const onCancel = (e) => {
+    e.preventDefault();
+    goback();
+  };
+
   return (
     <Form name="invite" className="register-form" onFinish={onFinish}>
-      <span>Name:</span>
+      <span className="form-label">First name*</span>
       <Form.Item
         name="first_name"
         rules={[
@@ -90,8 +109,9 @@ export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
           },
         ]}
       >
-        <Input size="large" placeholder="First Name" />
+        <Input size="large" />
       </Form.Item>
+      <span className="form-label">Last name*</span>
       <Form.Item
         name="last_name"
         rules={[
@@ -101,19 +121,9 @@ export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
           },
         ]}
       >
-        <Input size="large" placeholder="Last Name" />
+        <Input size="large" />
       </Form.Item>
-      <span>Role:</span>
-      <Form.Item name="project_role">
-        <Select placeholder="Role" size="large">
-          {roles.map((item) => (
-            <Select.Option key={item._id} value={item.value}>
-              {item.value}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <span>E-mail:</span>
+      <span className="form-label">Email*</span>
       <Form.Item
         name="email"
         rules={[
@@ -123,12 +133,33 @@ export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
           },
         ]}
       >
-        <Input size="large" type="email" placeholder="E-mail" />
+        <Input size="large" type="email" />
       </Form.Item>
-      <div className="signup-btn mt-4">
-        <button type="submit" className="main-btn template-btn">
-          Invite
-        </button>
+      <span className="form-label">Role in {org.org_name}*</span>
+      <Form.Item
+        name="project_role"
+        rules={[
+          {
+            required: true,
+            message: "Please select the role!",
+          },
+        ]}
+      >
+        <Select placeholder="Role" size="large">
+          {roles.map((item) => (
+            <Select.Option key={item._id} value={item.value}>
+              {item.value}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+        <Button type="ghost" onClick={onCancel} className="ghost-btn">
+          Cancel
+        </Button>
+        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          Send Invite
+        </Button>
       </div>
     </Form>
   );

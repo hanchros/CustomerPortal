@@ -12,7 +12,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 import { Avatar, Badge } from "antd";
-import { BellOutlined } from "@ant-design/icons";
+import { BellOutlined, MessageOutlined } from "@ant-design/icons";
 import { deleteUser } from "../../actions/user";
 import { Link } from "react-router-dom";
 import sampleUrl from "../../assets/img/user-avatar.png";
@@ -36,11 +36,8 @@ class HeaderTemplate extends Component {
       notification,
       isAdmin,
       orgAdmin,
-      organization,
       message,
     } = this.props;
-    const orgName =
-      organization.currentOrganization.org_name || "integra-ledger";
 
     return (
       <React.Fragment>
@@ -51,7 +48,10 @@ class HeaderTemplate extends Component {
             color="transparent"
             expand="md"
           >
-            <Link className="navbar-brand" to={`/${orgName}`}>
+            <Link
+              className="navbar-brand"
+              to={authenticated ? "/dashboard" : "/"}
+            >
               {currentUser.profile && currentUser.profile.org.logo ? (
                 <img src={currentUser.profile.org.logo} alt="logo" />
               ) : (
@@ -63,40 +63,28 @@ class HeaderTemplate extends Component {
               <Nav className="mr-auto" navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={`/${orgName}/projects`}>
-                      MY PROJECTS
+                    <Link className="nav-link" to={`/dashboard`}>
+                      DASHBOARD
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/messages">
-                      <Badge
-                        count={message.unread}
-                        style={{ backgroundColor: "#52c41a" }}
-                      >
-                        <span>MESSAGES</span>
-                      </Badge>
+                    <Link className="nav-link" to={`/techhub`}>
+                      TECHHUB
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={`/${orgName}/techhub`}>
-                      TECH HUB
-                    </Link>
-                  </NavItem>
-                )}
-                {authenticated && (
-                  <NavItem>
-                    <Link className="nav-link" to={`/${orgName}/learnhub`}>
+                    <Link className="nav-link" to={`/learnhub`}>
                       LEARN
                     </Link>
                   </NavItem>
                 )}
                 {orgAdmin && (
                   <NavItem>
-                    <Link className="nav-link" to={`/${orgName}/admin`}>
+                    <Link className="nav-link" to={`/admin`}>
                       ADMIN
                     </Link>
                   </NavItem>
@@ -112,17 +100,20 @@ class HeaderTemplate extends Component {
               <Nav navbar>
                 {authenticated && (
                   <NavItem>
+                    <Link className="nav-link" to="/messages">
+                      <div className="mr-2">
+                        <Badge count={message.unread}>
+                          <MessageOutlined />
+                        </Badge>
+                      </div>
+                    </Link>
+                  </NavItem>
+                )}
+                {authenticated && (
+                  <NavItem>
                     <Link className="nav-link notif" to="/notification">
-                      <div
-                        className="mr-2"
-                        style={{
-                          fontSize: 22,
-                        }}
-                      >
-                        <Badge
-                          count={notification.unread}
-                          style={{ backgroundColor: "#f5222d" }}
-                        >
+                      <div className="mr-2">
+                        <Badge count={notification.unread}>
                           <BellOutlined />
                         </Badge>
                       </div>
@@ -145,7 +136,7 @@ class HeaderTemplate extends Component {
                     <DropdownMenu right>
                       <DropdownItem>
                         <Link className="nav-link" to={"/account"}>
-                          Account
+                          My Profile
                         </Link>
                       </DropdownItem>
                       <DropdownItem divider />
@@ -187,7 +178,6 @@ function mapStateToProps(state) {
     isAdmin: state.user.isAdmin,
     orgAdmin: state.user.orgAdmin,
     notification: state.notification,
-    organization: state.organization,
     message: state.message,
   };
 }

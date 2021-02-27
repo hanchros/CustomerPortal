@@ -71,10 +71,6 @@ export default function (state = INITIAL_STATE, action) {
         font_color: org.profile.font_color || org_consts.font_color,
         link_color: org.profile.link_color || org_consts.link_color,
         shadow_color: org.profile.shadow_color || org_consts.shadow_color,
-        title_page: org.profile.title_page || org_consts.title_page,
-        title_page_description:
-          org.profile.title_page_description ||
-          org_consts.title_page_description,
         logo: org.logo || org_consts.logo,
         org_name: org.org_name,
       };
@@ -104,10 +100,6 @@ export default function (state = INITIAL_STATE, action) {
         font_color: action.profile.font_color || org_consts.font_color,
         link_color: action.profile.link_color || org_consts.link_color,
         shadow_color: action.profile.shadow_color || org_consts.shadow_color,
-        title_page: action.profile.title_page || org_consts.title_page,
-        title_page_description:
-          action.profile.title_page_description ||
-          org_consts.title_page_description,
         logo: action.logo || state.orgSettings.logo,
         org_name: action.org_name,
       };

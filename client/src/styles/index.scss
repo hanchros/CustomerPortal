@@ -91,7 +91,8 @@ body {
     color: var(--menufont_color);
   }
   .container-nav {
-    padding: 10px 5%;
+    padding: 7px 5%;
+    min-height: 63px;
   }
   nav a:hover {
     color: $gray-400 !important;
@@ -119,6 +120,7 @@ body {
 
   .nav-link .ant-badge {
     color: inherit;
+    margin-top: 4px;
     // color: white !important;
   }
   & .page-logo {
@@ -132,14 +134,17 @@ body {
   }
 }
 .ant-badge {
-  font-size: inherit !important;
+  font-size: 22px !important;
+
   .ant-badge-count {
     height: 16px;
     min-width: 14px;
-    border-radius: 8px;
-    right: -5px;
-    padding: 0 5px;
+    padding: 0 4px;
     line-height: 16px;
+    height: 15px;
+    top: 3px;
+    right: 4px;
+    background-color: #3c76ee;
   }
 }
 
@@ -149,9 +154,14 @@ body {
 
 .content {
   padding-top: 70px;
-  min-height: calc(100vh - 129px);
+  min-height: calc(100vh - 123px);
   margin: 0 auto;
   padding-bottom: 45px;
+
+  .row {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
 
   p {
     font-size: 1rem;
@@ -175,8 +185,8 @@ body {
 }
 
 .sub-content {
-  padding-top: 100px;
-  min-height: calc(100vh - 189px);
+  padding-top: 70px;
+  min-height: calc(100vh - 183px);
   margin: 0 auto;
   padding-bottom: 45px;
 }
@@ -258,8 +268,8 @@ body {
 
 @media (min-width: 768px) {
   .main-nav .navbar-expand-md .navbar-nav .nav-link {
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
+    padding-right: 1.1rem;
+    padding-left: 1.1rem;
   }
 
   .main-nav .navbar-expand-md .navbar-nav .nav-link.notif {

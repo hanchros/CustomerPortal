@@ -6,6 +6,7 @@ import IconLinkedin from "../../assets/icon/linkedin.png";
 import IconFacebook from "../../assets/icon/facebook.png";
 import IconTwitter from "../../assets/icon/twitter.png";
 import IconWeb from "../../assets/icon/challenge.png";
+import { processLink } from "../../utils/helper";
 
 const OrgEditForm = ({
   onSubmit,
@@ -21,6 +22,7 @@ const OrgEditForm = ({
     values.logo = avatarURL || "";
     values.creator = org.creator || userId || null;
     values.profile = org.profile || {};
+    values.social = processLink(values.social);
     onSubmit(values);
   };
 

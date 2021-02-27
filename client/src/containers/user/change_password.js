@@ -1,13 +1,21 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Row } from "reactstrap";
 import { changePassword } from "../../actions/auth";
 import { Button, Form, Input, message } from "antd";
+import { ErrPwdMsg } from "../../constants";
+import { checkPwdStrength } from "../../utils/helper";
 
 const ResetPasswordForm = ({ changePassword }) => {
+  const [invalidPwd, setInvalidPwd] = useState(false);
+  
   const onFinish = (values) => {
     if (values.password !== values.conf_password) {
       message.error("Confirm password doesn't match!");
+      return;
+    }
+    if (!checkPwdStrength(values.password)) {
+      setInvalidPwd(true);
       return;
     }
     changePassword(values.old_password, values.password);
@@ -62,11 +70,12 @@ const ResetPasswordForm = ({ changePassword }) => {
             </Form.Item>
           </Col>
         </Row>
+        {invalidPwd && <div className="pwd-error">{ErrPwdMsg}</div>}
       </div>
       <Button
         type="ghost"
         htmlType="submit"
-        className="black-btn wide mt-5"
+        className="black-btn mt-5"
         style={{ float: "right" }}
       >
         Apply New Password
@@ -100,8 +109,8 @@ class ResetPassword extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { errorMessage: state.auth.error, message: state.auth.resetMessage };
+function mapStateToProps() {
+  return {};
 }
 
 export default connect(mapStateToProps, {

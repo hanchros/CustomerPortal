@@ -16,6 +16,7 @@ import InviteHomePage from "./containers/home/invite";
 
 // Import organization pages
 import OrgInviteMember from "./containers/home/invite/org-invite";
+import OrgDashboard from "./containers/organization/dashboard";
 
 // Import project pages
 import Projectslist from "./containers/project/list";
@@ -112,15 +113,16 @@ class Routes extends React.Component {
             component={RequireAuth(TemplatePage)}
           />
 
-          <Route path="/:org/techhub" component={RequireAuth(Techhub)} />
-          <Route path="/:org/learnhub" component={RequireAuth(LearnHub)} />
+          <Route path="/techhub" component={RequireAuth(Techhub)} />
+          <Route path="/learnhub" component={RequireAuth(LearnHub)} />
 
-          <Route path="/:org/admin" component={RequireAuth(AdminDashboard)} />
+          <Route path="/admin" component={RequireAuth(AdminDashboard)} />
           <Route path="/super" component={RequireAuth(SuperAdminDashboard)} />
           <Route path="/messages" component={RequireAuth(MessageBox)} />
           <Route path="/notification" component={RequireAuth(Notification)} />
-          <Route path="/:org/faq" component={Faq} />
-          <Route path="/:org_name" component={RequireAuth(Dashboard)} />
+          <Route path="/faq" component={Faq} />
+          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
+          <Route path="/:org_name" component={RequireAuth(OrgDashboard)} />
 
           <Route path="*" component={NotFoundPage} />
         </Switch>

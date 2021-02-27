@@ -4,9 +4,14 @@ import { Button, Form, Input } from "antd";
 import { createInviteRequest } from "../../../actions/invite";
 import { ModalSpinner } from "../../../components/pages/spinner";
 
-const RequestInviteForm = ({ onSubmit, sent }) => {
+const RequestInviteForm = ({ onSubmit, sent, goBack }) => {
   const onFinish = (values) => {
     onSubmit(values);
+  };
+
+  const onCancel = (e) => {
+    e.preventDefault();
+    goBack();
   };
 
   return (
@@ -51,12 +56,23 @@ const RequestInviteForm = ({ onSubmit, sent }) => {
       >
         <Input size="large" type="email" />
       </Form.Item>
-      <div className="flex mt-4">
-        <Button type="ghost" htmlType="submit" className="black-btn" style={{width: "120px"}}>
-          Send
-        </Button>
-        {sent && <p className="ml-4">Please check your email</p>}
-      </div>
+      <Button
+        type="ghost"
+        htmlType="submit"
+        className="black-btn mt-5"
+        style={{ width: "100%" }}
+      >
+        Send request
+      </Button>
+      {sent && <p>Please check your email</p>}
+      <Button
+        type="ghost"
+        className="ghost-btn mt-3"
+        style={{ width: "100%" }}
+        onClick={onCancel}
+      >
+        Cancel
+      </Button>
     </Form>
   );
 };
@@ -84,13 +100,14 @@ class RequestInvite extends React.Component {
         <div className="account-form-box mb-4">
           <div className="center mb-4">
             <h3>
-              <b>REQUEST INVITE</b>
+              <b>Request invite</b>
             </h3>
           </div>
-          <RequestInviteForm onSubmit={this.onRequestInvite} sent={sent} />
-          <Button type="link" className="mt-5" onClick={this.props.goNext}>
-            Go Back
-          </Button>
+          <RequestInviteForm
+            onSubmit={this.onRequestInvite}
+            sent={sent}
+            goBack={this.props.goNext}
+          />
           <ModalSpinner visible={loading} />
         </div>
       </div>

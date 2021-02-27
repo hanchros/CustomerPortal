@@ -274,7 +274,7 @@ const sendUnreadMessage = async (sender, receptId, content) => {
   if (utils.compareIds(sender._id, receptId)) return;
   try {
     let receptor = await User.findById(receptId);
-    if (!receptor) return;
+    if (!receptor || !receptor.profile.setting.message_notify) return;
     let senderName = `${sender.profile.first_name} ${sender.profile.last_name}`;
     let receptorName = `${receptor.profile.first_name} ${receptor.profile.last_name} `;
     sendgrid.newMessage(receptorName, senderName, content, receptor.email);

@@ -5,7 +5,6 @@ import { List, Collapse } from "antd";
 import { Row, Col } from "reactstrap";
 import { getFieldDataByNameValue } from "../../utils/helper";
 import Video from "../../components/pages/video";
-import ImageHolder from "../../assets/icon/challenge.png";
 import Avatar from "antd/lib/avatar/avatar";
 import { listArticle } from "../../actions/article";
 import { listFieldData } from "../../actions/profile";
@@ -82,7 +81,7 @@ class ArticlePage extends React.Component {
       if (flt.length === 0) {
         result.push({
           topic: article.topic,
-          icon: article.icon || ImageHolder,
+          icon: article.icon,
           articles: [article],
         });
       } else {
@@ -113,7 +112,7 @@ class ArticlePage extends React.Component {
     for (let article of techs) {
       result.push({
         topic: article.title,
-        icon: article.icon || ImageHolder,
+        icon: article.icon,
         articles: [article],
       });
     }
@@ -126,7 +125,7 @@ class ArticlePage extends React.Component {
       className={this.state.topic === item.topic && "active"}
     >
       <span style={{ width: "80%" }}>{item.topic}</span>
-      <Avatar src={item.icon} />
+      {item.icon && <Avatar src={item.icon} />}
     </List.Item>
   );
 

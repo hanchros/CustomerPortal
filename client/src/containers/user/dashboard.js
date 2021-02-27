@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
 import { Avatar, Skeleton, Button, Modal, Input } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  FacebookFilled,
+  LinkedinFilled,
+  TwitterCircleFilled,
+} from "@ant-design/icons";
 import { Header, Footer, SubHeader } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
 import UserAvatar from "../../assets/img/user-avatar.png";
@@ -10,6 +15,7 @@ import { fetchUser, listUserProjects } from "../../actions/user";
 import { getProject } from "../../actions/project";
 import { startConversation, fetchOneConversation } from "../../actions/message";
 import history from "../../history";
+import { Link } from "react-router-dom";
 
 class UserDashboard extends Component {
   constructor() {
@@ -113,7 +119,21 @@ class UserDashboard extends Component {
             )}
           </div>
           <Row className="mt-4">
-            <Col xl={8} md={7}>
+            <Col md={8}>
+              <Row>
+                <Col md={6}>
+                  <div className="user-span">
+                    <p>Organization</p>
+                    <Link to={`/${profile.org_name}`}>{profile.org_name}</Link>
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="user-span">
+                    <p>Role in organization</p>
+                    {profile.role}
+                  </div>
+                </Col>
+              </Row>
               <Row>
                 <Col md={6}>
                   <div className="user-span">
@@ -130,31 +150,73 @@ class UserDashboard extends Component {
                   )}
                 </Col>
               </Row>
-              {profile.personal_statement && (
-                <div className="user-span">
-                  <p>Best way to contact this person</p>
-                  <div className="user-personal" dangerouslySetInnerHTML={{ __html: profile.personal_statement }} />
-                </div>
-              )}
-              {profile.country && (
-                <div className="user-span">
-                  <p>Country</p>
-                  <span>{profile.country}</span>
-                </div>
-              )}
-              {profile.address && (
-                <div className="user-span">
-                  <p>Address</p>
-                  <span>{profile.address}</span>
-                </div>
-              )}
+              <Row>
+                <Col md={6}>
+                  {profile.contact && (
+                    <div className="user-span">
+                      <p>Best way to contact this person</p>
+                      <span>{profile.contact}</span>
+                    </div>
+                  )}
+                  {profile.country && (
+                    <div className="user-span">
+                      <p>Country</p>
+                      <span>{profile.country}</span>
+                    </div>
+                  )}
+                  {profile.address && (
+                    <div className="user-span">
+                      <p>Address</p>
+                      <span>{profile.address}</span>
+                    </div>
+                  )}
+                </Col>
+              </Row>
             </Col>
-            <Col xl={4} md={5} className="mb-4">
-              <img
-                src={profile.photo || UserAvatar}
-                alt="logo"
-                className="user-detail-logo"
-              />
+            <Col md={4} className="mb-4 user-logo-box">
+              <div className="user-detail-logo">
+                <img src={profile.photo || UserAvatar} alt="logo" />
+                <div className="profile-links">
+                  {profile.facebook && (
+                    <a
+                      href={profile.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FacebookFilled />
+                    </a>
+                  )}
+                  {profile.twitter && (
+                    <a
+                      href={profile.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <TwitterCircleFilled />
+                    </a>
+                  )}
+                  {profile.linkedin && (
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LinkedinFilled />
+                    </a>
+                  )}
+                </div>
+                {profile.web && (
+                  <div className="profile-web">
+                    <a
+                      href={profile.web}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {profile.web}
+                    </a>
+                  </div>
+                )}
+              </div>
             </Col>
           </Row>
           <Row>

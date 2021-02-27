@@ -255,12 +255,6 @@ export function getOrgByName(org_name) {
   return async (dispatch) => {
     try {
       let res = await client.get(`${API_URL}/organization/name/${org_name}`);
-      dispatch({
-        type: SET_ORG_SETTINGS,
-        profile: res.data.organization ? res.data.organization.profile : {},
-        logo: res.data.organization ? res.data.organization.logo : "",
-        org_name: org_name,
-      });
       return res.data.organization;
     } catch (err) {
       console.log(err);

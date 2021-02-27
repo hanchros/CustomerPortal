@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Form, Input, message, Button } from "antd";
 import { Col, Row } from "reactstrap";
@@ -6,16 +6,25 @@ import { BigUpload } from "../../../components/template";
 import { registerInvitedUser } from "../../../actions/auth";
 import { ModalSpinner } from "../../../components/pages/spinner";
 import history from "../../../history";
+import { ErrPwdMsg } from "../../../constants";
+import { checkPwdStrength } from "../../../utils/helper";
 
 export const InviteRegisterForm = ({
   onSubmit,
   values,
   setAvatar,
   avatarURL,
+  goBack,
 }) => {
+  const [invalidPwd, setInvalidPwd] = useState(false);
+
   const onFinish = (value) => {
     if (value.password !== value.conf_password) {
       message.error("password confirmation doesn't match!");
+      return;
+    }
+    if (!checkPwdStrength(value.password)) {
+      setInvalidPwd(true);
       return;
     }
     value.photo = avatarURL;
@@ -24,6 +33,11 @@ export const InviteRegisterForm = ({
     value.project_role = values.project_role;
     value.role = values.role;
     onSubmit(value);
+  };
+
+  const onCancel = (e) => {
+    e.preventDefault();
+    goBack();
   };
 
   return (
@@ -113,15 +127,16 @@ export const InviteRegisterForm = ({
             </Form.Item>
           </Col>
         </Row>
+        {invalidPwd && <div className="pwd-error">{ErrPwdMsg}</div>}
       </div>
-      <Button
-        type="ghost"
-        htmlType="submit"
-        className="black-btn wide mt-5 mb-4"
-        style={{ float: "right" }}
-      >
-        Continue
-      </Button>
+      <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+        <Button type="ghost" onClick={onCancel} className="ghost-btn">
+          Cancel
+        </Button>
+        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          Continue
+        </Button>
+      </div>
     </Form>
   );
 };
@@ -146,7 +161,7 @@ class InviteRegister extends React.Component {
   };
 
   render() {
-    const { pdfData } = this.props;
+    const { pdfData, goBack } = this.props;
     return (
       <Row>
         <Col md={4}>
@@ -167,6 +182,7 @@ class InviteRegister extends React.Component {
             values={pdfData}
             setAvatar={this.setAvatar}
             avatarURL={this.state.avatarURL}
+            goBack={goBack}
           />
           <ModalSpinner visible={this.state.loading} />
         </Col>

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container, Row, Col } from "reactstrap";
-import { Input, Button, Modal, Tabs, List, Avatar } from "antd";
+import { Container } from "reactstrap";
+import { Button, Modal, Tabs, List, Avatar } from "antd";
+import { LeftOutlined, UserOutlined } from "@ant-design/icons";
 import { sendInvite, joinOrgProject } from "../../actions/project";
 import { Header, Footer } from "../../components/template";
 import { listOrgReport } from "../../actions/organization";
@@ -17,6 +18,8 @@ import { ModalSpinner } from "../../components/pages/spinner";
 import UserIcon from "../../assets/img/user-avatar.png";
 import { OrgInviteForm, TeamInviteForm } from "./invite-forms";
 import { getFieldData } from "../../utils/helper";
+import { Link } from "react-router-dom";
+import BDImg from "../../assets/icon/building.svg";
 
 const { TabPane } = Tabs;
 
@@ -166,13 +169,9 @@ class Invite extends Component {
           {curProj.name}, if a new Organization needs to be added use the
           “Invite Organization” tab.
         </p>
-        <div className="org-invite-header">
-          <Input
-            type="text"
-            value={organization.currentOrganization.org_name}
-            disabled
-          />
-        </div>
+        <p className="mt-5">
+          <b>Invite users from your organization</b>
+        </p>
         {exMembers.length > 0 && (
           <List
             itemLayout="horizontal"
@@ -204,7 +203,9 @@ class Invite extends Component {
           />
         )}
         <div className="project-teaminvite-box">
-          <p>Invite new member</p>
+          <p>
+            <b>Invite new member</b>
+          </p>
           <TeamInviteForm
             onSubmit={this.onSendTeamInvite}
             project={curProj}
@@ -235,20 +236,44 @@ class Invite extends Component {
 
   render() {
     const { loading, visible, content, showExUser } = this.state;
-    const { invite } = this.props;
+    const { invite, goback } = this.props;
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
+        <div className="account-nav">
+          <Container>
+            <Link to="#" onClick={goback}>
+              <p>
+                <LeftOutlined /> Back to Project
+              </p>
+            </Link>
+          </Container>
+        </div>
+        <Container className="sub-content">
           <Tabs
             defaultActiveKey={invite === "team" ? "2" : "1"}
             type="card"
-            className="invite-tab mb-5"
+            className="invite-tab"
           >
-            <TabPane tab="Invite Organization" key="1">
+            <TabPane
+              tab={
+                <span>
+                  <img src={BDImg} alt="" height={15} /> Invite Organization
+                </span>
+              }
+              key="1"
+            >
               {this.renderOrgInviteTab()}
             </TabPane>
-            <TabPane tab="Invite Team Member" key="2">
+            <TabPane
+              tab={
+                <span>
+                  <UserOutlined />
+                  Invite Team Member
+                </span>
+              }
+              key="2"
+            >
               {this.renderTeamInviteTab()}
             </TabPane>
           </Tabs>

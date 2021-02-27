@@ -78,7 +78,7 @@
     right: 8px;
     opacity: 0;
     transition-property: opacity;
-    transition-duration: .7s, .7s;
+    transition-duration: 0.7s, 0.7s;
   }
 }
 
@@ -140,11 +140,7 @@
 .login-form {
   width: 100%;
   min-width: 325px;
-}
-
-.forgot-password {
-  color: inherit;
-  font-size: 12px;
+  max-width: 400px;
 }
 
 .underline-link {
@@ -152,65 +148,63 @@
   text-decoration: underline !important;
 }
 
-.home-child {
-  .login-options {
+.login-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resend-desc {
+  margin-top: 70px;
+  font-size: 25px !important;
+}
+
+.resend-intro {
+  margin-top: 30vh;
+}
+
+.ant-input {
+  background-color: $gray;
+  border: 1px solid $gray-500;
+}
+
+.signup-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.register-btn-group {
+  display: flex;
+  margin-top: 30px;
+  .main-btn {
+    width: 100px;
+  }
+  .main-btn:nth-child(1) {
+    margin-right: 30px;
+  }
+}
+
+.send-invite-email {
+  width: 100%;
+  margin-top: 150px;
+  margin-bottom: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .register-inv-send {
+    max-width: 500px;
     display: flex;
-    justify-content: space-between;
-  }
-
-  .resend-desc {
-    margin-top: 70px;
-    font-size: 25px !important;
-  }
-
-  .resend-intro {
-    margin-top: 30vh;
-  }
-
-  .ant-input {
-    background-color: $gray;
-    border: 1px solid $gray-500;
-  }
-
-  .signup-btn {
-    width: 100%;
-    text-align: center;
-  }
-
-  .register-btn-group {
-    display: flex;
-    margin-top: 30px;
+    justify-content: center;
     .main-btn {
-      width: 100px;
-    }
-    .main-btn:nth-child(1) {
-      margin-right: 30px;
+      margin-left: 30px;
+      width: 180px;
     }
   }
+}
 
-  .send-invite-email {
-    width: 100%;
-    margin-top: 150px;
-    margin-bottom: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .register-inv-send {
-      max-width: 500px;
-      display: flex;
-      justify-content: center;
-      .main-btn {
-        margin-left: 30px;
-        width: 180px;
-      }
-    }
-  }
-
-  .reset-btn-group {
-    width: 250px;
-    margin: 50px auto;
-  }
+.reset-btn-group {
+  width: 250px;
+  margin: 50px auto;
 }
 
 .fileread-modal {
@@ -245,7 +239,6 @@
   }
 }
 
-
 @media screen and (max-width: 768px) {
   .register-modal {
     .ant-card-cover {
@@ -253,16 +246,14 @@
     }
   }
 
-  .home-child {
-    .login-form {
-      min-width: 0;
-    }
-    .resend-intro {
-      margin-top: 20vh;
-    }
-    .send-invite-email {
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
+  .login-form {
+    min-width: 280px;
+  }
+  .resend-intro {
+    margin-top: 20vh;
+  }
+  .send-invite-email {
+    margin-top: 30px;
+    margin-bottom: 30px;
   }
 }

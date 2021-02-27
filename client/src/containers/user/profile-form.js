@@ -4,20 +4,14 @@ import { Col, Row } from "reactstrap";
 import { BigUpload } from "../../components/template";
 import { countries } from "../../constants";
 import RichTextEditor from "../../components/pages/editor";
+import { processLink } from "../../utils/helper";
 
 const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
-  const processLink = (link) => {
-    if (!link) return "";
-    if (!link.startsWith("http://") && !link.startsWith("https://")) {
-      return "http://" + link;
-    }
-    return link;
-  };
-
   const onFinish = (values) => {
     values.photo = avatarURL;
     values.org_name = profile.org_name;
     values.org = profile.org;
+    values.setting = profile.setting;
     values.org_role = profile.org_role;
     values.facebook = processLink(values.facebook);
     values.linkedin = processLink(values.linkedin);
@@ -135,8 +129,16 @@ const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
                 </Form.Item>
               </Col>
               <Col md={6} sm={12}>
-                <span className="form-label">Role in organization</span>
-                <Form.Item name="role">
+                <span className="form-label">Role in organization*</span>
+                <Form.Item
+                  name="role"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select the role!",
+                    },
+                  ]}
+                >
                   <Select size="large">
                     {roles.map((item) => (
                       <Select.Option key={item._id} value={item.value}>
@@ -189,7 +191,7 @@ const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
           <Button
             type="ghost"
             htmlType="submit"
-            className="black-btn wide mt-4"
+            className="black-btn mt-4"
             style={{ float: "right" }}
           >
             Save

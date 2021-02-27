@@ -162,6 +162,8 @@ module.exports = function (app) {
   projectRoutes.post("/", requireAuth, ProjectController.createProject);
   // Update project route
   projectRoutes.put("/", requireAuth, ProjectController.updateProject);
+  // Update project technology route
+  projectRoutes.put("/technology", requireAuth, ProjectController.updateProjectTechs);
   // Delete project route
   projectRoutes.delete("/:projectId", ProjectController.deleteProject);
   // List creator project route

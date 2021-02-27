@@ -41,6 +41,10 @@ const UserSchema = new Schema(
       tags: [{ type: Schema.Types.ObjectId, ref: "FieldData" }],
       contact: { type: String },
       role: { type: String },
+      setting: {
+        message_notify: { type: Boolean, default: true },
+        project_update_notify: { type: Boolean, default: true },
+      },
     },
     role: {
       type: String,

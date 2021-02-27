@@ -97,3 +97,19 @@ export const extractContent = (s, space) => {
   }
   return [span.textContent || span.innerText].toString().replace(/ +/g, " ");
 };
+
+export const checkPwdStrength = (password) => {
+  var strongRegex = new RegExp(
+    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+  );
+  if (!password) return false;
+  return strongRegex.test(password);
+};
+
+export const processLink = (link) => {
+  if (!link) return "";
+  if (!link.startsWith("http://") && !link.startsWith("https://")) {
+    return "http://" + link;
+  }
+  return link;
+};

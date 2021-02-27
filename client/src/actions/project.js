@@ -45,6 +45,24 @@ export function updateProject(project) {
   };
 }
 
+export function updateProjectTechs(id, technologies) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      let res = await client.put(`${API_URL}/project/technology`, {
+        id,
+        technologies,
+      });
+      dispatch({
+        type: UPDATE_PROJECT,
+        project: res.data.project,
+      });
+    } catch (err) {
+      createNotification("Update Project Technology", errorMessage(err));
+    }
+  };
+}
+
 export function listProjects() {
   return async (dispatch) => {
     const client = Client(true);

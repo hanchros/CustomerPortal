@@ -99,7 +99,7 @@ class InviteHomePage extends React.Component {
           alt=""
         />
         <div className="main-background-title">
-          Welcome to the Automation Place
+          Welcome to the Collaboration App 
         </div>
         <div className="home-intro">
           {orgSettings.org_name} has invited you to join the{" "}
@@ -110,7 +110,7 @@ class InviteHomePage extends React.Component {
         </span>
         <Button
           type="ghost"
-          className="black-btn wide mt-5"
+          className="black-btn mt-5"
           onClick={this.onBegin}
         >
           start registration
@@ -138,7 +138,7 @@ class InviteHomePage extends React.Component {
         </p>
         <Button
           type="ghost"
-          className="ghost-btn wide mb-4"
+          className="ghost-btn mb-4"
           onClick={this.onRequestInvite}
         >
           Request an invitation​
@@ -161,7 +161,7 @@ class InviteHomePage extends React.Component {
             </span>
             <Button
               type="ghost"
-              className="black-btn wide mt-5"
+              className="black-btn mt-5"
               onClick={this.onConfirm}
             >
               continue
@@ -203,7 +203,11 @@ class InviteHomePage extends React.Component {
         {step === 1 && this.renderRegisterStart()}
         {step === 2 && <RequestInvite goNext={this.onBegin} />}
         {step === 3 && (
-          <InviteRegister goNext={this.onRegisterProject} pdfData={pdfData} />
+          <InviteRegister
+            goNext={this.onRegisterProject}
+            pdfData={pdfData}
+            goBack={this.onBegin}
+          />
         )}
         {step === 4 && <ProjectRegister goBack={this.onCompleteInvite} />}
         {step === 5 && <InviteComplete />}

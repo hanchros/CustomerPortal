@@ -35,8 +35,8 @@
   padding: 15px;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 4px var(--shadow_color);
-  margin: 2px 0;
+  box-shadow: 1px 1px 8px var(--shadow_color);
+  cursor: pointer;
   .ant-avatar {
     width: 50px;
     height: 50px;
@@ -52,6 +52,9 @@
   .ant-tabs-nav .ant-tabs-tab-active {
     border-bottom-color: var(--background_color) !important;
     background-color: transparent !important;
+    margin-right: -1px !important;
+    margin-left: -1px !important;
+
     .ant-tabs-tab-btn {
       color: black;
       font-size: 14px;
@@ -62,13 +65,22 @@
   .ant-tabs-tab {
     border-color: black !important;
     background-color: black !important;
-    padding: 12px 25px 10px !important;
-    margin-right: 0px !important;
+    padding: 17px 35px 17px !important;
+    margin-right: 1px !important;
+    border-radius: 0 !important;
     .ant-tabs-tab-btn {
       color: white;
       font-size: 14px;
       font-weight: bold;
     }
+  }
+
+  .ant-tabs-tab:first-child {
+    margin-left: 0 !important;
+  }
+
+  .ant-tabs-content-holder {
+    padding-top: 20px;
   }
 }
 

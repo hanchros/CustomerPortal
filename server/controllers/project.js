@@ -47,12 +47,33 @@ exports.updateProject = async (req, res, next) => {
   try {
     const id = req.body._id;
     delete req.body._id;
-    let oldProject = await Project.findById(id);
-    let techs = req.body.technologies || [];
-
-    const pr = await Project.findOneAndUpdate({ _id: id }, req.body, {
+    await Project.findOneAndUpdate({ _id: id }, req.body, {
       new: true,
     });
+    const result = await Project.findById(id)
+      .populate({
+        path: "participant",
+        select: "_id profile",
+      })
+      .populate("technologies");
+    res.status(201).json({ project: result });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.updateProjectTechs = async (req, res, next) => {
+  try {
+    const id = req.body.id;
+    let oldProject = await Project.findById(id);
+    let techs = req.body.technologies || [];
+    await Project.findOneAndUpdate(
+      { _id: id },
+      { technologies: techs },
+      {
+        new: true,
+      }
+    );
     for (let tech of techs) {
       let exTechs = oldProject.technologies.filter((item) => {
         return utils.compareIds(item, tech._id);
@@ -65,8 +86,7 @@ exports.updateProject = async (req, res, next) => {
         await timeline.save();
       }
     }
-
-    const result = await Project.findById(pr._id)
+    const result = await Project.findById(id)
       .populate({
         path: "participant",
         select: "_id profile",

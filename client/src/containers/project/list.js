@@ -51,17 +51,28 @@ class ProjectList extends Component {
             renderItem={(item) => (
               <List.Item
                 onClick={() => this.goToProject(item)}
-                actions={[<Link to="#">{item.status}</Link>]}
               >
                 <List.Item.Meta
                   avatar={<Avatar src={item.logo || ChallengeLogo} />}
-                  title={<b>{item.name}</b>}
+                  title={
+                    <span>
+                      <b>{item.name}</b>
+                      <i
+                        className="online-symbol ml-5"
+                        style={{ fontSize: "14px" }}
+                      >
+                        ●
+                      </i>
+                      {item.status}
+                    </span>
+                  }
                   description={
                     <span>
                       {item.participant && (
                         <span>
                           {item.participant.profile.first_name}{" "}
-                          {item.participant.profile.last_name} - {item.participant.profile.org_name}
+                          {item.participant.profile.last_name} -{" "}
+                          {item.participant.profile.org_name}
                         </span>
                       )}
                       <br />
