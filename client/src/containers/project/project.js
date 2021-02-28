@@ -85,12 +85,11 @@ class Project extends Component {
   };
 
   onGotoTech = (item) => {
-    const curOrg = this.props.organization.currentOrganization;
     let tab = 3;
     if (item.organization) {
       tab = 4;
     }
-    history.push(`/${curOrg.org_name}/techhub?tab=${tab}&id=${item._id}`);
+    history.push(`/techhub?tab=${tab}&id=${item._id}`);
   };
 
   onGotoUser = (user) => {
@@ -280,9 +279,8 @@ class Project extends Component {
 
   render = () => {
     const { loading, showEdit, showInvite } = this.state;
-    const { project, user, match, organization } = this.props;
+    const { project, user, match } = this.props;
     const curProj = project.project;
-    const curOrg = organization.currentOrganization;
     let isCreator = curProj.participant && curProj.participant._id === user._id;
 
     if (showEdit) {
@@ -298,9 +296,9 @@ class Project extends Component {
         <Header />
         <div className="account-nav">
           <Container>
-            <Link to={`/${curOrg.org_name}/projects`}>
+            <Link to={`/dashboard`}>
               <p>
-                <LeftOutlined /> Back to Dashboard
+                <LeftOutlined /> Go back
               </p>
             </Link>
           </Container>

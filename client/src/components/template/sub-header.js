@@ -8,7 +8,7 @@ const SubHeader = ({ org_name, project }) => (
     <Container>
       {project && (
         <div className="sub-link">
-          <Link to={`/${org_name}/projects`}>Projects</Link>
+          <Link to={`/dashboard`}>Projects</Link>
           <LeftOutlined />
           <Link to={`/${org_name}/project/${project._id}`}>{project.name}</Link>
         </div>

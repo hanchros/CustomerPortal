@@ -352,7 +352,7 @@ class AdminArticle extends React.Component {
             ))}
           </SortableContainer>
         )}
-        <Button type="primary" className="mt-5" onClick={this.createNew}>
+        <Button type="primary" onClick={this.createNew}>
           Add New
         </Button>
         {visible && (

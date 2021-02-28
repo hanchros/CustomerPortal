@@ -64,12 +64,12 @@ const EditArticle = ({
       initialValues={{ ...article }}
     >
       <Row className="mb-3">
-        <Col md={3}>
+        <Col md={4}>
           <div className="center">
             <Avatar setAvatar={setIconURL} imageUrl={iconURL} />
           </div>
         </Col>
-        <Col md={9} style={{ paddingTop: "33px" }}>
+        <Col md={8} style={{ paddingTop: "33px" }}>
           <Form.Item
             name="title"
             rules={[

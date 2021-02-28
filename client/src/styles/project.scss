@@ -26,22 +26,22 @@
 }
 
 .template-listitem {
-  align-items: flex-start !important;
-  .template-listitem-body {
-    box-shadow: 1px 1px 5px var(--shadow_color);
-    padding: 10px 15px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    color: inherit;
-    width: 100%;
+  box-shadow: 1px 1px 5px var(--shadow_color);
+  background-color: white;
+  margin-bottom: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
 
-    &:hover {
-      text-decoration: none;
-      box-shadow: 1px 1px 5px #ccc;
-    }
+  h5 {
+    padding-right: 20px;
   }
-  button {
-    width: 160px;
+
+  &:hover {
+    box-shadow: 1px 1px 8px var(--shadow_color);
+    cursor: pointer;
   }
 }
 
@@ -286,7 +286,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 3px !important;
-  height: 42px !important;
+  height: 40px !important;
 }
 
 .black-btn {
@@ -300,7 +300,7 @@
   justify-content: center;
   border-radius: 3px !important;
   border: 1px solid black !important;
-  height: 42px !important;
+  height: 40px !important;
 }
 
 .project-org-side {
@@ -363,8 +363,8 @@
 }
 
 .invite-tab {
-  max-width: 736px;
-  margin: auto !important;
+  max-width: 800px;
+  margin-left: auto !important;
   background-color: white;
 
   .ant-tabs-tab {
@@ -377,6 +377,11 @@
       font-weight: bold !important;
       padding: 8px 0;
       text-transform: uppercase;
+      img {
+        margin-right: 13px;
+        height: 15px;
+        margin-top: -2px;
+      }
     }
   }
 
@@ -396,6 +401,13 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 30px;
+}
+
+.templates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
 }
 
 @media screen and (min-width: 768px) {
@@ -460,6 +472,38 @@
     .ant-tabs-content-holder {
       padding: 10px;
     }
+  }
+
+  .templates-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+
+    h3 {
+      margin-bottom: 20px;
+    }
+
+    .flex {
+      flex-direction: column;
+      button:first-child {
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .template-listitem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .ghost-btn {
+    height: 32px !important;
+  }
+
+  .black-btn {
+    height: 32px !important;
   }
 }
 

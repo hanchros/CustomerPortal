@@ -121,7 +121,7 @@ class InviteHomePage extends React.Component {
 
   renderRegisterStart = () => (
     <Row className="pdf-home">
-      <Col md={3}>
+      <Col md={4}>
         <span>
           <b>STEP 1 of 3</b>
         </span>
@@ -169,7 +169,7 @@ class InviteHomePage extends React.Component {
           </div>
         </Modal>
       </Col>
-      <Col md={9} className="mb-4">
+      <Col md={8} className="mb-4">
         <FileDrop onDrop={this.handleDropFile}>
           <div className="invite-file-zone">
             <img src={UploadIcon} alt="" className="mb-4" />

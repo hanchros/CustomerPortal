@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Button, Modal, Tabs, List, Avatar } from "antd";
+import { Container, Col, Row } from "reactstrap";
+import { Button, Modal, Tabs, List, Avatar, Select } from "antd";
 import { LeftOutlined, UserOutlined } from "@ant-design/icons";
 import { sendInvite, joinOrgProject } from "../../actions/project";
 import { Header, Footer } from "../../components/template";
@@ -20,8 +20,10 @@ import { OrgInviteForm, TeamInviteForm } from "./invite-forms";
 import { getFieldData } from "../../utils/helper";
 import { Link } from "react-router-dom";
 import BDImg from "../../assets/icon/building.svg";
+import BDWImg from "../../assets/icon/building-white.svg";
 
 const { TabPane } = Tabs;
+const { Option } = Select;
 
 class Invite extends Component {
   constructor() {
@@ -34,6 +36,8 @@ class Invite extends Component {
       formVaule: {},
       showExUser: false,
       exUser: {},
+      tabkey: "1",
+      orgId: "",
     };
   }
 
@@ -115,14 +119,15 @@ class Invite extends Component {
     this.setState({ visible: false });
   };
 
-  getExMembers = () => {
+  getExMembers = (org_id) => {
     const { organization, project } = this.props;
     const participants = project.participants;
     let members = [],
       result = [];
     const orgReports = organization.adminOrganizations;
+    if (!org_id || org_id === "new") return result;
     for (let org of orgReports) {
-      if (org._id === organization.currentOrganization._id) {
+      if (org._id === org_id) {
         members = org.members;
         break;
       }
@@ -137,21 +142,75 @@ class Invite extends Component {
     return result;
   };
 
+  onChangeOrg = (value) => {
+    this.setState({ orgId: value });
+  };
+
   renderOrgInviteTab = () => {
-    const curProj = this.props.project.project;
+    const { organization, project } = this.props;
+    const { orgId } = this.state;
+    const curProj = project.project;
+    const orgReports = organization.adminOrganizations;
+    const exMembers = this.getExMembers(orgId);
     return (
       <div className="org-invite-box">
-        <p>
-          Invite an Organization to participate in {curProj.name}. Once the
-          Organization is invited and set-up for the project, additional team
-          members can be added to the Organization by using the “Invite Team
-          Member” tab.
-        </p>
-        <OrgInviteForm
-          onSubmit={this.onShowPreview}
-          project={curProj}
-          goback={this.props.goback}
-        />
+        <h4 className="mb-5">
+          <b>Invite a person from another organization</b>
+        </h4>
+        <Select
+          showSearch
+          placeholder="Choose the organization..."
+          optionFilterProp="children"
+          onChange={this.onChangeOrg}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          style={{ width: "100%" }}
+          size="large"
+          className="mb-5"
+        >
+          {orgReports.map((item) => (
+            <Option key={item._id} value={item._id}>
+              {item.org_name}
+            </Option>
+          ))}
+          <Option key={"new"} value={"new"}>
+            Another organization
+          </Option>
+        </Select>
+        {exMembers.length > 0 && (
+          <List
+            itemLayout="horizontal"
+            className="project-list"
+            dataSource={exMembers}
+            renderItem={(item) => (
+              <List.Item
+                actions={[
+                  <Button
+                    type="ghost"
+                    className="black-btn"
+                    onClick={() => this.onJoinOrg(curProj._id, item._id, orgId)}
+                  >
+                    Invite
+                  </Button>,
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={<Avatar src={item.profile.photo || UserIcon} />}
+                  title={
+                    <b>
+                      {item.profile.first_name} {item.profile.last_name}
+                    </b>
+                  }
+                  description={<span>{item.profile.role}</span>}
+                />
+              </List.Item>
+            )}
+          />
+        )}
+        {orgId === "new" && (
+          <OrgInviteForm onSubmit={this.onShowPreview} project={curProj} />
+        )}
       </div>
     );
   };
@@ -159,19 +218,14 @@ class Invite extends Component {
   renderTeamInviteTab = () => {
     const { project, organization, fieldData } = this.props;
     const curProj = project.project;
-    const exMembers = this.getExMembers();
+    const curOrg = organization.currentOrganization;
+    const exMembers = this.getExMembers(curOrg._id);
     const roles = getFieldData(fieldData, "user_role");
     return (
       <div className="org-invite-box">
-        <p>
-          Invite a Team Member to participate in {curProj.name}. These should be
-          members of Organizations that have already been invited to{" "}
-          {curProj.name}, if a new Organization needs to be added use the
-          “Invite Organization” tab.
-        </p>
-        <p className="mt-5">
-          <b>Invite users from your organization</b>
-        </p>
+        <h4 className="mb-5">
+          <b>Invite a person from {curOrg.org_name}</b>
+        </h4>
         {exMembers.length > 0 && (
           <List
             itemLayout="horizontal"
@@ -196,22 +250,22 @@ class Invite extends Component {
                       {item.profile.first_name} {item.profile.last_name}
                     </b>
                   }
-                  description={<span>{item.profile.org_role}</span>}
+                  description={<span>{item.profile.role}</span>}
                 />
               </List.Item>
             )}
           />
         )}
         <div className="project-teaminvite-box">
-          <p>
-            <b>Invite new member</b>
-          </p>
+          <h5 className="mb-4">
+            <b>Cannot find needed person?</b>
+          </h5>
+          <p style={{ fontSize: "18px" }}>Invite to {curOrg.org_name}</p>
           <TeamInviteForm
             onSubmit={this.onSendTeamInvite}
             project={curProj}
-            org={organization.currentOrganization}
+            org={curOrg}
             roles={roles}
-            goback={this.props.goback}
           />
         </div>
       </div>
@@ -234,9 +288,13 @@ class Invite extends Component {
     );
   };
 
+  onChnageKey = (key) => {
+    this.setState({ tabkey: key });
+  };
+
   render() {
-    const { loading, visible, content, showExUser } = this.state;
-    const { invite, goback } = this.props;
+    const { loading, visible, content, showExUser, tabkey } = this.state;
+    const { goback } = this.props;
     return (
       <React.Fragment>
         <Header />
@@ -250,33 +308,68 @@ class Invite extends Component {
           </Container>
         </div>
         <Container className="sub-content">
-          <Tabs
-            defaultActiveKey={invite === "team" ? "2" : "1"}
-            type="card"
-            className="invite-tab"
-          >
-            <TabPane
-              tab={
-                <span>
-                  <img src={BDImg} alt="" height={15} /> Invite Organization
-                </span>
-              }
-              key="1"
-            >
-              {this.renderOrgInviteTab()}
-            </TabPane>
-            <TabPane
-              tab={
-                <span>
-                  <UserOutlined />
-                  Invite Team Member
-                </span>
-              }
-              key="2"
-            >
-              {this.renderTeamInviteTab()}
-            </TabPane>
-          </Tabs>
+          <Row>
+            <Col md={4} className="mb-4">
+              <div style={{ maxWidth: "300px" }}>
+                <h3 className="mb-4">
+                  <b>Invite new project member</b>
+                </h3>
+                {tabkey === "1" && (
+                  <span>
+                    You can either invite your organization co-workers, or
+                    partners from other organizations.
+                  </span>
+                )}
+                {tabkey === "2" && (
+                  <span>
+                    Some of the information was prefilled, but there might be
+                    some fields you need to complete.
+                  </span>
+                )}
+              </div>
+            </Col>
+            <Col md={8}>
+              <Tabs
+                defaultActiveKey={tabkey}
+                type="card"
+                className="invite-tab"
+                onChange={this.onChnageKey}
+              >
+                <TabPane
+                  tab={
+                    <span>
+                      <img src={tabkey === "1" ? BDImg : BDWImg} alt="" />
+                      co-workers
+                    </span>
+                  }
+                  key="1"
+                >
+                  {this.renderTeamInviteTab()}
+                </TabPane>
+                <TabPane
+                  tab={
+                    <span>
+                      <UserOutlined />
+                      partners
+                    </span>
+                  }
+                  key="2"
+                >
+                  {this.renderOrgInviteTab()}
+                </TabPane>
+              </Tabs>
+              <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+                <Button
+                  type="ghost"
+                  className="ghost-btn ml-3"
+                  onClick={goback}
+                >
+                  <LeftOutlined /> Back to Project
+                </Button>
+              </div>
+            </Col>
+          </Row>
+
           {visible && (
             <Modal
               title={"Preview Invite Mail"}

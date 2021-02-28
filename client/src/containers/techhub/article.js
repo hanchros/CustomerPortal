@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { GlobalOutlined } from "@ant-design/icons";
-import { List, Collapse } from "antd";
+import { List, Collapse, Button } from "antd";
 import { Row, Col } from "reactstrap";
 import { getFieldDataByNameValue } from "../../utils/helper";
 import Video from "../../components/pages/video";
@@ -168,9 +168,10 @@ class ArticlePage extends React.Component {
                 href={article.iframe}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="main-btn"
               >
-                <GlobalOutlined /> {article.button_name || "Go To Site"}
+                <Button type="ghost" className="ghost-btn">
+                  <GlobalOutlined /> {article.button_name || "Go To Site"}
+                </Button>
               </a>
             </div>
           )}
@@ -244,7 +245,7 @@ class ArticlePage extends React.Component {
     return (
       <React.Fragment>
         <Row>
-          <Col md={3} sm={12}>
+          <Col md={4} sm={12}>
             <List
               size="large"
               dataSource={techTitleTags}
@@ -252,7 +253,7 @@ class ArticlePage extends React.Component {
               renderItem={this.renderTitleItem}
             />
           </Col>
-          <Col md={9} sm={12}>
+          <Col md={8} sm={12}>
             {this.renderArticles()}
           </Col>
         </Row>

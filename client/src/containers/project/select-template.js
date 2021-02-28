@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container } from "reactstrap";
-import { List, Tag } from "antd";
+import { Button, Tag } from "antd";
+import { PlusOutlined, LeftOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { listOrgTemplate } from "../../actions/template";
 import { Header, Footer } from "../../components/template";
 import EditTemplate from "../template/create-form";
 import EditProject from "../project/project-edit";
+import history from "../../history";
 
 class SeleteTemplate extends Component {
   constructor(props) {
@@ -41,35 +43,33 @@ class SeleteTemplate extends Component {
     this.setState({ showCreateProject: false, selectedTemplate: {} });
   };
 
+  onGotoTemplate = (template) => {
+    const { organization } = this.props;
+    history.push(
+      `/${organization.currentOrganization.org_name}/template/${template._id}`
+    );
+  };
+
   renderTemplateItem = (template) => (
-    <List.Item className="template-listitem">
-      <Link
-        to={`/${this.props.organization.currentOrganization.org_name}/template/${template._id}`}
-        className="template-listitem-body"
-      >
-        <h5>
-          <b>{template.name}</b>
-          {!template.creator && (
-            <Tag className="ml-5" color="green">
-              Global Template
-            </Tag>
-          )}
-        </h5>
-        <p>{template.description}</p>
-      </Link>
+    <div
+      className="template-listitem"
+      key={template._id}
+      onClick={() => this.onGotoTemplate(template)}
+    >
       <div>
-        <button
-          className="main-btn"
-          onClick={() => this.onUseTemplate(template)}
-        >
-          Use Template
-        </button>
+        <b>{template.name}</b> <br/>
+        <span style={{fontSize: "13px"}}>{template.description}</span>
       </div>
-    </List.Item>
+      {!template.creator && (
+        <Tag color="green">
+          Global Template
+        </Tag>
+      )}
+    </div>
   );
 
   render() {
-    const { template } = this.props;
+    const { template, goBack } = this.props;
     const templates = [...template.orgTemplates, ...template.globalTemplates];
     const {
       showCreateProject,
@@ -93,35 +93,45 @@ class SeleteTemplate extends Component {
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
-          <p className="mb-4">
-            Save time and use existing template to create a new project​
-          </p>
-          <List
-            size="large"
-            dataSource={templates}
-            itemLayout="horizontal"
-            renderItem={this.renderTemplateItem}
-          />
-          <div className="template-lesson">
-            <Link to="#">Why templates? Watch a lesson</Link>
+        <div className="account-nav">
+          <Container>
+            <Link to="#" onClick={goBack}>
+              <p>
+                <LeftOutlined /> Go back
+              </p>
+            </Link>
+          </Container>
+        </div>
+        <Container className="sub-content">
+          <div className="templates-header">
+            <h3>
+              <b>Save time, use templates</b>
+            </h3>
+            <div className="flex">
+              <Button
+                type="ghost"
+                className="ghost-btn mr-3"
+                onClick={this.onCreateBlankProject}
+              >
+                create without template
+              </Button>
+              <Button
+                type="ghost"
+                className="black-btn"
+                onClick={this.onToggleCreateTemplate}
+              >
+                <PlusOutlined /> create new template
+              </Button>
+            </div>
           </div>
-          <button
-            className="main-btn template-btn"
-            onClick={this.onToggleCreateTemplate}
-          >
-            Create new template
-          </button>
-          <p className="mt-5">
-            None of the templates work for this client? Create a blank project
-            and you can save it as a template later
-          </p>
-          <button
-            className="main-btn template-btn"
-            onClick={this.onCreateBlankProject}
-          >
-            Create new project
-          </button>
+          <hr className="mb-4" />
+          {templates.map((item) => this.renderTemplateItem(item))}
+          <div className="center mt-5">
+            <b>why use templates?</b><br />
+            <Link to="#" className="underline-link">
+              Watch a short lesson
+            </Link>
+          </div>
         </Container>
         <Footer />
       </React.Fragment>

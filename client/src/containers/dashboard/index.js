@@ -14,6 +14,7 @@ import history from "../../history";
 import BuildLogo from "../../assets/icon/building.svg";
 import InvitePage from "../organization/invite";
 import NonList from "../../components/pages/non-list";
+import SelectTemplate from "../project/select-template";
 
 const { TabPane } = Tabs;
 
@@ -25,6 +26,7 @@ class Dashboard extends Component {
       loading: false,
       show_detail: false,
       show_invite: false,
+      show_project_create: false,
     };
   }
 
@@ -58,12 +60,12 @@ class Dashboard extends Component {
     this.setState({ show_detail: !this.state.show_detail });
   };
 
-  goToNewProject = () => {
-    history.push(`/${this.props.curOrg.org_name}/select-template`);
-  };
-
   onToggleInvite = () => {
     this.setState({ show_invite: !this.state.show_invite });
+  };
+
+  onToggleCreateProject = () => {
+    this.setState({ show_project_create: !this.state.show_project_create });
   };
 
   renderProjects = () => {
@@ -75,7 +77,7 @@ class Dashboard extends Component {
       <React.Fragment>
         <div className="flex mb-2" style={{ justifyContent: "flex-end" }}>
           <Button
-            onClick={this.goToNewProject}
+            onClick={this.onToggleCreateProject}
             type="ghost"
             className="black-btn"
           >
@@ -241,7 +243,7 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { loading, show_invite } = this.state;
+    const { loading, show_invite, show_project_create } = this.state;
 
     if (show_invite)
       return (
@@ -252,6 +254,9 @@ class Dashboard extends Component {
           </Container>
         </React.Fragment>
       );
+
+    if (show_project_create)
+      return <SelectTemplate goBack={this.onToggleCreateProject} />;
 
     return (
       <React.Fragment>
