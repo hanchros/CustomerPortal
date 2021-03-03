@@ -87,9 +87,7 @@ class UserDashboard extends Component {
   };
 
   goToProject = (item) => {
-    history.push(
-      `/${this.props.organization.currentOrganization.org_name}/project/${item._id}`
-    );
+    history.push(`/project/${item._id}`);
   };
 
   render() {

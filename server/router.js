@@ -9,7 +9,7 @@ const CommentController = require("./controllers/comment");
 const AdminController = require("./controllers/admin");
 const NotificationController = require("./controllers/notification");
 const ArticleController = require("./controllers/article");
-const InviteRequestController = require("./controllers/inviterequest")
+const InviteController = require("./controllers/invite")
 const TemplateController = require("./controllers/template");
 const MailController = require("./controllers/mail");
 const FaqController = require("./controllers/faq");
@@ -47,7 +47,7 @@ module.exports = function (app) {
     adminRoutes = express.Router(),
     notificationRoutes = express.Router(),
     articleRoutes = express.Router(),
-    inviteRequestRoutes = express.Router(),
+    inviteRoutes = express.Router(),
     templateRoutes = express.Router(),
     mailRoutes = express.Router(),
     faqRoutes = express.Router(),
@@ -97,7 +97,6 @@ module.exports = function (app) {
   userRoutes.post("/", requireAuth, UserController.updateProfile);
   // Test protected route
   apiRoutes.get("/protected", requireAuth, UserController.getUserSession);
-
   // Get Users associated with organizations route
   userRoutes.get("/users/:org_id", requireAuth, UserController.orgUsers)
   // All user route
@@ -153,7 +152,6 @@ module.exports = function (app) {
   // Project Routes
   //= ========================
   apiRoutes.use("/project", projectRoutes);
-
   // List project by user route
   projectRoutes.get("/", requireAuth, ProjectController.listProject);
   // Get project route
@@ -176,10 +174,28 @@ module.exports = function (app) {
   projectRoutes.get("/admin/list/:org_id", ProjectController.listAllProject);
   // Admin project archive route
   projectRoutes.post("/admin/archive/:id", ProjectController.archiveProject);
-  // send orginvitation route
-  projectRoutes.post("/send-invite", requireAuth, ProjectController.sendInvite);
   // Get invite mail template route
   projectRoutes.post("/mail/template", ProjectController.getMailTemplate);
+
+
+  //= ========================
+  // Invite Routes
+  //= ========================
+  apiRoutes.use("/invite", inviteRoutes);
+  // create invite request route
+  inviteRoutes.post("/request", InviteController.createInviteRequest);
+  // List invite requests route
+  inviteRoutes.get("/request", requireAuth, InviteController.listInviteRequest);
+  // create project new member invite route
+  inviteRoutes.post("/project", requireAuth, InviteController.sendInviteNewMember);
+  // List pending invite route
+  inviteRoutes.get("/project/:project_id", requireAuth, InviteController.listInvitesByProjects);
+  // get invite route
+  inviteRoutes.get("/one/:id", InviteController.getInvite);
+  // resolve invite route
+  inviteRoutes.put("/resolve/:id", InviteController.resolveInvite);
+  // cancel invite route
+  inviteRoutes.put("/cancel/:id", InviteController.cancelInvite);
 
 
   //= ========================
@@ -271,6 +287,7 @@ module.exports = function (app) {
   // update admin user route
   adminRoutes.post("/user/:id", requireAuth, AdminController.upateAdminUser);
 
+
   //= ========================
   // Article Routes
   //= ========================
@@ -285,18 +302,6 @@ module.exports = function (app) {
   articleRoutes.put("/bulk/list", requireAuth, ArticleController.bulkUpdateArticle);
   // delete article document route
   articleRoutes.delete("/:id", requireAuth, ArticleController.deleteArticle);
-
-  
-  //= ========================
-  // InviteRequest Routes
-  //= ========================
-  apiRoutes.use("/invite", inviteRequestRoutes);
-  // create invite request route
-  inviteRequestRoutes.post("/", InviteRequestController.createInviteRequest);
-  // List invite requests route
-  inviteRequestRoutes.get("/", requireAuth, InviteRequestController.listInviteRequest);
-  // resolve invite request route
-  inviteRequestRoutes.put("/:id", requireAuth, InviteRequestController.resolveInviteRequest);
 
 
   //= ========================
@@ -334,6 +339,7 @@ module.exports = function (app) {
   // send test mail route
   mailRoutes.post("/test", MailController.sendTestMail);
   
+
   //= ========================
   // Faq Routes
   //= ========================
@@ -394,6 +400,7 @@ module.exports = function (app) {
   timelineRoutes.put("/", requireAuth, TimelineController.updateTimeline);
   // delete timeline route
   timelineRoutes.delete("/:id", requireAuth, TimelineController.deleteTimeline);
+
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

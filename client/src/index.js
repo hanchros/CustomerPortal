@@ -21,7 +21,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "suneditor/dist/css/suneditor.min.css";
 import { configureSocket } from "./utils/socket";
 import 'rc-color-picker/assets/index.css';
-
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 // Initialize Google Analytics
 // ReactGA.initialize("UA-000000-01");
 

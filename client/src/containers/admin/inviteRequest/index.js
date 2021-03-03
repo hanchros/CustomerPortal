@@ -2,10 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
 import { Collapse, Button, Skeleton, Popconfirm } from "antd";
-import {
-  listInviteRequest,
-  resolveInviteRequest,
-} from "../../../actions/invite";
+import { listInviteRequest, resolveInvite } from "../../../actions/invite";
 import { DeleteOutlined } from "@ant-design/icons";
 
 const { Panel } = Collapse;
@@ -33,7 +30,7 @@ class AdminInviteRequest extends React.Component {
 
   onIgnoreRequest = async (ir) => {
     this.setLoading(true);
-    await this.props.resolveInviteRequest(ir._id);
+    await this.props.resolveInvite(ir._id, true);
     this.setLoading(false);
   };
 
@@ -58,7 +55,7 @@ class AdminInviteRequest extends React.Component {
   );
 
   render() {
-    const { inviteRequests } = this.props;
+    const { invites } = this.props;
     const { loading } = this.state;
 
     return (
@@ -71,7 +68,7 @@ class AdminInviteRequest extends React.Component {
           </Col>
         </Row>
         <Collapse accordion>
-          {inviteRequests.map((ir) => (
+          {invites.map((ir) => (
             <Panel
               header={`${ir.first_name} ${ir.last_name}`}
               key={ir._id}
@@ -92,10 +89,10 @@ class AdminInviteRequest extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { inviteRequests: state.invite.inviteRequests };
+  return { invites: state.invite.invites };
 }
 
 export default connect(mapStateToProps, {
   listInviteRequest,
-  resolveInviteRequest,
+  resolveInvite,
 })(AdminInviteRequest);

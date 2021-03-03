@@ -27,7 +27,7 @@ class ProjectList extends Component {
   };
 
   goToProject = (item) => {
-    history.push(`/${this.props.curOrg.org_name}/project/${item._id}`);
+    history.push(`/project/${item._id}`);
   };
 
   render() {
@@ -49,9 +49,7 @@ class ProjectList extends Component {
             className="project-list mt-4"
             dataSource={projects}
             renderItem={(item) => (
-              <List.Item
-                onClick={() => this.goToProject(item)}
-              >
+              <List.Item onClick={() => this.goToProject(item)}>
                 <List.Item.Meta
                   avatar={<Avatar src={item.logo || ChallengeLogo} />}
                   title={

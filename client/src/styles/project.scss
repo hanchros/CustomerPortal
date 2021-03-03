@@ -286,7 +286,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 3px !important;
-  height: 40px !important;
+  height: 38px !important;
 }
 
 .black-btn {
@@ -300,7 +300,7 @@
   justify-content: center;
   border-radius: 3px !important;
   border: 1px solid black !important;
-  height: 40px !important;
+  height: 38px !important;
 }
 
 .project-org-side {
@@ -410,6 +410,86 @@
   margin-bottom: 40px;
 }
 
+.table-header-btns {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  button {
+    margin-left: 15px;
+  }
+}
+
+.team-table {
+  padding: 0 3px;
+  th {
+    border: none !important;
+    color: #aaa !important;
+    outline: none;
+  }
+  tr {
+    td:first-child,
+    th:first-child {
+      text-align: center;
+    }
+  }
+
+  tbody {
+    box-shadow: 0px 2px 5px var(--shadow_color);
+    td {
+      background-color: white;
+      border-top: none !important;
+      vertical-align: unset !important;
+      border-bottom: 1px solid #dee2e6;
+      padding: 20px 10px;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.table-logo {
+  tr {
+    td:first-child,
+    th:first-child {
+      width: 120px;
+    }
+  }
+}
+
+.with-action {
+  tr {
+    td:last-child,
+    th:last-child {
+      text-align: center;
+      width: 80px;
+    }
+  }
+}
+
+.blue-popover {
+  display: flex;
+  flex-direction: column;
+  background-color: #3c76ee;
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    li {
+      padding: 8px 20px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: white;
+      cursor: pointer;
+      border-bottom: 1px solid #4c86fe;
+      &:hover {
+        color: #FF0;
+      }
+    }
+  }
+}
+
 @media screen and (min-width: 768px) {
   .invite-tab {
     .ant-tabs-nav-list {
@@ -504,6 +584,22 @@
 
   .black-btn {
     height: 32px !important;
+  }
+
+  .table-header-btns {
+    flex-direction: column;
+    max-width: 70% !important;
+    button {
+      margin-left: 0;
+      margin-bottom: 7px;
+    }
+  }
+
+  .team-table {
+    th,
+    td {
+      width: 200px;
+    }
   }
 }
 

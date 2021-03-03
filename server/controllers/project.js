@@ -5,9 +5,6 @@ const ProjectMember = require("../models/projectmember");
 const ProjectOrg = require("../models/projectorg");
 const Timeline = require("../models/timeline");
 const User = require("../models/user");
-const axios = require("axios");
-const fs = require("fs");
-const FormData = require("form-data");
 const utils = require("./util");
 
 exports.createProject = async (req, res, next) => {
@@ -239,62 +236,6 @@ exports.archiveProject = async (req, res, next) => {
   }
 };
 
-exports.sendInvite = async (req, res, next) => {
-  try {
-    const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
-    const sender_organization = req.user.profile.org_name;
-    const values = Object.assign(req.body, {
-      sender_name,
-      sender_organization,
-    });
-    const mailContent = {
-      logo: values.logo,
-      content: values.content,
-      email: values.email,
-      sender_organization,
-      project_name: values.project_name,
-      intro: values.intro,
-    };
-    const project = await Project.findById(values.project_id);
-    utils.createPDFDoc(values, project.description);
-    await sleep(3000);
-
-    delete values.logo;
-    delete values.content;
-    delete values.project_description;
-    const form = new FormData();
-    form.append(
-      "file",
-      fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`)
-    );
-    form.append("data_form", JSON.stringify(values));
-    form.append("meta_form", JSON.stringify(values));
-    form.append("master_id", "123456789");
-    form.append("cartridge_type", "Organization");
-
-    let response = await axios.post(
-      "http://integraapiproduction.azurewebsites.net/pdf",
-      form,
-      {
-        headers: form.getHeaders(),
-        responseType: "stream",
-      }
-    );
-    let filename = `invite_${new Date().getTime().toString(36)}.pdf`;
-    let path = `${__dirname}/../uploads/${filename}`;
-    const writer = fs.createWriteStream(path);
-    response.data.pipe(writer);
-    writer.on("close", () => {
-      sendgrid.inviteMail(mailContent, filename);
-    });
-    return res.status(200).json({
-      content: "success",
-    });
-  } catch (err) {
-    return next(err);
-  }
-};
-
 exports.getMailTemplate = (req, res, next) => {
   try {
     let result = {
@@ -306,9 +247,3 @@ exports.getMailTemplate = (req, res, next) => {
     return next(err);
   }
 };
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}

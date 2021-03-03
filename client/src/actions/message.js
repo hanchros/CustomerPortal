@@ -23,7 +23,7 @@ export function fetchConversations() {
         unread: res.data.unread,
       });
     } catch (err) {
-      console.log(err);
+      return
     }
   };
 }

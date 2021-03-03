@@ -113,21 +113,23 @@ class ProjectTech extends Component {
   };
 
   render = () => {
-    const { timeline, user } = this.props;
+    const { timeline, user, isCreator } = this.props;
     const { visible, note, loading, openNote } = this.state;
     const timelines = timeline.timelines;
 
     return (
       <div className="project-timeline">
-        <div className="timeline-header">
-          <Button
-            type="ghost"
-            className="black-btn"
-            onClick={this.onCreateNote}
-          >
-            <EditOutlined /> WRITE NOTE
-          </Button>
-        </div>
+        {isCreator && (
+          <div className="timeline-header">
+            <Button
+              type="ghost"
+              className="black-btn"
+              onClick={this.onCreateNote}
+            >
+              <EditOutlined /> WRITE NOTE
+            </Button>
+          </div>
+        )}
         <Skeleton active loading={loading} />
         <ul className="timeline-list">
           {timelines.map((tl, index) => (

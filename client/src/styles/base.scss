@@ -161,9 +161,22 @@ a.card-link {
   padding: 20px;
   margin-top: 20px;
 
-  .anticon  {
+  .anticon {
     font-size: 40px;
     margin-bottom: 20px;
+  }
+}
+
+.ant-popover-inner-content {
+  padding: 0 !important;
+}
+
+.ant-popover-placement-bottomRight {
+  .ant-popover-content > .ant-popover-arrow {
+    right: 4px !important;
+  }
+  .ant-popover-arrow {
+    border-color: #3c76ee !important;
   }
 }
 

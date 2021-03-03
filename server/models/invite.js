@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 //= ===============================
-// InviteRequest Schema
+// Invite Schema
 //= ===============================
-const InviteRequestSchema = new Schema(
+const InviteSchema = new Schema(
   {
     first_name: {
       type: String,
@@ -25,9 +25,18 @@ const InviteRequestSchema = new Schema(
     organization: {
       type: String,
     },
+    project: {
+      type: Schema.Types.ObjectId,
+      ref: "Project",
+    },
+    type: {
+      type: Number,
+      // 0: request, 1: invite
+    },
     resolved: {
-      type: Boolean,
-      default: false,
+      type: Number,
+      default: 1,
+      // 0: cancelled, 1: pending, 2: resolved
     },
   },
   {
@@ -35,4 +44,4 @@ const InviteRequestSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("InviteRequest", InviteRequestSchema);
+module.exports = mongoose.model("Invite", InviteSchema);

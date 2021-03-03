@@ -1,42 +1,113 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Header, Footer } from "../../components/template";
-import { Button } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { Avatar, Button, Modal } from "antd";
 import TechImg from "../../assets/img/technology.png";
+import NonList from "../../components/pages/non-list";
+import Technology from "../template/technology";
+import history from "../../history";
+import { updateProjectTechs } from "../../actions/project";
 
 class ProjectTech extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visibleTech: false,
+      technologies: [],
+    };
+  }
+
+  componentDidMount = () => {
+    const curProj = this.props.project.project;
+    this.setTechnologies(curProj.technologies || []);
+  };
+
+  onToggleTechModal = () => {
+    this.setState({ visibleTech: !this.state.visibleTech });
+  };
+
+  onGotoTech = (item) => {
+    let tab = 3;
+    if (item.organization) {
+      tab = 4;
+    }
+    history.push(`/techhub?tab=${tab}&id=${item._id}`);
+  };
+
+  setTechnologies = (technologies) => {
+    this.setState({ technologies });
+  };
+
+  updateTechs = async () => {
+    const { project, updateProjectTechs } = this.props;
+    await updateProjectTechs(project.project._id, this.state.technologies);
+    this.onToggleTechModal();
+  };
+
   render = () => {
-    const { project, goback } = this.props;
+    const { project, isCreator } = this.props;
+    const { visibleTech, technologies } = this.state;
     const curProj = project.project;
+
     return (
       <React.Fragment>
-        <Header />
-        <Container className="content">
-          <Button className="mb-4" type="link" onClick={goback}>
-            <ArrowLeftOutlined /> Back
-          </Button>
-          <h4 className="mb-5">{curProj.name} Technology</h4>
-          <span>
-            To add or remove technology from this project use "Edit" function on
-            the project's main page
-          </span>
-          <p className="mb-4" />
-          {curProj.technologies &&
-            curProj.technologies.map((tech, index) => (
-              <div className="project-general-box mb-4" key={index}>
-                <div className="pr-4">
-                  <img src={tech.icon || TechImg} alt="" />
-                </div>
-                <div>
-                  <h5 className="mt-2">{tech.title}</h5>
-                  <div dangerouslySetInnerHTML={{ __html: tech.content }} />
-                </div>
-              </div>
+        {isCreator && (
+          <div className="tech-btns">
+            <Button
+              type="ghost"
+              className="ghost-btn"
+              onClick={this.onToggleTechModal}
+            >
+              Add technology
+            </Button>
+          </div>
+        )}
+        {curProj.technologies && curProj.technologies.length === 0 && (
+          <NonList
+            title="You have no technologies yet"
+            description="Use buttons above to add technologies."
+          />
+        )}
+        {curProj.technologies && curProj.technologies.length > 0 && (
+          <ul className="project-tech-items">
+            {curProj.technologies.map((item) => (
+              <li key={item._id} onClick={() => this.onGotoTech(item)}>
+                <Avatar src={item.icon || TechImg} />
+                <b>{item.title}</b>
+              </li>
             ))}
-        </Container>
-        <Footer />
+          </ul>
+        )}
+        {visibleTech && (
+          <Modal
+            title="Project Technology"
+            visible={visibleTech}
+            width={800}
+            footer={false}
+            onCancel={this.onToggleTechModal}
+          >
+            <Technology
+              technologies={technologies}
+              onChangeTechs={this.setTechnologies}
+            />
+            <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+              <Button
+                type="ghost"
+                onClick={this.onToggleTechModal}
+                className="ghost-btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="ghost"
+                className="black-btn ml-3"
+                onClick={this.updateTechs}
+              >
+                Submit
+              </Button>
+            </div>
+          </Modal>
+        )}
       </React.Fragment>
     );
   };
@@ -48,4 +119,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {})(ProjectTech);
+export default connect(mapStateToProps, { updateProjectTechs })(ProjectTech);

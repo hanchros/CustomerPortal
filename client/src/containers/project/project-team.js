@@ -1,68 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container, Row, Col } from "reactstrap";
-import { Header, Footer } from "../../components/template";
-import { Button, Modal, Input } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { Row, Col } from "reactstrap";
+import { Button } from "antd";
+import { PlusOutlined, MessageOutlined, MailOutlined } from "@ant-design/icons";
+import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
+import { createTeamChat, setChannel } from "../../actions/message";
 import UserIcon from "../../assets/img/user-avatar.png";
-import Invite from "./invite";
-import {
-  startConversation,
-  fetchOneConversation,
-  createTeamChat,
-  setChannel,
-} from "../../actions/message";
 import history from "../../history";
+import { Link } from "react-router-dom";
 
 class ProjectTeam extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      showInvite: false,
-      chosenParticipantId: "",
-      visible: false,
-      chatText: "",
-    };
-  }
-
-  onToggleInvite = () => {
-    this.setState({ showInvite: !this.state.showInvite });
-  };
-
-  haveChat = (participantId) => {
-    let conversations = this.props.message.conversations;
-    for (let cv of conversations) {
-      if (cv.participants.length > 2) continue;
-      let filters = cv.participants.filter((pt) => pt._id === participantId);
-      if (filters.length > 0) return true;
-    }
-    return false;
-  };
-
-  toggleModal = async (ptId) => {
-    if (ptId && this.haveChat(ptId)) {
-      await this.props.fetchOneConversation(ptId);
-      history.push("/messages");
-      return;
-    }
-    this.setState({ visible: !this.state.visible, chosenParticipantId: ptId });
-  };
-
-  onChangeChat = (e) => {
-    this.setState({ chatText: e.target.value });
-  };
-
-  handleOk = () => {
-    const { chatText, chosenParticipantId } = this.state;
-    if (!chatText || !chosenParticipantId) return;
-    this.props.startConversation({
-      recipient: chosenParticipantId,
-      composedMessage: chatText,
-    });
-    this.toggleModal();
-  };
-
   goTeamChat = async () => {
     const { project, message, createTeamChat, setChannel } = this.props;
     const curProj = project.project;
@@ -79,90 +27,141 @@ class ProjectTeam extends Component {
     history.push("/messages");
   };
 
-  render = () => {
-    const { project, goback, user } = this.props;
-    const { showInvite, visible, chatText } = this.state;
-    let isCreator =
-      project.project.participant &&
-      project.project.participant._id === user._id;
-    const participants = project.participants;
+  onGotoUser = (id) => {
+    const { project } = this.props;
     const curProj = project.project;
+    history.push(`/user/${id}?project=${curProj._id}`);
+  };
 
-    if (showInvite) {
-      return <Invite goback={this.onToggleInvite} invite="team" />;
+  setTableUsers = (users) => {
+    let result = [],
+      k = 0;
+    for (let user of users) {
+      if (user.participant && user.participant.profile) {
+        let pt = user.participant;
+        k++;
+        result.push({
+          id: k,
+          photo: pt.profile.photo,
+          name: `${pt.profile.first_name} ${pt.profile.last_name}`,
+          role: user.role || "",
+          org_name: pt.profile.org_name,
+          position: pt.profile.role,
+          country: pt.profile.country,
+          _id: pt._id,
+        });
+      }
     }
+    return result;
+  };
+
+  render = () => {
+    const { project, onToggleInvite, onToggleIvMng, isCreator } = this.props;
+    const { SearchBar } = Search;
+    let users = project.participants;
+    users.sort((a, b) => {
+      return a.participant.profile.org_name > b.participant.profile.org_name;
+    });
+    const photoFormatter = (cell, row) => {
+      return <img className="table-photo" src={cell || UserIcon} alt="" />;
+    };
+    const nameFormatter = (cell, row) => (
+      <span
+        onClick={() => this.onGotoUser(row._id)}
+        style={{ cursor: "pointer" }}
+      >
+        <b>{cell}</b>
+      </span>
+    );
+    const orgFormatter = (cell, row) => (
+      <Link className="underline-link" to={`/${cell}`}>
+        {cell}
+      </Link>
+    );
+    const columns = [
+      {
+        dataField: "photo",
+        text: "",
+        formatter: photoFormatter,
+      },
+      {
+        dataField: "name",
+        text: "NAME",
+        formatter: nameFormatter,
+        sort: true,
+      },
+      {
+        dataField: "role",
+        text: "ROLE",
+        sort: true,
+      },
+      {
+        dataField: "org_name",
+        text: "ORGANIZATION",
+        formatter: orgFormatter,
+        sort: true,
+      },
+      {
+        dataField: "position",
+        text: "POSITION",
+        sort: true,
+      },
+      {
+        dataField: "country",
+        text: "LOCATION",
+        sort: true,
+      },
+    ];
 
     return (
-      <React.Fragment>
-        <Header />
-        <Container className="content">
-          <Button className="mb-4" type="link" onClick={goback}>
-            <ArrowLeftOutlined /> Back
-          </Button>
-          <Row className="mb-5">
-            <Col md={8}>
-              <div className="project-general-box mb-2">
-                <h5>{curProj.name} Team</h5>
-              </div>
-            </Col>
-            {isCreator && (
-              <Col md={4}>
-                <div className="center">
-                  <button className="main-btn" onClick={this.onToggleInvite}>
-                    Invite New Member
-                  </button>
-                </div>
-              </Col>
-            )}
-          </Row>
-          {participants.map((pt) => (
-            <div className="project-general-box mb-4" key={pt._id}>
-              <div className="pr-4">
-                <img src={pt.participant.profile.photo || UserIcon} alt="" />
-              </div>
-              <div style={{ width: "100%" }}>
-                <div className="project-team-header">
-                  <h5>Project {pt.role}</h5>
-                  {user._id !== pt.participant._id && (
+      <ToolkitProvider
+        bootstrap4
+        keyField="id"
+        data={this.setTableUsers(users)}
+        columns={columns}
+        search
+      >
+        {(props) => (
+          <React.Fragment>
+            <Row>
+              <Col className="table-header-btns">
+                <SearchBar {...props.searchProps} />
+                {isCreator && (
+                  <React.Fragment>
                     <Button
-                      type="link"
-                      onClick={() => this.toggleModal(pt.participant._id)}
+                      type="ghost"
+                      className="ghost-btn"
+                      onClick={this.goTeamChat}
                     >
-                      Chat
+                      <MessageOutlined style={{ fontSize: "16px" }} /> start
+                      team chat
                     </Button>
-                  )}
-                </div>
-                <span>
-                  {pt.participant.profile.first_name}{" "}
-                  {pt.participant.profile.last_name},{" "}
-                  {pt.participant.profile.org_name}
-                </span>
-                <br />
-                <span>Contact: {pt.participant.email}</span>
-              </div>
-            </div>
-          ))}
-          {isCreator && (
-            <Button style={{ float: "right" }} onClick={this.goTeamChat}>
-              TeamChat
-            </Button>
-          )}
-          <Modal
-            title={`Open Chat room with team member`}
-            visible={visible}
-            onOk={this.handleOk}
-            onCancel={this.toggleModal}
-          >
-            <Input.TextArea
-              rows={2}
-              onChange={this.onChangeChat}
-              value={chatText}
-              placeholder="Message"
+                    <Button
+                      type="ghost"
+                      className="ghost-btn"
+                      onClick={onToggleIvMng}
+                    >
+                      <MailOutlined style={{ fontSize: "16px" }} /> invitations
+                    </Button>
+                    <Button
+                      onClick={onToggleInvite}
+                      type="ghost"
+                      className="black-btn"
+                    >
+                      <PlusOutlined /> Add user
+                    </Button>
+                  </React.Fragment>
+                )}
+              </Col>
+            </Row>
+            <BootstrapTable
+              {...props.baseProps}
+              bordered={false}
+              wrapperClasses={`table-responsive team-table table-logo`}
             />
-          </Modal>
-        </Container>
-        <Footer />
-      </React.Fragment>
+          </React.Fragment>
+        )}
+      </ToolkitProvider>
     );
   };
 }
@@ -176,8 +175,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  startConversation,
-  fetchOneConversation,
   createTeamChat,
   setChannel,
 })(ProjectTeam);

@@ -8,7 +8,7 @@ import { checkPwdStrength } from "../../utils/helper";
 
 const ResetPasswordForm = ({ changePassword }) => {
   const [invalidPwd, setInvalidPwd] = useState(false);
-  
+
   const onFinish = (values) => {
     if (values.password !== values.conf_password) {
       message.error("Confirm password doesn't match!");
@@ -36,7 +36,7 @@ const ResetPasswordForm = ({ changePassword }) => {
                 },
               ]}
             >
-              <Input size="large" type="password" />
+              <Input size="large" type="password" placeholder="**********" />
             </Form.Item>
           </Col>
         </Row>
@@ -52,7 +52,7 @@ const ResetPasswordForm = ({ changePassword }) => {
                 },
               ]}
             >
-              <Input size="large" type="password" />
+              <Input size="large" type="password" placeholder="************" />
             </Form.Item>
           </Col>
           <Col md={6}>
@@ -66,7 +66,7 @@ const ResetPasswordForm = ({ changePassword }) => {
                 },
               ]}
             >
-              <Input size="large" type="password" />
+              <Input size="large" type="password" placeholder="************" />
             </Form.Item>
           </Col>
         </Row>
@@ -94,11 +94,15 @@ class ResetPassword extends Component {
             <h4 className="mb-4">
               <b>Change Password</b>
             </h4>
-            <span>
+            <p>
               Before changing the password, please provide your previous
-              password. We recommend using passwords longer than six characters,
-              using letters and numbers.
-            </span>
+              password.
+            </p>
+            <p>
+              The new password should be at least 8 characters in length and
+              must include an upper and lower case letter, number and special
+              character.
+            </p>
           </Col>
           <Col md={8}>
             <ResetPasswordForm changePassword={changePassword} />

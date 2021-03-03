@@ -26,7 +26,7 @@ export function fetchNotifications() {
         unread,
       });
     } catch (err) {
-      console.log(err);
+      return
     }
   };
 }

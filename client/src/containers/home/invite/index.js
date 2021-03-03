@@ -24,15 +24,14 @@ class InviteHomePage extends React.Component {
       pdfData: {},
       fileReading: false,
       showConfModal: false,
+      org: null,
     };
   }
 
   componentDidMount = async () => {
-    const { match, getOrgByName, orgSettings } = this.props;
-    let org_name = match.params.org_name;
-    if (org_name && orgSettings.org_name !== org_name) {
-      await getOrgByName(org_name);
-    }
+    const { match, getOrgByName } = this.props;
+    let org = await getOrgByName(match.params.org_name);
+    if (org) this.setState({ org });
   };
 
   onBegin = () => {
@@ -89,32 +88,39 @@ class InviteHomePage extends React.Component {
   };
 
   renderHome = () => {
-    const { orgSettings, location } = this.props;
+    const { location } = this.props;
+    const { org } = this.state;
     const params = new URLSearchParams(location.search);
     return (
       <div className="invite-home">
-        <img
-          className="invite-page-logo"
-          src={orgSettings.logo || ChallengeIcon}
-          alt=""
-        />
-        <div className="main-background-title">
-          Welcome to the Collaboration App 
+        {org && (
+          <img
+            className="invite-page-logo"
+            src={org.logo || ChallengeIcon}
+            alt=""
+          />
+        )}
+        <div className="main-background-title mt-5 mb-4">
+          Welcome to the Collaboration App
         </div>
-        <div className="home-intro">
-          {orgSettings.org_name} has invited you to join the{" "}
-          {params.get("project")} project.
-        </div>
+        {org && (
+          <div className="home-intro">
+            {org.org_name} has invited you to join the {params.get("project")}{" "}
+            project.
+          </div>
+        )}
         <span className="home-span">
           Join to project and find out more information
         </span>
-        <Button
-          type="ghost"
-          className="black-btn mt-5"
-          onClick={this.onBegin}
-        >
-          start registration
-        </Button>
+        {org && (
+          <Button
+            type="ghost"
+            className="black-btn mt-5"
+            onClick={this.onBegin}
+          >
+            start registration
+          </Button>
+        )}
       </div>
     );
   };
@@ -132,7 +138,7 @@ class InviteHomePage extends React.Component {
           Please check your email of an invitation letter. PDF file with
           invitation should be attached there.
         </p>
-        <hr />
+        <hr className="mt-5 mb-5" />
         <p className="mt-4">
           <b>Didn’t get an invitation with PDF file?​​</b>
         </p>
@@ -194,11 +200,10 @@ class InviteHomePage extends React.Component {
   );
 
   render() {
-    const { step, pdfData } = this.state;
-    const { orgSettings } = this.props;
+    const { step, pdfData, org } = this.state;
 
     return (
-      <HomeHOC logo={orgSettings.logo} org_name={orgSettings.org_name}>
+      <HomeHOC logo={org ? org.logo : ""} org_name={org ? org.org_name : ""}>
         {step === 0 && this.renderHome()}
         {step === 1 && this.renderRegisterStart()}
         {step === 2 && <RequestInvite goNext={this.onBegin} />}
@@ -217,9 +222,7 @@ class InviteHomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {
-    orgSettings: state.organization.orgSettings,
-  };
+  return {};
 }
 
 export default connect(mapStateToProps, { dropRegFile, getOrgByName })(

@@ -7,11 +7,38 @@ export function listInviteRequest() {
   const client = Client(true);
   return async (dispatch) => {
     try {
-      let res = await client.get(`${API_URL}/invite`);
+      let res = await client.get(`${API_URL}/invite/request`);
       dispatch({
         type: FETCH_INVITE_REQUEST_LIST,
-        inviteRequests: res.data.inviteRequests,
+        invites: res.data.invites,
       });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function listInvitesByProject(project_id) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/invite/project/${project_id}`);
+      dispatch({
+        type: FETCH_INVITE_REQUEST_LIST,
+        invites: res.data.invites,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function getInvite(invite_id) {
+  const client = Client();
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/invite/one/${invite_id}`);
+      return res.data.invite;
     } catch (err) {
       console.log(err);
     }
@@ -22,7 +49,7 @@ export function createInviteRequest(values) {
   const client = Client();
   return async (dispatch) => {
     try {
-      await client.post(`${API_URL}/invite`, values);
+      await client.post(`${API_URL}/invite/request`, values);
       message.success("New invite request has been created successfully!");
     } catch (err) {
       createNotification("Create Invite Request", errorMessage(err));
@@ -30,18 +57,22 @@ export function createInviteRequest(values) {
   };
 }
 
-export function resolveInviteRequest(id) {
-  const client = Client(true);
+export function resolveInvite(id, resolve) {
+  const client = Client();
   return async (dispatch) => {
     try {
-      let res = await client.put(`${API_URL}/invite/${id}`);
+      let res = await client.put(
+        `${API_URL}/invite/${resolve ? "resolve" : "cancel"}/${id}`
+      );
       dispatch({
         type: RESOLVE_INVITE_REQUEST,
-        inviteRequest: res.data.inviteRequest,
+        invite: res.data.invite,
       });
-      message.success("Invite request has been resolved successfully!");
+      message.success(
+        `Invite has been ${resolve ? "resolved" : "cancelled"} successfully!`
+      );
     } catch (err) {
-      createNotification("Update Invite Request", errorMessage(err));
+      createNotification("Resolve Invite", errorMessage(err));
     }
   };
 }

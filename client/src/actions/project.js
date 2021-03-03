@@ -254,7 +254,7 @@ export function sendInvite(values) {
   const client = Client(true);
   return async (dispatch) => {
     try {
-      await client.post(`${API_URL}/project/send-invite`, values);
+      await client.post(`${API_URL}/invite/project`, values);
       message.success("Invitation sent successfully!");
     } catch (error) {
       createNotification("Send Invitation", errorMessage(error));

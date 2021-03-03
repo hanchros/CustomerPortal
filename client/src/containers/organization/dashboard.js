@@ -6,13 +6,13 @@ import { Avatar, Skeleton, Tabs } from "antd";
 import { LinkedinFilled } from "@ant-design/icons";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
-import UserAvatar from "../../assets/img/user-avatar.png";
 import { getOrgByName, listOrgUsers } from "../../actions/organization";
 import { listProjectDetails } from "../../actions/project";
 import history from "../../history";
 import BuildLogo from "../../assets/icon/building.svg";
 import { org_consts } from "../../constants";
 import NonList from "../../components/pages/non-list";
+import OrgUsers from "./users";
 
 const { TabPane } = Tabs;
 
@@ -65,11 +65,7 @@ class Dashboard extends Component {
   };
 
   goToProject = (item) => {
-    history.push(`/${this.state.org.org_name}/project/${item._id}`);
-  };
-
-  goToUser = (id) => {
-    history.push(`/user/${id}`);
+    history.push(`/project/${item._id}`);
   };
 
   onToggleDetail = () => {
@@ -123,35 +119,6 @@ class Dashboard extends Component {
             </div>
           ))}
         </Col>
-      </Row>
-    );
-  };
-
-  renderUsers = () => {
-    const { organization } = this.props;
-    const users = organization.users;
-
-    return (
-      <Row>
-        {users.map((item) => (
-          <Col
-            key={item._id}
-            md={4}
-            onClick={() => this.goToUser(item._id)}
-            className="mb-3"
-          >
-            <div className="user-card">
-              <Avatar src={item.profile.photo || UserAvatar} />
-              <div className="ml-3">
-                <span>
-                  <b>{`${item.profile.first_name} ${item.profile.last_name}`}</b>
-                </span>
-                <br />
-                <span>{item.profile.role || ""}</span>
-              </div>
-            </div>
-          </Col>
-        ))}
       </Row>
     );
   };
@@ -235,6 +202,8 @@ class Dashboard extends Component {
 
   render() {
     const { loading } = this.state;
+    const users = this.props.organization.users;
+
     return (
       <React.Fragment>
         <Header />
@@ -253,7 +222,7 @@ class Dashboard extends Component {
                 {this.renderProjects()}
               </TabPane>
               <TabPane tab="USERS" key="2">
-                {this.renderUsers()}
+                <OrgUsers users={users} />
               </TabPane>
             </Tabs>
           )}

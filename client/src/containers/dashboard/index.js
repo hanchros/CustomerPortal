@@ -6,7 +6,6 @@ import { Avatar, Skeleton, Tabs, Button } from "antd";
 import { LinkedinFilled, PlusOutlined } from "@ant-design/icons";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
-import UserAvatar from "../../assets/img/user-avatar.png";
 import { getOrgByName, listOrgUsers } from "../../actions/organization";
 import { listProjectDetails } from "../../actions/project";
 import { protectedTest } from "../../actions/auth";
@@ -15,6 +14,7 @@ import BuildLogo from "../../assets/icon/building.svg";
 import InvitePage from "../organization/invite";
 import NonList from "../../components/pages/non-list";
 import SelectTemplate from "../project/select-template";
+import OrgUsers from "../organization/users";
 
 const { TabPane } = Tabs;
 
@@ -49,11 +49,7 @@ class Dashboard extends Component {
   };
 
   goToProject = (item) => {
-    history.push(`/${this.props.curOrg.org_name}/project/${item._id}`);
-  };
-
-  goToUser = (id) => {
-    history.push(`/user/${id}`);
+    history.push(`/project/${item._id}`);
   };
 
   onToggleDetail = () => {
@@ -133,44 +129,6 @@ class Dashboard extends Component {
     );
   };
 
-  renderUsers = () => {
-    const { users } = this.props;
-    return (
-      <React.Fragment>
-        <div className="flex mb-4" style={{ justifyContent: "flex-end" }}>
-          <Button
-            onClick={this.onToggleInvite}
-            type="ghost"
-            className="black-btn"
-          >
-            <PlusOutlined /> Add user
-          </Button>
-        </div>
-        <Row>
-          {users.map((item) => (
-            <Col
-              key={item._id}
-              md={4}
-              onClick={() => this.goToUser(item._id)}
-              className="mb-3"
-            >
-              <div className="user-card">
-                <Avatar src={item.profile.photo || UserAvatar} />
-                <div className="ml-3">
-                  <span>
-                    <b>{`${item.profile.first_name} ${item.profile.last_name}`}</b>
-                  </span>
-                  <br />
-                  <span>{item.profile.role || ""}</span>
-                </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </React.Fragment>
-    );
-  };
-
   renderOrgInfo = () => {
     const { show_detail } = this.state;
     const { curOrg } = this.props;
@@ -244,6 +202,7 @@ class Dashboard extends Component {
 
   render() {
     const { loading, show_invite, show_project_create } = this.state;
+    const { users } = this.props;
 
     if (show_invite)
       return (
@@ -276,7 +235,7 @@ class Dashboard extends Component {
                 {this.renderProjects()}
               </TabPane>
               <TabPane tab="USERS" key="2">
-                {this.renderUsers()}
+                <OrgUsers users={users} onToggleInvite={this.onToggleInvite} />
               </TabPane>
             </Tabs>
           )}

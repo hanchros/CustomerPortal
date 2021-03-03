@@ -102,7 +102,7 @@ class Routes extends React.Component {
           <Route path="/user/:user_id" component={RequireAuth(UserDashboard)} />
 
           <Route path="/:org/projects" component={RequireAuth(Projectslist)} />
-          <Route path="/:org/project/:id" component={RequireAuth(Project)} />
+          <Route path="/project/:id" component={RequireAuth(Project)} />
           <Route
             path="/:org/select-template"
             component={RequireAuth(SelectTemplate)}

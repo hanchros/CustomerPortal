@@ -36,8 +36,8 @@ export function loginUser({ email, password }) {
         organization: user.profile.org,
       });
       setMessageUserId({ userId: user._id })(dispatch);
-      fetchConversations()(dispatch);
-      fetchNotifications()(dispatch);
+      dispatch(fetchConversations());
+      dispatch(fetchNotifications());
       history.push(`/dashboard`);
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));

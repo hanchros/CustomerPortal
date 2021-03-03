@@ -163,8 +163,20 @@
 }
 
 .ant-input {
-  background-color: $gray;
+  background-color: white !important;
   border: 1px solid $gray-500;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 50px white inset;
+  box-shadow: 0 0 0 50px white inset;
+  -webkit-text-fill-color: #333;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 50px white inset;
+  box-shadow: 0 0 0 50px white inset;
+  -webkit-text-fill-color: #333;
 }
 
 .signup-btn {

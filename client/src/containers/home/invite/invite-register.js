@@ -8,6 +8,7 @@ import { ModalSpinner } from "../../../components/pages/spinner";
 import history from "../../../history";
 import { ErrPwdMsg } from "../../../constants";
 import { checkPwdStrength } from "../../../utils/helper";
+import { resolveInvite } from "../../../actions/invite";
 
 export const InviteRegisterForm = ({
   onSubmit,
@@ -148,9 +149,10 @@ class InviteRegister extends React.Component {
   }
 
   onSubmitRegister = async (values) => {
-    const { registerInvitedUser, pdfData } = this.props;
+    const { registerInvitedUser, pdfData, resolveInvite } = this.props;
     this.setState({ loading: true });
     await registerInvitedUser(values);
+    await resolveInvite(pdfData.invite, true);
     this.setState({ loading: false });
     if (pdfData.project_name) this.props.goNext();
     else history.push("/login");
@@ -197,6 +199,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { registerInvitedUser })(
+export default connect(mapStateToProps, { registerInvitedUser, resolveInvite })(
   InviteRegister
 );
