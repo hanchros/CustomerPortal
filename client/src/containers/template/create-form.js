@@ -1,8 +1,14 @@
 import React, { Component, useState } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Form, Input } from "antd";
-import { createTemplate, updateTemplate } from "../../actions/template";
+import { Link } from "react-router-dom";
+import { Container, Row, Col } from "reactstrap";
+import { Form, Input, Button, Popconfirm } from "antd";
+import { LeftOutlined } from "@ant-design/icons";
+import {
+  createTemplate,
+  updateTemplate,
+  deleteTemplate,
+} from "../../actions/template";
 import Technology from "./technology";
 import { Header, Footer } from "../../components/template";
 
@@ -10,6 +16,7 @@ export const TemplateForm = ({
   curTemplate,
   createTemplate,
   updateTemplate,
+  deleteTemplate,
   goback,
   org,
   setTemplate,
@@ -33,6 +40,16 @@ export const TemplateForm = ({
     goback();
   };
 
+  const onDeleteTemplate = async () => {
+    await deleteTemplate(curTemplate._id);
+    goback();
+  };
+
+  const onCancel = (e) => {
+    e.preventDefault();
+    goback();
+  };
+
   return (
     <Form
       name="create-template"
@@ -40,45 +57,61 @@ export const TemplateForm = ({
       onFinish={onFinish}
       initialValues={{ ...curTemplate }}
     >
-      <span>Name:</span>
-      <Form.Item
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: `Please input the template name!`,
-          },
-        ]}
-      >
-        <Input type="text" className="name" />
-      </Form.Item>
-
-      <span>Objective:</span>
-      <Form.Item name="objective">
-        <Input />
-      </Form.Item>
-      <p>What are you automating? Contracts, invoices, etc</p>
-      <p className="mb-4"></p>
-      <span>Description:</span>
-      <Form.Item name="description">
-        <Input.TextArea rows={3} />
-      </Form.Item>
-      <p className="mb-4"></p>
-      <span>Technology:</span>
-      <Technology technologies={technologies} onChangeTechs={setTechnologies} />
-      <div className="flex mt-5">
-        <button type="submit" className="mr-4 main-btn">
-          Submit
-        </button>
-        <button
-          className="main-btn main-btn-secondary"
-          onClick={(e) => {
-            e.preventDefault();
-            goback();
-          }}
+      <div className="account-form-box">
+        <span className="form-label">Name</span>
+        <Form.Item
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: `Please input the template name!`,
+            },
+          ]}
         >
-          Cancel
-        </button>
+          <Input type="text" className="name" />
+        </Form.Item>
+        <span className="form-label">Short description</span>
+        <Form.Item name="objective">
+          <Input />
+        </Form.Item>
+        <span className="form-label">Describe what are you automating?</span>
+        <Form.Item name="description">
+          <Input.TextArea rows={3} />
+        </Form.Item>
+        <p className="mb-4"></p>
+      </div>
+      <div className="account-form-box mt-5">
+        <h5>
+          <b>Technology</b>
+        </h5>
+        <Technology
+          technologies={technologies}
+          onChangeTechs={setTechnologies}
+        />
+      </div>
+      <div className="flex mt-5" style={{ justifyContent: "space-between" }}>
+        <div>
+          {curTemplate._id && (
+            <Popconfirm
+              title="Are you sure delete this template?"
+              onConfirm={onDeleteTemplate}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="ghost" className="ghost-btn">
+                Delete template
+              </Button>
+            </Popconfirm>
+          )}
+        </div>
+        <div className="flex">
+          <Button type="ghost" onClick={onCancel} className="ghost-btn">
+            Cancel
+          </Button>
+          <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+            Save
+          </Button>
+        </div>
       </div>
     </Form>
   );
@@ -93,25 +126,43 @@ class Template extends Component {
       goback,
       organization,
       setTemplate,
+      deleteTemplate,
     } = this.props;
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
-          {curTemplate._id && <h3>Update template</h3>}
-          {!curTemplate._id && <h3>Creating new template</h3>}
-          <p>
-            To save time when creating projects, save some basic parameters,
-            that are similar organization to organization to a template​
-          </p>
-          <TemplateForm
-            curTemplate={curTemplate}
-            createTemplate={createTemplate}
-            updateTemplate={updateTemplate}
-            setTemplate={setTemplate}
-            goback={goback}
-            org={organization.currentOrganization}
-          />
+        <div className="account-nav">
+          <Container>
+            <Link to="#" onClick={goback}>
+              <p>
+                <LeftOutlined /> Go back
+              </p>
+            </Link>
+          </Container>
+        </div>
+        <Container className="sub-content">
+          <Row>
+            <Col md={4}>
+              <h4 className="mb-4">
+                <b>Project template</b>
+              </h4>
+              <span>
+                To save time when creating projects, save some basic parameters,
+                that are similar organization to organization to a template​
+              </span>
+            </Col>
+            <Col md={8}>
+              <TemplateForm
+                curTemplate={curTemplate}
+                createTemplate={createTemplate}
+                updateTemplate={updateTemplate}
+                deleteTemplate={deleteTemplate}
+                setTemplate={setTemplate}
+                goback={goback}
+                org={organization.currentOrganization}
+              />
+            </Col>
+          </Row>
         </Container>
         <Footer />
       </React.Fragment>
@@ -129,4 +180,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   createTemplate,
   updateTemplate,
+  deleteTemplate,
 })(Template);

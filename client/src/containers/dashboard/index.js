@@ -6,8 +6,11 @@ import { Avatar, Skeleton, Tabs, Button } from "antd";
 import { LinkedinFilled, PlusOutlined } from "@ant-design/icons";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
-import { getOrgByName, listOrgUsers } from "../../actions/organization";
-import { listProjectDetails } from "../../actions/project";
+import {
+  getOrgByName,
+  listOrgUsers,
+  listOrgProjects,
+} from "../../actions/organization";
 import { protectedTest } from "../../actions/auth";
 import history from "../../history";
 import BuildLogo from "../../assets/icon/building.svg";
@@ -31,18 +34,13 @@ class Dashboard extends Component {
   }
 
   componentDidMount = async () => {
-    const {
-      curOrg,
-      listProjectDetails,
-      listOrgUsers,
-      protectedTest,
-    } = this.props;
+    const { curOrg, listOrgProjects, listOrgUsers, protectedTest } = this.props;
     this.setState({ loading: true });
     if (!curOrg._id) {
       await protectedTest();
     }
     if (curOrg._id) {
-      await listProjectDetails(curOrg._id);
+      await listOrgProjects(curOrg._id);
       await listOrgUsers(curOrg._id);
     }
     this.setState({ loading: false });
@@ -65,9 +63,9 @@ class Dashboard extends Component {
   };
 
   renderProjects = () => {
-    const { project } = this.props;
-    let projects = project.projectDetails;
-    projects = projects.filter((proj) => proj.status !== "Archived");
+    const { organization } = this.props;
+    let projects = organization.projects;
+    projects = projects.filter((proj) => !!proj.participant);
 
     return (
       <React.Fragment>
@@ -130,9 +128,9 @@ class Dashboard extends Component {
   };
 
   renderOrgInfo = () => {
-    const { show_detail } = this.state;
+    const { show_detail, loading } = this.state;
     const { curOrg } = this.props;
-
+    if (loading) return null;
     return (
       <div className="project-info-box">
         <div className="project-detail-head">
@@ -252,12 +250,13 @@ function mapStateToProps(state) {
     project: state.project,
     curOrg: state.organization.currentOrganization,
     users: state.organization.users,
+    organization: state.organization,
   };
 }
 
 export default connect(mapStateToProps, {
   getOrgByName,
-  listProjectDetails,
+  listOrgProjects,
   listOrgUsers,
   protectedTest,
 })(Dashboard);

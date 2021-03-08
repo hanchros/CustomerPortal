@@ -2,4 +2,4 @@ export * from "./countries";
 export * from "./organization";
 
 export const ErrPwdMsg =
-  "Your password should be more than 8 in length, must contain at least one uppercase, lowercase letter, number, punctuation";
+  "Passwords should be more than 8 characters in length and must contain at least one uppercase letter, lowercase letter, number, and special character.";

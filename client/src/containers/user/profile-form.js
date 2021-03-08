@@ -3,7 +3,6 @@ import { Button, Form, Input, Select } from "antd";
 import { Col, Row } from "reactstrap";
 import { BigUpload } from "../../components/template";
 import { countries } from "../../constants";
-import RichTextEditor from "../../components/pages/editor";
 import { processLink } from "../../utils/helper";
 
 const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
@@ -151,11 +150,11 @@ const ProfileForm = ({ onSubmit, profile, setAvatar, avatarURL, roles }) => {
             </Row>
             <Row className="mt-4">
               <Col>
-                <h5>
+                <h5 className="mb-3">
                   <b>Personal statement</b>
                 </h5>
                 <Form.Item name="personal_statement">
-                  <RichTextEditor />
+                  <Input.TextArea rows={3} size="large" />
                 </Form.Item>
               </Col>
             </Row>

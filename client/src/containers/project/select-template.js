@@ -8,7 +8,6 @@ import { listOrgTemplate } from "../../actions/template";
 import { Header, Footer } from "../../components/template";
 import EditTemplate from "../template/create-form";
 import EditProject from "../project/project-edit";
-import history from "../../history";
 
 class SeleteTemplate extends Component {
   constructor(props) {
@@ -43,28 +42,24 @@ class SeleteTemplate extends Component {
     this.setState({ showCreateProject: false, selectedTemplate: {} });
   };
 
-  onGotoTemplate = (template) => {
-    const { organization } = this.props;
-    history.push(
-      `/${organization.currentOrganization.org_name}/template/${template._id}`
-    );
-  };
+  // onGotoTemplate = (template) => {
+  //   const { organization } = this.props;
+  //   history.push(
+  //     `/${organization.currentOrganization.org_name}/template/${template._id}`
+  //   );
+  // };
 
   renderTemplateItem = (template) => (
     <div
       className="template-listitem"
       key={template._id}
-      onClick={() => this.onGotoTemplate(template)}
+      onClick={() => this.onUseTemplate(template)}
     >
       <div>
-        <b>{template.name}</b> <br/>
-        <span style={{fontSize: "13px"}}>{template.description}</span>
+        <b>{template.name}</b> <br />
+        <span style={{ fontSize: "13px" }}>{template.objective}</span>
       </div>
-      {!template.creator && (
-        <Tag color="green">
-          Global Template
-        </Tag>
-      )}
+      {!template.creator && <Tag color="green">Global Template</Tag>}
     </div>
   );
 
@@ -127,7 +122,8 @@ class SeleteTemplate extends Component {
           <hr className="mb-4" />
           {templates.map((item) => this.renderTemplateItem(item))}
           <div className="center mt-5">
-            <b>why use templates?</b><br />
+            <b>why use templates?</b>
+            <br />
             <Link to="#" className="underline-link">
               Watch a short lesson
             </Link>

@@ -6,6 +6,7 @@ import HomeHOC from "../../../components/template/home-hoc";
 import { FileDrop } from "react-file-drop";
 import { ModalSpinner } from "../../../components/pages/spinner";
 import { dropRegFile } from "../../../actions/auth";
+import { listProjectDetails } from "../../../actions/project";
 import RequestInvite from "./request-invite";
 import InviteRegister from "./invite-register";
 import ProjectRegister from "./project-register";
@@ -14,6 +15,7 @@ import { getOrgByName } from "../../../actions/organization";
 import ChallengeIcon from "../../../assets/icon/challenge.png";
 import UploadIcon from "../../../assets/icon/upload.svg";
 import CryptFileIcon from "../../../assets/icon/crypted_file.svg";
+import { org_consts } from "../../../constants";
 
 class InviteHomePage extends React.Component {
   constructor() {
@@ -29,9 +31,30 @@ class InviteHomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { match, getOrgByName } = this.props;
+    const { match, getOrgByName, listProjectDetails } = this.props;
     let org = await getOrgByName(match.params.org_name);
-    if (org) this.setState({ org });
+    if (org) {
+      await listProjectDetails(org._id);
+      this.setAppColors(org.profile);
+      this.setState({ org });
+    }
+  };
+
+  componentWillUnmount = () => {
+    this.setAppColors(this.props.orgSettings);
+  };
+
+  setAppColors = (settings) => {
+    let values = settings;
+    if (!settings || !settings.primary_color) values = org_consts;
+    const astyle = document.documentElement.style;
+    astyle.setProperty("--primary_color", values.primary_color);
+    astyle.setProperty("--secondary_color", values.secondary_color);
+    astyle.setProperty("--background_color", values.background_color);
+    astyle.setProperty("--menufont_color", values.menufont_color);
+    astyle.setProperty("--font_color", values.font_color);
+    astyle.setProperty("--link_color", values.link_color);
+    astyle.setProperty("--shadow_color", values.shadow_color);
   };
 
   onBegin = () => {
@@ -135,8 +158,9 @@ class InviteHomePage extends React.Component {
           Provide your PDF invitation
         </div>
         <p className="mt-4 mb-4">
-          Please check your email of an invitation letter. PDF file with
-          invitation should be attached there.
+          Please check your email for an invitation from
+          register@collaboration.app with a "Smart Document" PDF invitation
+          attached.
         </p>
         <hr className="mt-5 mb-5" />
         <p className="mt-4">
@@ -162,7 +186,7 @@ class InviteHomePage extends React.Component {
               You have just experienced blockchain "smart document" technology
             </p>
             <span>
-              This technology that allows ordinary documents to processed
+              This technology allows ordinary documents to be processed
               automatically by almost any software
             </span>
             <Button
@@ -222,9 +246,13 @@ class InviteHomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    orgSettings: state.organization.orgSettings,
+  };
 }
 
-export default connect(mapStateToProps, { dropRegFile, getOrgByName })(
-  InviteHomePage
-);
+export default connect(mapStateToProps, {
+  dropRegFile,
+  getOrgByName,
+  listProjectDetails,
+})(InviteHomePage);

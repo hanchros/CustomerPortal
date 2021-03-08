@@ -3,11 +3,14 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
 import { Avatar, Skeleton, Tabs } from "antd";
-import { LinkedinFilled } from "@ant-design/icons";
+import { LinkedinFilled, LeftOutlined } from "@ant-design/icons";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
-import { getOrgByName, listOrgUsers } from "../../actions/organization";
-import { listProjectDetails } from "../../actions/project";
+import {
+  getOrgByName,
+  listOrgUsers,
+  listOrgProjects,
+} from "../../actions/organization";
 import history from "../../history";
 import BuildLogo from "../../assets/icon/building.svg";
 import { org_consts } from "../../constants";
@@ -28,18 +31,13 @@ class Dashboard extends Component {
   }
 
   componentDidMount = async () => {
-    const {
-      match,
-      getOrgByName,
-      listProjectDetails,
-      listOrgUsers,
-    } = this.props;
+    const { match, getOrgByName, listOrgProjects, listOrgUsers } = this.props;
     let org_name = match.params.org_name;
     if (org_name) {
       this.setState({ loading: true });
       let org = await getOrgByName(org_name);
       if (org) {
-        await listProjectDetails(org._id);
+        await listOrgProjects(org._id);
         await listOrgUsers(org._id);
         this.setAppColors(org.profile);
       }
@@ -72,10 +70,14 @@ class Dashboard extends Component {
     this.setState({ show_detail: !this.state.show_detail });
   };
 
+  goback = () => {
+    history.goBack();
+  };
+
   renderProjects = () => {
-    const { project } = this.props;
-    let projects = project.projectDetails;
-    projects = projects.filter((proj) => proj.status !== "Archived");
+    const { organization } = this.props;
+    let projects = organization.projects;
+    projects = projects.filter((proj) => !!proj.participant);
 
     return (
       <Row>
@@ -124,15 +126,14 @@ class Dashboard extends Component {
   };
 
   renderOrgInfo = () => {
-    const { org, show_detail } = this.state;
-
+    const { org, show_detail, loading } = this.state;
+    if (loading) return null;
     if (!org)
       return (
         <div className="project-info-box">
           <h3>Organization doesn't exist</h3>
         </div>
       );
-
     return (
       <div className="project-info-box">
         <div className="project-detail-head">
@@ -207,7 +208,16 @@ class Dashboard extends Component {
     return (
       <React.Fragment>
         <Header />
-        <Container className="content">
+        <div className="account-nav">
+          <Container>
+            <Link to="#" onClick={this.goback}>
+              <p>
+                <LeftOutlined /> Go back
+              </p>
+            </Link>
+          </Container>
+        </div>
+        <Container className="sub-content">
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
           {this.renderOrgInfo()}
@@ -243,6 +253,6 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   getOrgByName,
-  listProjectDetails,
+  listOrgProjects,
   listOrgUsers,
 })(Dashboard);

@@ -14,6 +14,8 @@ class ProjectTech extends Component {
     this.state = {
       visibleTech: false,
       technologies: [],
+      visibleDetail: false,
+      curTech: null,
     };
   }
 
@@ -27,11 +29,19 @@ class ProjectTech extends Component {
   };
 
   onGotoTech = (item) => {
-    let tab = 3;
-    if (item.organization) {
-      tab = 4;
+    if (!item.organization) {
+      history.push(`/techhub?tab=3&id=${item._id}`);
+    } else if (
+      item.organization === this.props.organization.currentOrganization._id
+    ) {
+      history.push(`/techhub?tab=4&id=${item._id}`);
+    } else {
+      this.setState({ visibleDetail: true, curTech: item });
     }
-    history.push(`/techhub?tab=${tab}&id=${item._id}`);
+  };
+
+  onHideDetails = () => {
+    this.setState({ visibleDetail: false, curTech: null });
   };
 
   setTechnologies = (technologies) => {
@@ -46,7 +56,7 @@ class ProjectTech extends Component {
 
   render = () => {
     const { project, isCreator } = this.props;
-    const { visibleTech, technologies } = this.state;
+    const { visibleTech, technologies, visibleDetail, curTech } = this.state;
     const curProj = project.project;
 
     return (
@@ -108,6 +118,31 @@ class ProjectTech extends Component {
             </div>
           </Modal>
         )}
+        {visibleDetail && (
+          <Modal
+            title="Project Technology"
+            visible={visibleDetail}
+            width={500}
+            footer={false}
+            onCancel={this.onHideDetails}
+            centered
+          >
+            <div className="flex-colume-center">
+              <img src={curTech.icon || TechImg} alt="" height={70} />
+              <h5 className="mt-4 mb-4">
+                <b>{curTech.title}</b>
+              </h5>
+              <div dangerouslySetInnerHTML={{ __html: curTech.content }} />
+              <Button
+                type="ghost"
+                className="ghost-btn mt-4"
+                onClick={this.onHideDetails}
+              >
+                close
+              </Button>
+            </div>
+          </Modal>
+        )}
       </React.Fragment>
     );
   };
@@ -116,6 +151,7 @@ class ProjectTech extends Component {
 const mapStateToProps = (state) => {
   return {
     project: state.project,
+    organization: state.organization,
   };
 };
 

@@ -5,6 +5,7 @@ import {
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
   FETCH_ORG_USER_LIST,
+  FETCH_ORG_PROJECT_LIST,
   SET_ORG_SETTINGS,
 } from "./types";
 import Client from "./api";
@@ -66,7 +67,10 @@ export function listOrgProjects(orgId) {
     const client = Client(true);
     try {
       let res = await client.get(`${API_URL}/projectorg/project/${orgId}`);
-      return res.data.projects;
+      dispatch({
+        type: FETCH_ORG_PROJECT_LIST,
+        projects: res.data.projects,
+      });
     } catch (err) {
       console.log(err);
     }

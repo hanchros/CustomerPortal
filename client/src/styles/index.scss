@@ -80,6 +80,11 @@ body {
   .ant-layout {
     background-color: var(--background_color);
   }
+
+  .row {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
 }
 
 .main-nav {
@@ -157,11 +162,6 @@ body {
   min-height: calc(100vh - 123px);
   margin: 0 auto;
   padding-bottom: 45px;
-
-  .row {
-    padding-left: 3px;
-    padding-right: 3px;
-  }
 
   p {
     font-size: 1rem;

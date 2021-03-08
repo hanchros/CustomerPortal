@@ -21,6 +21,7 @@ import { getFieldData } from "../../utils/helper";
 import { Link } from "react-router-dom";
 import BDImg from "../../assets/icon/building.svg";
 import BDWImg from "../../assets/icon/building-white.svg";
+import history from "../../history";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -61,7 +62,7 @@ class Invite extends Component {
     await this.props.sendInvite(this.state.formVaule);
     this.setState({ loading: false });
     this.onHidePreview();
-    this.props.goback();
+    this.goBack();
   };
 
   onShowPreview = async (values) => {
@@ -292,15 +293,22 @@ class Invite extends Component {
     this.setState({ tabkey: key });
   };
 
+  goBack = () => {
+    const { goback, project } = this.props;
+    if (goback) goback();
+    else {
+      history.push(`/project/${project.project._id}`);
+    }
+  };
+
   render() {
     const { loading, visible, content, showExUser, tabkey } = this.state;
-    const { goback } = this.props;
     return (
       <React.Fragment>
         <Header />
         <div className="account-nav">
           <Container>
-            <Link to="#" onClick={goback}>
+            <Link to="#" onClick={this.goBack}>
               <p>
                 <LeftOutlined /> Back to Project
               </p>
@@ -362,7 +370,7 @@ class Invite extends Component {
                 <Button
                   type="ghost"
                   className="ghost-btn ml-3"
-                  onClick={goback}
+                  onClick={this.goBack}
                 >
                   <LeftOutlined /> Back to Project
                 </Button>

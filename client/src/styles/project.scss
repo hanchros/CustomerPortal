@@ -23,6 +23,12 @@
   .ant-avatar {
     border-radius: 3px;
   }
+  .ant-list-item-meta {
+    align-items: center;
+  }
+  .ant-empty {
+    margin: 0 0;
+  }
 }
 
 .template-listitem {
@@ -484,7 +490,7 @@
       cursor: pointer;
       border-bottom: 1px solid #4c86fe;
       &:hover {
-        color: #FF0;
+        color: #ff0;
       }
     }
   }

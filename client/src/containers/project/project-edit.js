@@ -1,12 +1,14 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Checkbox } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { updateProject, createProject } from "../../actions/project";
+import { createTemplate } from "../../actions/template";
 import { Header, BigUpload, Footer } from "../../components/template";
 import OrgInvite from "./invite";
+import Technology from "../template/technology";
 
 const CreateForm = ({
   createProject,
@@ -18,14 +20,34 @@ const CreateForm = ({
   gonext,
   user,
   template,
+  createTemplate,
 }) => {
+  let techs = curProject.technologies || [];
+  if (!curProject._id && template._id) {
+    techs = template.technologies || [];
+  }
+  const [technologies, setTechnologies] = useState(techs);
+
   const onFinish = async (values) => {
     values.participant = user._id;
     values.logo = avatarURL;
     values.likes = curProject.likes || [];
     values.status = curProject.status || "Live";
+    values.technologies = technologies.map((tech) => {
+      return tech._id;
+    });
     if (!curProject._id && template._id) {
       values.template = template._id;
+    }
+    if (values.create_template) {
+      delete values.create_template;
+      await createTemplate({
+        name: values.name,
+        description: values.description,
+        objective: values.objective,
+        technologies: values.technologies,
+        creator: user.profile.org._id,
+      });
     }
     if (curProject._id) {
       values._id = curProject._id;
@@ -68,7 +90,9 @@ const CreateForm = ({
             <Form.Item name="objective">
               <Input />
             </Form.Item>
-            <span className="form-label">Detailed description</span>
+            <span className="form-label">
+              Describe what are you automating?
+            </span>
             <Form.Item name="description">
               <Input.TextArea rows={3} />
             </Form.Item>
@@ -80,12 +104,28 @@ const CreateForm = ({
           </Col>
         </Row>
       </div>
+      <div className="account-form-box mt-5">
+        <h5>
+          <b>Technology</b>
+        </h5>
+        <Technology
+          technologies={technologies}
+          onChangeTechs={setTechnologies}
+        />
+      </div>
+      {!template._id && (
+        <div className="account-form-box mt-5">
+          <Form.Item name="create_template" valuePropName="checked">
+            <Checkbox>Create a new template from this project</Checkbox>
+          </Form.Item>
+        </div>
+      )}
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
         <Button type="ghost" onClick={onCancel} className="ghost-btn">
           Cancel
         </Button>
         <Button type="ghost" htmlType="submit" className="black-btn ml-3">
-          Save changes
+          {curProject._id ? "Save" : "create project"}
         </Button>
       </div>
     </Form>
@@ -120,9 +160,10 @@ class EditProject extends Component {
       goback,
       user,
       template,
+      createTemplate,
     } = this.props;
 
-    if (showInvite) return <OrgInvite goback={goback} />;
+    if (showInvite) return <OrgInvite />;
 
     return (
       <React.Fragment>
@@ -151,6 +192,7 @@ class EditProject extends Component {
               <CreateForm
                 createProject={createProject}
                 updateProject={updateProject}
+                createTemplate={createTemplate}
                 setAvatar={this.setAvatar}
                 avatarURL={avatarURL || curProject.logo}
                 curProject={curProject}
@@ -178,4 +220,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   createProject,
   updateProject,
+  createTemplate,
 })(EditProject);

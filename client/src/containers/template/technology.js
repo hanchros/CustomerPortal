@@ -157,7 +157,11 @@ class Technology extends React.Component {
           )}
         />
         {!showForm && (
-          <Button type="primary" shape="round" onClick={this.onToggleShowForm}>
+          <Button
+            type="ghost"
+            className="black-btn mt-4"
+            onClick={this.onToggleShowForm}
+          >
             <PlusOutlined /> Add technology
           </Button>
         )}

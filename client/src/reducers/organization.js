@@ -8,6 +8,7 @@ import {
   FETCH_SIMPLE_ORG,
   FETCH_ADMIN_ORG_LIST,
   FETCH_ORG_USER_LIST,
+  FETCH_ORG_PROJECT_LIST,
   SET_ORG_SETTINGS,
 } from "../actions/types";
 import { org_consts } from "../constants";
@@ -20,6 +21,7 @@ const INITIAL_STATE = {
   orgSettings: org_consts,
   setValue: false,
   users: [],
+  projects: [],
   searchTxt: "",
   total: 0,
 };
@@ -132,6 +134,11 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         users: action.users,
+      };
+    case FETCH_ORG_PROJECT_LIST:
+      return {
+        ...state,
+        projects: action.projects,
       };
     default:
       return state;

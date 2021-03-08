@@ -18,6 +18,7 @@ import ChallengeLogo from "../../assets/icon/challenge.png";
 import ProjectTeam from "./project-team";
 import ProjectInvite from "./project-invites";
 import ProjectTech from "./project-tech";
+import history from "../../history";
 
 const { TabPane } = Tabs;
 
@@ -59,6 +60,10 @@ class Project extends Component {
 
   onToggleIvMng = () => {
     this.setState({ showIvMng: !this.state.showIvMng });
+  };
+
+  goBack = () => {
+    history.goBack();
   };
 
   renderProjInfo = (curProj, orgs) => {
@@ -142,7 +147,7 @@ class Project extends Component {
         <Header />
         <div className="account-nav">
           <Container>
-            <Link to={`/dashboard`}>
+            <Link to="#" onClick={this.goBack}>
               <p>
                 <LeftOutlined /> Go back
               </p>
