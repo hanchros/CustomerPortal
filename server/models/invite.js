@@ -19,7 +19,6 @@ const InviteSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
     },
     organization: {
@@ -31,7 +30,7 @@ const InviteSchema = new Schema(
     },
     type: {
       type: Number,
-      // 0: request, 1: invite
+      // 0: request, 1: invite, 2: ex-invite
     },
     resolved: {
       type: Number,

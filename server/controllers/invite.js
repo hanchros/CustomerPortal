@@ -1,14 +1,18 @@
 const Invite = require("../models/invite");
 const Project = require("../models/project");
+const Notification = require("../models/notification");
+const Organization = require("../models/organization");
+const User = require("../models/user");
 const sendgrid = require("../config/sendgrid");
 const axios = require("axios");
 const fs = require("fs");
 const FormData = require("form-data");
 const utils = require("./util");
+const sockets = require("../socket");
 
 exports.createInviteRequest = async (req, res, next) => {
   try {
-    let irs = await Invite.find({ email: req.body.email });
+    let irs = await Invite.find({ email: req.body.email, resolved: 1 });
     if (irs.length > 0) {
       return res
         .status(422)
@@ -98,6 +102,46 @@ exports.sendInviteNewMember = async (req, res, next) => {
   }
 };
 
+exports.inviteOrgToProject = async (req, res, next) => {
+  try {
+    const customer = await User.findById(req.body.user);
+    const org = await Organization.findById(req.body.organization);
+    const iv = new Invite({
+      first_name: customer.profile.first_name,
+      last_name: customer.profile.last_name,
+      email: customer.email,
+      organization: org.org_name,
+      project: req.params.projectId,
+      type: 2,
+    });
+    const niv = await iv.save();
+    const project = await Project.findById(req.params.projectId);
+
+    let notif = new Notification({
+      receptors: [req.body.user],
+      alias: "invite ex_org",
+      title: "You are invited",
+      body: `Hi, ${customer.profile.first_name}, ${customer.profile.last_name}, You are invited in the project "<a href='${sendgrid.mainURL}/project/${project._id}' target='_blank'>${project.name}</a>" by the company "<a href='${sendgrid.mainURL}/${req.user.profile.org_name}' target='_blank'>${req.user.profile.org_name}</a>"`,
+      author: req.user._id,
+      status: "pending",
+      invite: niv._id,
+    });
+    notif = await notif.save();
+
+    const io = sockets.io;
+    for (let key in io.sockets.sockets) {
+      if (io.sockets.sockets.hasOwnProperty(key)) {
+        io.sockets.sockets[key].emit("NEW_NOTIFICATION", {
+          notification: notif,
+        });
+      }
+    }
+    res.status(201).json({ invite: niv });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.listInviteRequest = (req, res, next) => {
   Invite.find({ resolved: 1, type: 0 }).exec((err, irs) => {
     if (err) {
@@ -110,16 +154,18 @@ exports.listInviteRequest = (req, res, next) => {
 };
 
 exports.listInvitesByProjects = (req, res, next) => {
-  Invite.find({ resolved: 1, type: 1, project: req.params.project_id }).exec(
-    (err, irs) => {
-      if (err) {
-        return next(err);
-      }
-      res.status(201).json({
-        invites: irs,
-      });
+  Invite.find({
+    resolved: 1,
+    type: [1, 2],
+    project: req.params.project_id,
+  }).exec((err, irs) => {
+    if (err) {
+      return next(err);
     }
-  );
+    res.status(201).json({
+      invites: irs,
+    });
+  });
 };
 
 exports.getInvite = (req, res, next) => {

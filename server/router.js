@@ -196,6 +196,8 @@ module.exports = function (app) {
   inviteRoutes.put("/resolve/:id", InviteController.resolveInvite);
   // cancel invite route
   inviteRoutes.put("/cancel/:id", InviteController.cancelInvite);
+  // create invite of ex org member to project route
+  inviteRoutes.post("/project/:projectId", requireAuth, InviteController.inviteOrgToProject);
 
 
   //= ========================
@@ -237,7 +239,7 @@ module.exports = function (app) {
   // Get orgs by project route
   projectOrgRoutes.get("/org/:projectId", ProjectOrgController.listOrganization);
   // Join project route
-  projectOrgRoutes.post("/:projectId", requireAuth, ProjectOrgController.joinProject);
+  projectOrgRoutes.post("/:inv_id", requireAuth, ProjectOrgController.joinProject);
   // Leave project route
   projectOrgRoutes.delete("/:projectId", requireAuth, ProjectOrgController.leaveProject);
 
@@ -270,7 +272,8 @@ module.exports = function (app) {
   notificationRoutes.get("/", requireAuth, NotificationController.getNotification);
   // Read notification route
   notificationRoutes.post("/read", requireAuth, NotificationController.readNotification);
-
+  // resolve invite notification route
+  notificationRoutes.post("/resolve", requireAuth, NotificationController.resolveNotification);
 
   //= ========================
   // Admin Routes

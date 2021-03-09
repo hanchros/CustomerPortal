@@ -1,64 +1,54 @@
 const ProjectOrg = require("../models/projectorg");
+const Project = require("../models/project");
 const ProjectMember = require("../models/projectmember");
 const Timeline = require("../models/timeline");
 const User = require("../models/user");
-const Project = require("../models/project");
-const sendgrid = require("../config/sendgrid");
 const Organization = require("../models/organization");
+const Invite = require("../models/invite");
 
 exports.joinProject = async (req, res, next) => {
   try {
-    const customer = await User.findById(req.body.user);
+    const inv = await Invite.findById(req.params.inv_id)
+    if (!inv || inv.resolved !== 1) {
+      return res
+      .status(422)
+      .send({ error: "The invitation was already resolved." });
+    }
+    const customer = await User.findOne({email: inv.email});
+    const project = await Project.findById(inv.project)
+    const org = await Organization.findOne({org_name: inv.organization})
     const pms = await ProjectMember.find({
-      participant: req.body.user,
-      project: req.params.projectId,
+      participant: customer._id,
+      project: project._id,
     });
     if (!pms || pms.length === 0) {
       const pm = new ProjectMember({
-        participant: req.body.user,
-        project: req.params.projectId,
+        participant: customer._id,
+        project: project._id,
       });
       await pm.save();
       let timeline = new Timeline({
         title: `${customer.profile.first_name} ${customer.profile.last_name} was invited to the project`,
-        project: req.params.projectId,
+        project: project._id,
       });
       await timeline.save();
     }
-    if (req.body.organization) {
-      const org = await Organization.findById(req.body.organization);
-      const pos = await ProjectOrg.find({
-        organization: req.body.organization,
-        project: req.params.projectId,
-      });
-      if (!pos || pos.length === 0) {
-        const po = new ProjectOrg({
-          organization: req.body.organization,
-          project: req.params.projectId,
-        });
-        await po.save();
-        let tl = new Timeline({
-          title: `Organization "${org.org_name}" was added to the project`,
-          project: req.params.projectId,
-        });
-        await tl.save();
-      }
-    }
-    const project = await Project.findById(req.params.projectId);
-    const content = `<p>Hi, ${customer.profile.first_name} ${
-      customer.profile.last_name
-    }</p><p>You ${
-      req.body.organization ? "and your organization " : ""
-    } are invited in the project "${project.name}" by the company "${
-      req.user.profile.org_name
-    }"</p>`;
-    sendgrid.joinProjectMail({
-      email: customer.email,
-      logo:
-        project.logo ||
-        "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png",
-      content,
+    const pos = await ProjectOrg.find({
+      organization: org._id,
+      project: project._id,
     });
+    if (!pos || pos.length === 0) {
+      const po = new ProjectOrg({
+        organization: org._id,
+        project: project._id,
+      });
+      await po.save();
+      let tl = new Timeline({
+        title: `Organization "${org.org_name}" was added to the project`,
+        project: project._id,
+      });
+      await tl.save();
+    }
     res.status(201).json({ message: "success" });
   } catch (err) {
     next(err);

@@ -223,3 +223,4 @@ exports.messageFactory = messageFactory;
 exports.notificationFactory = notificationFactory;
 exports.inviteFactory = inviteFactory;
 exports.inviteOrgMemberFactory = inviteOrgMemberFactory;
+exports.mainURL = mainURL;

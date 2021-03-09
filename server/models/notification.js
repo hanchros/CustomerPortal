@@ -16,6 +16,11 @@ const NotificationSchema = new Schema(
     },
     link: { type: String },
     read: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    status: { type: String },
+    invite: {
+      type: Schema.Types.ObjectId,
+      ref: "Invite",
+    },
   },
   {
     timestamps: true, // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.

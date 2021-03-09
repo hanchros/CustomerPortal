@@ -170,6 +170,20 @@ exports.readNotification = async (req, res, next) => {
   }
 };
 
+exports.resolveNotification = async (req, res, next) => {
+  try {
+    notification = await Notification.findOneAndUpdate(
+      { _id: req.body._id },
+      { status: req.body.resolve },
+      { new: true }
+    );
+    return res.status(200).json({ notification });
+  } catch (err) {
+    res.status(500).send({ error: err });
+    return next(err);
+  }
+};
+
 exports.sendNotificationMail = async (sender, receptor, title, content) => {
   if (utils.compareIds(sender._id, receptor._id)) return;
   try {
