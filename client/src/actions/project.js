@@ -151,7 +151,7 @@ export function joinOrgProject(projectId, userId, orgId) {
   return async (dispatch) => {
     try {
       const client = Client(true);
-      let res = await client.post(`${API_URL}/projectorg/${projectId}`, {
+      let res = await client.post(`${API_URL}/invite/project/${projectId}`, {
         user: userId,
         organization: orgId,
       });

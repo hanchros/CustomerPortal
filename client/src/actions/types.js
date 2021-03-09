@@ -52,6 +52,7 @@ export const FETCH_FIELD_DATA = "fetch_field_data",
 // Notification Actions
 //= =====================
 export const FETCH_NOTIFICATIONS = "fetch_notifications",
+  RESOLVE_NOTIFICATION = "resolve_notification",
   READ_ONE_NOTIFICATION = "read_one_notification";
 
 //= =====================

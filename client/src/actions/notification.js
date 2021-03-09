@@ -1,4 +1,8 @@
-import { FETCH_NOTIFICATIONS, READ_ONE_NOTIFICATION } from "./types";
+import {
+  FETCH_NOTIFICATIONS,
+  READ_ONE_NOTIFICATION,
+  RESOLVE_NOTIFICATION,
+} from "./types";
 import Client from "./api";
 import { API_URL, createNotification, errorMessage } from "./index";
 import { message } from "antd";
@@ -26,7 +30,7 @@ export function fetchNotifications() {
         unread,
       });
     } catch (err) {
-      return
+      return;
     }
   };
 }
@@ -43,6 +47,24 @@ export function readNotification(notification) {
       dispatch({
         type: READ_ONE_NOTIFICATION,
         notification,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function resolveNotification(id, resolve) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      const res = await client.post(`${API_URL}/notification/resolve`, {
+        _id: id,
+        resolve,
+      });
+      dispatch({
+        type: RESOLVE_NOTIFICATION,
+        notification: res.data.notification,
       });
     } catch (err) {
       console.log(err);

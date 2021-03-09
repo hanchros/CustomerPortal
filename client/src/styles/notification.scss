@@ -1,3 +1,49 @@
-.unread-notif {
-  background-color: #f0ffff;
+.notif-box {
+  margin-bottom: 30px;
+  box-shadow: 1px 2px 8px var(--shadow_color);
+  border-radius: 3px;
+  background-color: white;
+
+  .main-body,
+  .action-body {
+    padding: 40px;
+  }
+
+  .action-body {
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .date-format {
+    opacity: 0.5;
+    font-size: 13px;
+  }
+
+  .notif-content {
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .notif-box {
+    .main-body,
+    .action-body {
+      padding: 25px;
+    }
+  
+    .action-body {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .flex {
+        margin-top: 10px;
+      }
+    }
+  }
+  
 }

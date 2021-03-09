@@ -57,6 +57,18 @@ export function createInviteRequest(values) {
   };
 }
 
+export function acceptOrgProject(inv_id) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      await client.post(`${API_URL}/projectorg/${inv_id}`);
+      message.success("Thanks for your accept!");
+    } catch (err) {
+      createNotification("Follow Project", errorMessage(err));
+    }
+  };
+}
+
 export function resolveInvite(id, resolve) {
   const client = Client();
   return async (dispatch) => {

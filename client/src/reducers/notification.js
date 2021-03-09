@@ -1,4 +1,8 @@
-import { FETCH_NOTIFICATIONS, READ_ONE_NOTIFICATION } from "../actions/types";
+import {
+  FETCH_NOTIFICATIONS,
+  READ_ONE_NOTIFICATION,
+  RESOLVE_NOTIFICATION,
+} from "../actions/types";
 
 const initialNotificaionData = {
   notifications: [],
@@ -26,6 +30,17 @@ const notification = (state = initialNotificaionData, action) => {
         ...state,
         notifications: list,
         unread: state.unread - 1,
+      };
+    case RESOLVE_NOTIFICATION:
+      list = state.notifications;
+      for (let i = 0; i < list.length; i++) {
+        if (list[i]._id === action.notification._id) {
+          list[i] = action.notification;
+        }
+      }
+      return {
+        ...state,
+        notifications: list,
       };
     default:
       return state;
