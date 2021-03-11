@@ -57,7 +57,7 @@ export const OrgRegisterForm = ({ onSubmit, org_name }) => {
         </Row>
       </div>
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
-        <Button type="ghost" htmlType="submit" className="black-btn">
+        <Button type="ghost" htmlType="submit" className="black-btn wide">
           Continue
         </Button>
       </div>
@@ -139,7 +139,7 @@ class ProjectRegister extends React.Component {
         <Button
           type="ghost"
           onClick={this.props.goBack}
-          className="black-btn"
+          className="black-btn wide"
         >
           Continue
         </Button>

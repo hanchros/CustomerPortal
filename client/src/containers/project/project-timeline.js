@@ -35,12 +35,12 @@ const NoteForm = ({ onSubmit, note, onCancel }) => {
           },
         ]}
       >
-        <Input type="text" className="name" />
+        <Input type="text" className="name" size="large" />
       </Form.Item>
 
       <span className="form-label">Description</span>
       <Form.Item name="description">
-        <Input.TextArea rows={3} />
+        <Input.TextArea rows={3} size="large" />
       </Form.Item>
 
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>

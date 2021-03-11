@@ -32,7 +32,7 @@ const NotificationForm = ({ onSubmit, profile }) => {
       <Button
         type="ghost"
         htmlType="submit"
-        className="black-btn mt-5"
+        className="black-btn wide mt-5"
         style={{ float: "right" }}
       >
         save changes

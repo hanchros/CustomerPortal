@@ -79,15 +79,15 @@ const EditArticle = ({
               },
             ]}
           >
-            <Input type="text" placeholder="Title" />
+            <Input type="text" size="large" />
           </Form.Item>
         </Col>
       </Row>
       <Form.Item name="content">
-        <RichTextEditor placeholder="Content" />
+        <RichTextEditor size="large" placeholder="Content" />
       </Form.Item>
       <Form.Item name="video">
-        <Input type="text" placeholder="Video Link" />
+        <Input type="text" size="large" placeholder="Video Link" />
       </Form.Item>
 
       <Row className="mt-4">
@@ -101,7 +101,7 @@ const EditArticle = ({
               },
             ]}
           >
-            <Select placeholder="Article Type​">
+            <Select placeholder="Article Type​" size="large">
               {tags.map((item) => {
                 return (
                   <Select.Option key={item._id} value={item._id}>
@@ -122,6 +122,7 @@ const EditArticle = ({
           >
             <Select
               placeholder="Article Topic"
+              size="large"
               dropdownRender={(menu) => (
                 <div>
                   {menu}
@@ -163,7 +164,7 @@ const EditArticle = ({
       </Row>
 
       <Form.Item name="iframe" className="mt-4">
-        <Input type="text" placeholder="Iframe Link" />
+        <Input type="text" placeholder="Iframe Link" size="large" />
       </Form.Item>
 
       <span>Upload Documents:</span>
@@ -182,7 +183,7 @@ const EditArticle = ({
         </Col>
         <Col md={6}>
           <Form.Item name="button_name" label="Go Button Caption">
-            <Input type="text" placeholder="Go To Site" />
+            <Input type="text" placeholder="Go To Site" size="large" />
           </Form.Item>
         </Col>
       </Row>

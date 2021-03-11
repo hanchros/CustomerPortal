@@ -182,7 +182,7 @@ class Project extends Component {
             <Button
               onClick={this.onToggleEdit}
               type="ghost"
-              className="black-btn mt-4 ml-auto"
+              className="black-btn wide mt-4 ml-auto"
             >
               Edit project
             </Button>

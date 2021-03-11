@@ -131,10 +131,10 @@ export const InviteRegisterForm = ({
         {invalidPwd && <div className="pwd-error">{ErrPwdMsg}</div>}
       </div>
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
-        <Button type="ghost" onClick={onCancel} className="ghost-btn">
+        <Button type="ghost" onClick={onCancel} className="ghost-btn wide">
           Cancel
         </Button>
-        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+        <Button type="ghost" htmlType="submit" className="black-btn wide ml-3">
           Continue
         </Button>
       </div>

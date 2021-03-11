@@ -53,7 +53,7 @@ export const TemplateForm = ({
   return (
     <Form
       name="create-template"
-      className="mt-4 register-form"
+      className="mt-4 register-form ml-auto mr-auto"
       onFinish={onFinish}
       initialValues={{ ...curTemplate }}
     >
@@ -68,15 +68,15 @@ export const TemplateForm = ({
             },
           ]}
         >
-          <Input type="text" className="name" />
+          <Input type="text" className="name" size="large" />
         </Form.Item>
         <span className="form-label">Short description</span>
         <Form.Item name="objective">
-          <Input />
+          <Input size="large" />
         </Form.Item>
         <span className="form-label">Describe what are you automating?</span>
         <Form.Item name="description">
-          <Input.TextArea rows={3} />
+          <Input.TextArea rows={3} size="large" />
         </Form.Item>
         <p className="mb-4"></p>
       </div>
@@ -98,17 +98,21 @@ export const TemplateForm = ({
               okText="Yes"
               cancelText="No"
             >
-              <Button type="ghost" className="ghost-btn">
+              <Button type="ghost" className="ghost-btn wide">
                 Delete template
               </Button>
             </Popconfirm>
           )}
         </div>
         <div className="flex">
-          <Button type="ghost" onClick={onCancel} className="ghost-btn">
+          <Button type="ghost" onClick={onCancel} className="ghost-btn wide">
             Cancel
           </Button>
-          <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+          <Button
+            type="ghost"
+            htmlType="submit"
+            className="black-btn wide ml-3"
+          >
             Save
           </Button>
         </div>

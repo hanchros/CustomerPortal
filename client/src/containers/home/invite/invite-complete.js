@@ -26,7 +26,7 @@ class InviteComplete extends React.Component {
           <span>You are the member of project "{curProj.name}".</span>
           <Button
             type="ghost"
-            className="black-btn mt-5 mb-3 mr-auto ml-auto"
+            className="black-btn wide mt-5 mb-3 mr-auto ml-auto"
             onClick={this.onGoStart}
           >
             how to start?

@@ -295,6 +295,13 @@
   height: 38px !important;
 }
 
+.ghost-btn.wide,
+.black-btn.wide {
+  height: 50px !important;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
 .black-btn {
   background-color: black !important;
   color: white !important;
@@ -447,6 +454,7 @@
       vertical-align: unset !important;
       border-bottom: 1px solid #dee2e6;
       padding: 20px 10px;
+      word-break: break-all;
     }
     tr:last-child td {
       border-bottom: none;
@@ -476,7 +484,7 @@
 .blue-popover {
   display: flex;
   flex-direction: column;
-  background-color: #3c76ee;
+  background-color: var(--primary_color);
 
   ul {
     list-style: none;
@@ -488,7 +496,7 @@
       letter-spacing: 1px;
       color: white;
       cursor: pointer;
-      border-bottom: 1px solid #4c86fe;
+      border-bottom: 1px solid #aaa;
       &:hover {
         color: #ff0;
       }
@@ -590,6 +598,13 @@
 
   .black-btn {
     height: 32px !important;
+  }
+
+  .ghost-btn.wide,
+  .black-btn.wide {
+    height: 38px !important;
+    padding-left: 22px !important;
+    padding-right: 22px !important;
   }
 
   .table-header-btns {

@@ -29,6 +29,7 @@ export function updateOrganization(orgData) {
     try {
       await client.put(`${API_URL}/organization`, orgData);
       dispatch(protectedTest());
+      message.success("Organization has been updated successfully!");
     } catch (err) {
       createNotification("Update Organization", errorMessage(err));
     }
@@ -82,6 +83,7 @@ export function removeOrgUser(userId) {
     const client = Client(true);
     try {
       await client.delete(`${API_URL}/organization/users/${userId}`);
+      message.success("User has been removed from organization")
     } catch (err) {
       console.log(err);
     }

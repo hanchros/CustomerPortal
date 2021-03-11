@@ -24,6 +24,7 @@ const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
 
   return (
     <Form name="create-technology" className="mt-4" onFinish={onFinish}>
+      <span className="form-label">Title*</span>
       <Form.Item
         name="title"
         rules={[
@@ -33,20 +34,22 @@ const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
           },
         ]}
       >
-        <Input type="text" placeholder="Title" />
+        <Input type="text" size="large" />
       </Form.Item>
+      <span className="form-label">Content</span>
       <Form.Item name="content">
-        <RichTextEditor placeholder="Content" />
+        <RichTextEditor size="large" />
       </Form.Item>
       <div className="center">
         <UploadLogo setAvatar={setAvatar} imageUrl={avatarURL} />
       </div>
       <div className="flex">
-        <Button type="primary" htmlType="submit" className="mr-2">
+        <Button type="ghost" htmlType="submit" className="black-btn mr-2">
           Create
         </Button>
         <Button
-          type="default"
+          type="ghost"
+          className="ghost-btn"
           onClick={(e) => {
             e.preventDefault();
             onCancel();

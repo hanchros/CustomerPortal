@@ -87,7 +87,7 @@ class Dashboard extends Component {
             <span>name</span>
             <span>organization</span>
             <span>leader</span>
-            <span>status</span>
+            <span></span>
           </div>
           {projects.length === 0 && (
             <NonList title="No projects yet." description="" />
@@ -112,12 +112,7 @@ class Dashboard extends Component {
                 {proj.participant.profile.first_name}{" "}
                 {proj.participant.profile.last_name}
               </div>
-              <div className="cell0">
-                <i className="online-symbol" style={{ fontSize: "14px" }}>
-                  ●
-                </i>
-                {proj.status}
-              </div>
+              <div className="cell0"></div>
             </div>
           ))}
         </Col>

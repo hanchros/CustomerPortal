@@ -138,7 +138,7 @@ class InviteHomePage extends React.Component {
         {org && (
           <Button
             type="ghost"
-            className="black-btn mt-5"
+            className="black-btn wide mt-5"
             onClick={this.onBegin}
           >
             start registration
@@ -191,7 +191,7 @@ class InviteHomePage extends React.Component {
             </span>
             <Button
               type="ghost"
-              className="black-btn mt-5"
+              className="black-btn wide mt-5"
               onClick={this.onConfirm}
             >
               continue

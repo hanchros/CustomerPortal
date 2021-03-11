@@ -59,7 +59,7 @@ const RequestInviteForm = ({ onSubmit, sent, goBack }) => {
       <Button
         type="ghost"
         htmlType="submit"
-        className="black-btn mt-5"
+        className="black-btn wide mt-5"
         style={{ width: "100%" }}
       >
         Send request
@@ -67,7 +67,7 @@ const RequestInviteForm = ({ onSubmit, sent, goBack }) => {
       {sent && <p>Please check your email</p>}
       <Button
         type="ghost"
-        className="ghost-btn mt-3"
+        className="ghost-btn wide mt-3"
         style={{ width: "100%" }}
         onClick={onCancel}
       >

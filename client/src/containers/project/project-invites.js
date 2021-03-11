@@ -189,7 +189,7 @@ class ProjectInviteMng extends Component {
                 </span>
                 <Button
                   type="ghost"
-                  className="black-btn mt-5 mb-3"
+                  className="black-btn wide mt-5 mb-3"
                   onClick={() => this.onResolveInvite(invite._id)}
                   style={{ width: "100%" }}
                 >
@@ -197,7 +197,7 @@ class ProjectInviteMng extends Component {
                 </Button>
                 <Button
                   type="ghost"
-                  className="ghost-btn"
+                  className="ghost-btn wide"
                   onClick={this.onToggleModal}
                   style={{ width: "100%" }}
                 >

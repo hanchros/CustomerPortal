@@ -228,7 +228,7 @@ class UserDashboard extends Component {
                 <span>name</span>
                 <span>leader</span>
                 <span>organization</span>
-                <span>status</span>
+                <span></span>
               </div>
               {projects.map((proj) => (
                 <div
@@ -252,12 +252,7 @@ class UserDashboard extends Component {
                   <div className="cell0">
                     {proj.participant.profile.org_name}
                   </div>
-                  <div className="cell0">
-                    <i className="online-symbol" style={{ fontSize: "14px" }}>
-                      ●
-                    </i>
-                    {proj.status}
-                  </div>
+                  <div className="cell0"></div>
                 </div>
               ))}
             </Col>
@@ -274,6 +269,7 @@ class UserDashboard extends Component {
                 onChange={this.onChangeChat}
                 value={chatText}
                 placeholder="Message"
+                size="large"
               />
             </Modal>
           )}

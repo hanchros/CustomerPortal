@@ -64,7 +64,7 @@ const ResetPasswordForm = ({
         <Button
           type="ghost"
           htmlType="submit"
-          className="black-btn mt-5"
+          className="black-btn wide mt-5"
           style={{ width: "100%" }}
         >
           Reset Password

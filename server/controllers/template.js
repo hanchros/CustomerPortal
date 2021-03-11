@@ -1,16 +1,17 @@
 const Template = require("../models/template");
 const Project = require("../models/project");
 
-exports.createTemplate = (req, res, next) => {
-  const template = new Template(req.body);
-  template.save((err, tp) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      template: tp,
-    });
-  });
+exports.createTemplate = async (req, res, next) => {
+  try {
+    let template = new Template(req.body);
+    template = await template.save();
+    template = await Template.findById(template._id)
+      .populate("creator")
+      .populate("technologies");
+    res.send({ template });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.updateTemplate = async (req, res, next) => {

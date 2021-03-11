@@ -84,17 +84,17 @@ const CreateForm = ({
                 },
               ]}
             >
-              <Input type="text" className="name" />
+              <Input type="text" className="name" size="large" />
             </Form.Item>
             <span className="form-label">Short description</span>
             <Form.Item name="objective">
-              <Input />
+              <Input size="large" />
             </Form.Item>
             <span className="form-label">
               Describe what are you automating?
             </span>
             <Form.Item name="description">
-              <Input.TextArea rows={3} />
+              <Input.TextArea rows={3} size="large" />
             </Form.Item>
           </Col>
           <Col md={6}>

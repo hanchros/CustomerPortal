@@ -7,10 +7,8 @@ import {
   ProfileOutlined,
   PicLeftOutlined,
   MailOutlined,
-  QuestionCircleOutlined,
-  SettingOutlined,
   UsergroupAddOutlined,
-  NotificationOutlined
+  NotificationOutlined,
 } from "@ant-design/icons";
 import { Header } from "../../components/template";
 import { getOrganization } from "../../actions/organization";
@@ -19,8 +17,6 @@ import OrgAll from "./organization/org_report";
 import Article from "./article";
 import GlobalEmailTemplate from "./setting/email-template";
 import SupTemplate from "./template";
-import Faq from "./faq";
-import Settings from "./setting";
 import InviteRequests from "./inviteRequest";
 import Message from "./user/message";
 
@@ -133,24 +129,6 @@ class AdminDashboard extends Component {
                     <span>Invite Requests</span>
                   </span>
                 </Menu.Item>
-                <Menu.Item
-                  key="sup-faq"
-                  onClick={() => this.switchPage("Super", "Faq")}
-                >
-                  <span>
-                    <QuestionCircleOutlined />
-                    <span>Faq</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="sup-setting"
-                  onClick={() => this.switchPage("Super", "Setting")}
-                >
-                  <span>
-                    <SettingOutlined />
-                    <span>Setting</span>
-                  </span>
-                </Menu.Item>
               </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -182,14 +160,10 @@ class AdminDashboard extends Component {
         return <SupTemplate />;
       case "Super Emails":
         return <GlobalEmailTemplate />;
-      case "Super Faq":
-        return <Faq />;
-      case "Super Setting":
-        return <Settings />;
       case "Super Invite":
         return <InviteRequests />;
       case "Super Message":
-        return <Message />
+        return <Message />;
       default:
         return null;
     }

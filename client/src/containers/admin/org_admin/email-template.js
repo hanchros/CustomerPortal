@@ -1,11 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Collapse, Skeleton, Modal, Tooltip } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
+import { Skeleton, Modal, Button } from "antd";
 import { listMailByOrg, updateMail } from "../../../actions/mail";
 import EditMailForm from "../setting/create-form";
-
-const { Panel } = Collapse;
+import { Col, Row } from "reactstrap";
 
 class OrgMail extends React.Component {
   constructor(props) {
@@ -38,56 +36,97 @@ class OrgMail extends React.Component {
     this.setState({ loading: false });
   };
 
-  genExtra = (mail) => (
-    <Tooltip title="Edit">
-      <SettingOutlined
-        onClick={(event) => {
-          event.stopPropagation();
-          this.setState({
-            visible: true,
-            curMail: mail,
-          });
-        }}
-      />
-    </Tooltip>
-  );
-
   render() {
     const { loading, visible, curMail } = this.state;
     const { mail, updateMail } = this.props;
     const mails = mail.orgMails;
+    const shortcodes = [
+      {
+        symbol: "[name]",
+        value: "Users name",
+      },
+      {
+        symbol: "[sender_name]",
+        value: "Sender name",
+      },
+      {
+        symbol: "[sender_org]",
+        value: "Sender organization",
+      },
+      {
+        symbol: "[project_name]",
+        value: "Name of the project user will be invited to",
+      },
+    ];
+
     return (
-      <div className="mt-4">
-        <h3 className="mt-4 mb-4">Email Templates</h3>
-        <Skeleton active loading={loading} />
-        <Skeleton active loading={loading} />
-        <Skeleton active loading={loading} />
-        {!loading && (
-          <Collapse accordion>
-            {mails.map((ml) => (
-              <Panel key={ml._id} header={ml.name} extra={this.genExtra(ml)}>
-                <div dangerouslySetInnerHTML={{ __html: ml.content }} />
-              </Panel>
-            ))}
-          </Collapse>
-        )}
-        {visible && (
-          <Modal
-            title={"Update Mail"}
-            visible={visible}
-            width={800}
-            footer={false}
-            onCancel={this.hideModal}
-          >
-            <EditMailForm
-              createMail={() => {}}
-              updateMail={updateMail}
-              curMail={curMail}
-              hideModal={this.hideModal}
-            />
-          </Modal>
-        )}
-      </div>
+      <Row>
+        <Col md={4} className="mb-4 pr-4">
+          <h4 className="mb-4">
+            <b>Emails</b>
+          </h4>
+          <p>These notifications will be sent to the users.</p>
+          <p className="mt-5">
+            <b>Available shortcodes</b>
+          </p>
+          <hr />
+          {shortcodes.map((sc) => (
+            <React.Fragment key={sc.symbol}>
+              <Row style={{ fontSize: "13px" }}>
+                <Col xs={5}>{sc.symbol}</Col>
+                <Col xs={7}>{sc.value}</Col>
+              </Row>
+              <hr />
+            </React.Fragment>
+          ))}
+        </Col>
+        <Col md={8}>
+          <Skeleton active loading={loading} />
+          {mails.map((ml) => (
+            <div className="account-form-box mb-5" key={ml._id}>
+              <div
+                className="flex mb-4"
+                style={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <h5>
+                  <b>{ml.name}</b>
+                </h5>
+                <Button
+                  type="ghost"
+                  className="ghost-btn"
+                  onClick={() => this.openEdit(ml)}
+                >
+                  edit template
+                </Button>
+              </div>
+              <div
+                className="sun-editor-editable"
+                style={{ backgroundColor: "#F5F7FA" }}
+                dangerouslySetInnerHTML={{ __html: ml.content }}
+              />
+            </div>
+          ))}
+          {visible && (
+            <Modal
+              title={"Update Mail"}
+              visible={visible}
+              width={800}
+              footer={false}
+              onCancel={this.hideModal}
+            >
+              <EditMailForm
+                createMail={() => {}}
+                updateMail={updateMail}
+                curMail={curMail}
+                hideModal={this.hideModal}
+              />
+            </Modal>
+          )}
+        </Col>
+      </Row>
     );
   }
 }

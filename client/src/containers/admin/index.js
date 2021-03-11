@@ -1,168 +1,143 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Layout, Menu, Breadcrumb, Skeleton } from "antd";
-import {
-  ProfileOutlined,
-  SketchOutlined,
-  PicLeftOutlined,
-  UsergroupAddOutlined,
-  MailOutlined,
-  ProjectOutlined,
-} from "@ant-design/icons";
-import { Header } from "../../components/template";
+import { Link } from "react-router-dom";
+import { Skeleton } from "antd";
+import { Container } from "reactstrap";
+import { Header, Footer } from "../../components/template";
 import { getOrganization } from "../../actions/organization";
-import OrgEmailTemplate from "./org_admin/email-template";
 import OrgBasics from "./org_admin/basic";
-import OrgBranding from "./org_admin/branding";
+import OrgEmailTemplate from "./org_admin/email-template";
 import OrgTemplate from "./org_admin/template";
 import OrgUsers from "./org_admin/users";
 import Projects from "./org_admin/project";
-
-const { Content, Sider } = Layout;
+import SelectTemplate from "../project/select-template";
+import ProjectEdit from "../project/project-edit";
 
 class AdminDashboard extends Component {
-  state = {
-    collapsed: false,
-    pageTitle: "",
-    submenu: "",
-  };
+  constructor(props) {
+    super(props);
 
-  onCollapse = (collapsed) => {
-    this.setState({ collapsed });
-  };
+    this.state = {
+      tabId: "1",
+      show_project_create: false,
+      showProjEdit: false,
+      curProj: {},
+    };
+  }
 
   componentDidMount = async () => {
     const { getOrganization, user } = this.props;
     if (!user.profile) return;
     await getOrganization(user.profile.org._id);
-    this.setState({
-      pageTitle: "Profile",
-      submenu: "Organization",
-    });
   };
 
-  switchPage = (submenu, pageTitle) => {
-    this.setState({ submenu, pageTitle });
+  onToggleCreateProject = () => {
+    this.setState({ show_project_create: !this.state.show_project_create });
+  };
+
+  onToggleProjEdit = (proj) => {
+    this.setState({ showProjEdit: !this.state.showProjEdit, curProj: proj });
+  };
+
+  onChange = (tabId) => {
+    this.setState({ tabId });
+  };
+
+  renderTabHeader = () => {
+    const { tabId } = this.state;
+    return (
+      <div className="account-nav">
+        <Container className="subnav-responsive">
+          <Link
+            to="#"
+            onClick={() => this.onChange("1")}
+            className={tabId === "1" ? "active" : ""}
+          >
+            <p>Organization profile</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("2")}
+            className={`${tabId === "2" ? "active" : ""} ml-4`}
+          >
+            <p>Projects</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("3")}
+            className={`${tabId === "3" ? "active" : ""} ml-4`}
+          >
+            <p>Users</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("4")}
+            className={`${tabId === "4" ? "active" : ""} ml-4`}
+          >
+            <p>Templates</p>
+          </Link>
+          <Link
+            to="#"
+            onClick={() => this.onChange("5")}
+            className={`${tabId === "5" ? "active" : ""} ml-4`}
+          >
+            <p>Emails</p>
+          </Link>
+        </Container>
+      </div>
+    );
   };
 
   render() {
-    const { pageTitle, submenu } = this.state;
-    const { orgAdmin } = this.props;
+    const { tabId, show_project_create, showProjEdit, curProj } = this.state;
+    const org = this.props.organization.currentOrganization;
+
+    if (show_project_create)
+      return <SelectTemplate goBack={this.onToggleCreateProject} />;
+
+    if (showProjEdit) {
+      return (
+        <ProjectEdit
+          goback={() => this.onToggleProjEdit({})}
+          curProject={curProj}
+        />
+      );
+    }
+
     return (
       <React.Fragment>
         <Header />
-        <Skeleton active loading={!orgAdmin} />
-        <Skeleton active loading={!orgAdmin} />
-        <Skeleton active loading={!orgAdmin} />
-        {orgAdmin && (
-          <Layout className="message-box">
-            <Sider
-              collapsible
-              collapsed={this.state.collapsed}
-              onCollapse={this.onCollapse}
-            >
-              <Menu
-                theme="dark"
-                defaultSelectedKeys={["org-basic"]}
-                mode="inline"
-              >
-                <Menu.Item
-                  key="org-basic"
-                  onClick={() => this.switchPage("Organization", "Profile")}
-                >
-                  <span>
-                    <ProfileOutlined />
-                    <span>Organization profile</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="org-branding"
-                  onClick={() => this.switchPage("Organization", "Branding")}
-                >
-                  <span>
-                    <SketchOutlined />
-                    <span>Branding</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="org-templates"
-                  onClick={() => this.switchPage("Organization", "Templates")}
-                >
-                  <span>
-                    <PicLeftOutlined />
-                    <span>Templates</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="org-users"
-                  onClick={() => this.switchPage("Organization", "Users")}
-                >
-                  <span>
-                    <UsergroupAddOutlined />
-                    <span>Users</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="org-projects"
-                  onClick={() => this.switchPage("Organization", "Projects")}
-                >
-                  <span>
-                    <ProjectOutlined />
-                    <span>Projects</span>
-                  </span>
-                </Menu.Item>
-                <Menu.Item
-                  key="org-emails"
-                  onClick={() => this.switchPage("Organization", "Emails")}
-                >
-                  <span>
-                    <MailOutlined />
-                    <span>Emails</span>
-                  </span>
-                </Menu.Item>
-              </Menu>
-            </Sider>
-            <Layout className="site-layout">
-              <Content style={{ margin: "0 16px" }}>
-                <Breadcrumb style={{ margin: "16px 0" }}>
-                  <Breadcrumb.Item>{submenu}</Breadcrumb.Item>
-                  <Breadcrumb.Item>{pageTitle}</Breadcrumb.Item>
-                </Breadcrumb>
-                <div className="admin-main">{this.renderPage()}</div>
-              </Content>
-            </Layout>
-          </Layout>
+        {this.renderTabHeader()}
+        {!org._id && (
+          <div className="container sub-content">
+            <Skeleton active loading={true} />
+          </div>
         )}
+        {org._id && this.props.orgAdmin && (
+          <div className="container sub-content">
+            {tabId === "1" && <OrgBasics />}
+            {tabId === "2" && (
+              <Projects
+                onToggleCreateProject={this.onToggleCreateProject}
+                onToggleEdit={this.onToggleProjEdit}
+              />
+            )}
+            {tabId === "3" && <OrgUsers />}
+            {tabId === "4" && <OrgTemplate />}
+            {tabId === "5" && <OrgEmailTemplate />}
+          </div>
+        )}
+        <Footer />
       </React.Fragment>
     );
   }
-
-  renderPage = () => {
-    const { pageTitle, submenu } = this.state;
-    let pageName = `${submenu} ${pageTitle}`;
-    switch (pageName) {
-      case "Organization Profile":
-        return <OrgBasics />;
-      case "Organization Branding":
-        return <OrgBranding />;
-      case "Organization Templates":
-        return <OrgTemplate />;
-      case "Organization Users":
-        return <OrgUsers />;
-      case "Organization Projects":
-        return <Projects />;
-      case "Organization Emails":
-        return <OrgEmailTemplate />;
-      default:
-        return null;
-    }
-  };
 }
 
 const mapStateToProps = (state) => {
   return {
     user: state.user.profile,
     orgAdmin: state.user.orgAdmin,
+    organization: state.organization,
   };
 };
 

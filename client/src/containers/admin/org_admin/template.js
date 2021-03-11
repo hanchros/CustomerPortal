@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import { Button, List, Popconfirm } from "antd";
+import { Col, Row } from "reactstrap";
+import { Skeleton } from "antd";
 import {
   listOrgTemplate,
   createTemplate,
@@ -9,8 +9,8 @@ import {
   deleteTemplate,
 } from "../../../actions/template";
 import { TemplateForm } from "../../template/create-form";
-import TemplateImg from "../../../assets/img/template.png";
-import Avatar from "antd/lib/avatar/avatar";
+import TechLogo from "../../../assets/img/technology.png";
+import TemplateLogo from "../../../assets/icon/template.svg";
 
 class AdminTemplate extends Component {
   constructor(props) {
@@ -18,13 +18,16 @@ class AdminTemplate extends Component {
 
     this.state = {
       showCreateTemplate: false,
+      loading: false,
       curTemplate: {},
     };
   }
 
   componentDidMount = async () => {
     const { listOrgTemplate, organization } = this.props;
-    listOrgTemplate(organization.currentOrganization._id);
+    this.setState({ loading: true });
+    await listOrgTemplate(organization.currentOrganization._id);
+    this.setState({ loading: false });
   };
 
   onToggleCreateTemplate = (template) => {
@@ -42,26 +45,48 @@ class AdminTemplate extends Component {
     this.props.deleteTemplate(id);
   };
 
+  // renderTemplateItem = (template) => (
+  //   <List.Item
+  //     className="admin-org-template"
+  //     actions={[
+  //       <Popconfirm
+  //         key={template._id}
+  //         title="Are you sure to delete this template?"
+  //         onConfirm={() => this.onDeleteTemplate(template._id)}
+  //       >
+  //         <Button type="link">Delete</Button>
+  //       </Popconfirm>,
+  //     ]}
+  //   >
+  //     <List.Item.Meta
+  //       avatar={<Avatar src={TemplateImg} />}
+  //       title={template.name}
+  //       description={template.description}
+  //       onClick={() => this.onToggleCreateTemplate(template)}
+  //     />
+  //   </List.Item>
+  // );
+
   renderTemplateItem = (template) => (
-    <List.Item
-      className="admin-org-template"
-      actions={[
-        <Popconfirm
-          key={template._id}
-          title="Are you sure to delete this template?"
-          onConfirm={() => this.onDeleteTemplate(template._id)}
-        >
-          <Button type="link">Delete</Button>
-        </Popconfirm>,
-      ]}
+    <div
+      className="template-card"
+      onClick={() => this.onToggleCreateTemplate(template)}
     >
-      <List.Item.Meta
-        avatar={<Avatar src={TemplateImg} />}
-        title={template.name}
-        description={template.description}
-        onClick={() => this.onToggleCreateTemplate(template)}
-      />
-    </List.Item>
+      <div className="template-card-body">
+        <h5>
+          <b>{template.name}</b>
+        </h5>
+        <span style={{ opacity: 0.7 }}>{template.objective}</span>
+      </div>
+      <div className="template-card-techs">
+        {template.technologies.slice(0, 2).map((tech) => (
+          <div key={tech._id} className="flex">
+            <img src={tech.icon || TechLogo} alt="" />
+            <span className="ml-3">{tech.title}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 
   render() {
@@ -71,38 +96,45 @@ class AdminTemplate extends Component {
       createTemplate,
       updateTemplate,
     } = this.props;
-    const { showCreateTemplate, curTemplate } = this.state;
-
+    const { showCreateTemplate, curTemplate, loading } = this.state;
     const templates = template.orgTemplates;
+
+    if (showCreateTemplate) {
+      return (
+        <TemplateForm
+          curTemplate={curTemplate}
+          createTemplate={createTemplate}
+          updateTemplate={updateTemplate}
+          goback={this.onToggleCreateTemplate}
+          org={organization.currentOrganization}
+          setTemplate={this.setUpdateTemplate}
+        />
+      );
+    }
+
     return (
-      <Container className="admin-org-box">
-        {showCreateTemplate && (
-          <TemplateForm
-            curTemplate={curTemplate}
-            createTemplate={createTemplate}
-            updateTemplate={updateTemplate}
-            goback={this.onToggleCreateTemplate}
-            org={organization.currentOrganization}
-            setTemplate={this.setUpdateTemplate}
-          />
-        )}
-        {!showCreateTemplate && (
-          <React.Fragment>
-            <List
-              size="large"
-              dataSource={templates}
-              itemLayout="horizontal"
-              renderItem={this.renderTemplateItem}
-            />
-            <button
-              className="main-btn template-btn mt-5 ml-4"
+      <React.Fragment>
+        <h3>
+          <b>Templates</b>
+        </h3>
+        <Skeleton active loading={loading} />
+        <Row className="mt-5">
+          {templates.map((tp) => (
+            <Col key={tp._id} md={4} sm={6} xs={12}>
+              {this.renderTemplateItem(tp)}
+            </Col>
+          ))}
+          <Col md={4} sm={6} xs={12}>
+            <div
+              className="add-template-btn"
               onClick={this.onToggleCreateTemplate}
             >
-              Add Template
-            </button>
-          </React.Fragment>
-        )}
-      </Container>
+              <img src={TemplateLogo} alt="" />
+              <b className="mt-3">ADD NEW TEMPLATE</b>
+            </div>
+          </Col>
+        </Row>
+      </React.Fragment>
     );
   }
 }

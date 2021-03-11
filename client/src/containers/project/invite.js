@@ -369,7 +369,7 @@ class Invite extends Component {
               <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
                 <Button
                   type="ghost"
-                  className="ghost-btn ml-3"
+                  className="ghost-btn wide wide ml-3"
                   onClick={this.goBack}
                 >
                   <LeftOutlined /> Back to Project

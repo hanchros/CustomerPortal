@@ -1,24 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Container } from "reactstrap";
-import {
-  Button,
-  List,
-  Popconfirm,
-  PageHeader,
-  Descriptions,
-  Select,
-} from "antd";
-import moment from "moment";
+import { Link } from "react-router-dom";
+import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
+import { Row, Col } from "reactstrap";
+import { Button, Popconfirm, Popover, Skeleton } from "antd";
+import { PlusOutlined, MailOutlined, MoreOutlined } from "@ant-design/icons";
 import {
   listOrgUsers,
   addOrgUser,
   removeOrgUser,
   changeUserOrgRole,
 } from "../../../actions/organization";
-import UserAvatar from "../../../assets/img/user-avatar.png";
-import ChallengeImg from "../../../assets/icon/challenge.png";
-import Avatar from "antd/lib/avatar/avatar";
+import UserIcon from "../../../assets/img/user-avatar.png";
+import history from "../../../history";
 import InvitePage from "../../organization/invite";
 
 class AdminUsers extends Component {
@@ -26,24 +21,16 @@ class AdminUsers extends Component {
     super(props);
 
     this.state = {
-      showUserDetail: false,
-      curUser: {},
-      curRole: "member",
+      loading: false,
       showInviteForm: false,
     };
   }
 
   componentDidMount = async () => {
     const { listOrgUsers, organization } = this.props;
-    listOrgUsers(organization.currentOrganization._id);
-  };
-
-  onToggleShowUser = (user) => {
-    this.setState({
-      showUserDetail: !this.state.showUserDetail,
-      curUser: user || {},
-      curRole: (user && user.profile.org_role) || "member",
-    });
+    this.setState({ loading: true });
+    await listOrgUsers(organization.currentOrganization._id);
+    this.setState({ loading: false });
   };
 
   onToggleShowInvite = () => {
@@ -57,171 +44,173 @@ class AdminUsers extends Component {
   };
 
   onRemoveUser = async (id) => {
-    const { removeOrgUser, organization } = this.props;
+    const { removeOrgUser, organization, listOrgUsers } = this.props;
+    this.setState({ loading: true });
     await removeOrgUser(id);
-    listOrgUsers(organization.currentOrganization._id);
+    await listOrgUsers(organization.currentOrganization._id);
+    this.setState({ loading: false });
   };
 
   onAddUser = async (id) => {
     const { addOrgUser, organization } = this.props;
     const org = organization.currentOrganization;
     await addOrgUser(id, org._id);
-    listOrgUsers(org._id);
   };
 
-  onSaveChangeRole = async () => {
-    const { curRole, curUser } = this.state;
-    const org = this.props.organization.currentOrganization;
-    await this.props.changeUserOrgRole(curUser._id, curRole);
-    listOrgUsers(org._id);
+  onGotoUser = (id) => {
+    history.push(`/user/${id}`);
   };
 
-  renderUserItem = (user) => (
-    <List.Item
-      className="admin-org-template"
-      actions={[
-        <Popconfirm
-          key={user._id}
-          title="Are you sure to remove this user?"
-          onConfirm={() => this.onRemoveUser(user._id)}
-        >
-          <Button type="link">Remove</Button>
-        </Popconfirm>,
-      ]}
-    >
-      <List.Item.Meta
-        avatar={<Avatar src={user.profile.photo || UserAvatar} />}
-        title={`${user.profile.first_name} ${user.profile.last_name}`}
-        description={`role: ${user.profile.org_role}, country: ${
-          user.profile.country || ""
-        }`}
-        onClick={() => this.onToggleShowUser(user)}
-      />
-    </List.Item>
-  );
+  // onSaveChangeRole = async () => {
+  //   const { curRole, curUser } = this.state;
+  //   const org = this.props.organization.currentOrganization;
+  //   await this.props.changeUserOrgRole(curUser._id, curRole);
+  //   listOrgUsers(org._id);
+  // };
 
-  renderProjectItem = (pm) => {
-    if (!pm.project) return null;
+  setTableUsers = (users) => {
+    let result = [],
+      k = 0;
+    for (let user of users) {
+      k++;
+      result.push({
+        id: k,
+        photo: user.profile.photo,
+        name: `${user.profile.first_name} ${user.profile.last_name}`,
+        role: user.profile.org_role || "-",
+        position: user.profile.role,
+        country: user.profile.country,
+        _id: user._id,
+      });
+    }
+    return result;
+  };
+
+  renderAction = (cell, row) => {
+    let content = (
+      <div className="blue-popover">
+        <ul>
+          <li onClick={() => {}}>EDIT USER</li>
+          <li>
+            <Popconfirm
+              title="Are you sure remove this user?"
+              onConfirm={() => this.onRemoveUser(row._id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              REMOVE USER
+            </Popconfirm>
+          </li>
+        </ul>
+      </div>
+    );
     return (
-      <List.Item className="admin-org-template">
-        <List.Item.Meta
-          avatar={<Avatar src={pm.project.logo || ChallengeImg} />}
-          title={pm.project.name}
-          description={pm.project.description}
-        />
-      </List.Item>
+      <Popover placement="bottomRight" content={content} trigger="click">
+        <Link to="#">
+          <MoreOutlined />
+        </Link>
+      </Popover>
     );
   };
 
-  renderUserDetails = (user) => (
-    <React.Fragment>
-      <div className="admin-org-headerbox">
-        <div>
-          <img
-            src={user.profile.photo || UserAvatar}
-            alt=""
-            className="admin-org-userlogo"
-          />
-        </div>
-        <div>
-          <span className="ml-4">Change Role:</span>
-          <div className="admin-org-rolebox">
-            <Select
-              style={{ width: 200 }}
-              placeholder="Select a role"
-              onChange={this.onChangeRole}
-              value={this.state.curRole}
-            >
-              <Select.Option value="admin">admin</Select.Option>
-              <Select.Option value="member">member</Select.Option>
-            </Select>
-            <Button type="primary" onClick={this.onSaveChangeRole}>
-              Save
-            </Button>
-          </div>
-        </div>
-      </div>
-      <PageHeader
-        className="mb-5"
-        ghost={false}
-        title={`${user.profile.first_name} ${user.profile.last_name}`}
-        extra={[
-          <Button key={2} onClick={() => this.onToggleShowUser()}>
-            Back
-          </Button>,
-        ]}
-      >
-        <Descriptions size="default" column={2}>
-          <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-          <Descriptions.Item label="Country">
-            {user.profile.country}
-          </Descriptions.Item>
-          <Descriptions.Item label="Organization">
-            {user.profile.org_name}
-          </Descriptions.Item>
-          <Descriptions.Item label="Organization Role">
-            {user.profile.org_role}
-          </Descriptions.Item>
-          <Descriptions.Item label="Address">
-            {user.profile.address}
-          </Descriptions.Item>
-          <Descriptions.Item label="Phone">
-            {user.profile.phone}
-          </Descriptions.Item>
-          <Descriptions.Item label="Personal Statement">
-            {user.profile.personal_statement}
-          </Descriptions.Item>
-          <Descriptions.Item label="Twitter">
-            {user.profile.twitter}
-          </Descriptions.Item>
-          <Descriptions.Item label="Linkedin">
-            {user.profile.linkedin}
-          </Descriptions.Item>
-          <Descriptions.Item label="Facebook">
-            {user.profile.facebook}
-          </Descriptions.Item>
-          <Descriptions.Item label="Web">{user.profile.web}</Descriptions.Item>
-          <Descriptions.Item label="Register Date">
-            {moment(user.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-          </Descriptions.Item>
-        </Descriptions>
-      </PageHeader>
-      <span className="ml-4">Associated projects:</span>
-      <List
-        size="large"
-        dataSource={user.projects}
-        itemLayout="horizontal"
-        renderItem={this.renderProjectItem}
-      />
-    </React.Fragment>
-  );
-
   render() {
     const { organization } = this.props;
-    const { showUserDetail, curUser, showInviteForm } = this.state;
+    const { showInviteForm, loading } = this.state;
+    const { SearchBar } = Search;
+    let users = organization.users;
+    const photoFormatter = (cell, row) => {
+      return <img className="table-photo" src={cell || UserIcon} alt="" />;
+    };
+    const nameFormatter = (cell, row) => (
+      <span
+        onClick={() => this.onGotoUser(row._id)}
+        style={{ cursor: "pointer" }}
+      >
+        <b>{cell}</b>
+      </span>
+    );
+    const columns = [
+      {
+        dataField: "photo",
+        text: "",
+        formatter: photoFormatter,
+      },
+      {
+        dataField: "name",
+        text: "NAME",
+        formatter: nameFormatter,
+        sort: true,
+      },
+      {
+        dataField: "role",
+        text: "ROLE",
+        sort: true,
+      },
+      {
+        dataField: "position",
+        text: "POSITION",
+        sort: true,
+      },
+      {
+        dataField: "country",
+        text: "LOCATION",
+        sort: true,
+      },
+      {
+        dataField: "",
+        text: "",
+        formatter: this.renderAction,
+      },
+    ];
 
-    const users = organization.users;
+    if (showInviteForm) return <InvitePage goBack={this.onToggleShowInvite} />;
+
     return (
-      <Container className="admin-org-box">
-        {showUserDetail && this.renderUserDetails(curUser)}
-        {showInviteForm && <InvitePage goBack={this.onToggleShowInvite} />}
-        {!showUserDetail && !showInviteForm && (
-          <React.Fragment>
-            <List
-              size="large"
-              dataSource={users}
-              itemLayout="horizontal"
-              renderItem={this.renderUserItem}
-            />
-            <button
-              className="main-btn template-btn mt-5 ml-4"
-              onClick={this.onToggleShowInvite}
-            >
-              Add User
-            </button>
-          </React.Fragment>
-        )}
-      </Container>
+      <React.Fragment>
+        <h3>
+          <b>Users</b>
+        </h3>
+        <hr className="mt-4 mb-4" />
+        <Skeleton active loading={loading} />
+        <ToolkitProvider
+          bootstrap4
+          keyField="id"
+          data={this.setTableUsers(users)}
+          columns={columns}
+          search
+        >
+          {(props) => (
+            <React.Fragment>
+              <Row>
+                <Col className="table-header-btns">
+                  <SearchBar {...props.searchProps} />
+                  <React.Fragment>
+                    <Button
+                      type="ghost"
+                      className="ghost-btn"
+                      onClick={() => {}}
+                    >
+                      <MailOutlined style={{ fontSize: "16px" }} /> invitations
+                    </Button>
+                    <Button
+                      onClick={this.onToggleShowInvite}
+                      type="ghost"
+                      className="black-btn"
+                    >
+                      <PlusOutlined /> Add user
+                    </Button>
+                  </React.Fragment>
+                </Col>
+              </Row>
+              <BootstrapTable
+                {...props.baseProps}
+                bordered={false}
+                wrapperClasses={`table-responsive team-table with-action`}
+              />
+            </React.Fragment>
+          )}
+        </ToolkitProvider>
+      </React.Fragment>
     );
   }
 }

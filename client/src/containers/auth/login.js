@@ -59,7 +59,7 @@ const LoginForm = ({ onSubmit, onGoRI }) => {
       <div className="center mt-4">
         <Button
           htmlType="submit"
-          className="black-btn"
+          className="black-btn wide"
           style={{ width: "100%" }}
         >
           Sign me in
