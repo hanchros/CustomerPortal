@@ -50,12 +50,6 @@ class Dashboard extends Component {
     if (!settings || !settings.primary_color) values = org_consts;
     const astyle = document.documentElement.style;
     astyle.setProperty("--primary_color", values.primary_color);
-    astyle.setProperty("--secondary_color", values.secondary_color);
-    astyle.setProperty("--background_color", values.background_color);
-    astyle.setProperty("--menufont_color", values.menufont_color);
-    astyle.setProperty("--font_color", values.font_color);
-    astyle.setProperty("--link_color", values.link_color);
-    astyle.setProperty("--shadow_color", values.shadow_color);
   };
 
   componentWillUnmount = () => {
