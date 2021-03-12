@@ -65,14 +65,12 @@ export default function (state = INITIAL_STATE, action) {
       const style = document.documentElement.style;
       let ost = {
         primary_color: org.profile.primary_color || org_consts.primary_color,
-        secondary_color:
-          org.profile.secondary_color || org_consts.secondary_color,
-        background_color:
-          org.profile.background_color || org_consts.background_color,
-        menufont_color: org.profile.menufont_color || org_consts.menufont_color,
-        font_color: org.profile.font_color || org_consts.font_color,
-        link_color: org.profile.link_color || org_consts.link_color,
-        shadow_color: org.profile.shadow_color || org_consts.shadow_color,
+        secondary_color: org_consts.secondary_color,
+        background_color: org_consts.background_color,
+        menufont_color: org_consts.menufont_color,
+        font_color: org_consts.font_color,
+        link_color: org_consts.link_color,
+        shadow_color: org_consts.shadow_color,
         logo: org.logo || org_consts.logo,
         org_name: org.org_name,
       };
@@ -93,25 +91,10 @@ export default function (state = INITIAL_STATE, action) {
       const astyle = document.documentElement.style;
       const aost = {
         primary_color: action.profile.primary_color || org_consts.primary_color,
-        secondary_color:
-          action.profile.secondary_color || org_consts.secondary_color,
-        background_color:
-          action.profile.background_color || org_consts.background_color,
-        menufont_color:
-          action.profile.menufont_color || org_consts.menufont_color,
-        font_color: action.profile.font_color || org_consts.font_color,
-        link_color: action.profile.link_color || org_consts.link_color,
-        shadow_color: action.profile.shadow_color || org_consts.shadow_color,
         logo: action.logo || state.orgSettings.logo,
         org_name: action.org_name,
       };
       astyle.setProperty("--primary_color", aost.primary_color);
-      astyle.setProperty("--secondary_color", aost.secondary_color);
-      astyle.setProperty("--background_color", aost.background_color);
-      astyle.setProperty("--menufont_color", aost.menufont_color);
-      astyle.setProperty("--font_color", aost.font_color);
-      astyle.setProperty("--link_color", aost.link_color);
-      astyle.setProperty("--shadow_color", aost.shadow_color);
       return {
         ...state,
         orgSettings: aost,

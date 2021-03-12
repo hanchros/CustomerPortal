@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Col, Row } from "reactstrap";
-import { Button, Form, Input, Select, Switch } from "antd";
+import { Button, Form, Input, Select, Checkbox } from "antd";
 import { connect } from "react-redux";
 import ColorPicker from "rc-color-picker";
 import {
@@ -30,10 +30,10 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
     setProfile(profile);
   };
 
-  const onChangeDefaultColor = () => {
-    testColorChange(org_consts, org.org_name);
-    setProfile(org_consts);
-  };
+  // const onChangeDefaultColor = () => {
+  //   testColorChange(org_consts, org.org_name);
+  //   setProfile(org_consts);
+  // };
 
   return (
     <Form
@@ -120,8 +120,8 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
             </Form.Item>
           </div>
           <div className="account-form-box mt-5">
-            <Row >
-              <Col md={6}>
+            <Row>
+              <Col md={4}>
                 <div className="color-picker-box">
                   <ColorPicker
                     color={profile.primary_color}
@@ -134,102 +134,17 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
                   >
                     <span className="rc-color-picker-trigger" />
                   </ColorPicker>
-                  <span>Primary Color</span>
-                </div>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.background_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("background_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Background Color</span>
-                </div>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.secondary_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("secondary_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Menu Bar Color</span>
-                </div>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.menufont_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("menufont_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Menu Text Color</span>
+                  <span>
+                    <b>Accent Color</b>
+                  </span>
                 </div>
               </Col>
-              <Col md={6}>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.font_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("font_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Main Font Color</span>
-                </div>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.link_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("link_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Main Link Color</span>
-                </div>
-                <div className="color-picker-box">
-                  <ColorPicker
-                    color={profile.shadow_color}
-                    alpha={100}
-                    onClose={(colors) =>
-                      onChangeProfile("shadow_color", colors.color)
-                    }
-                    placement="topLeft"
-                    className="some-class"
-                  >
-                    <span className="rc-color-picker-trigger" />
-                  </ColorPicker>
-                  <span>Main Shadow Color</span>
-                </div>
+              <Col md={8}>
+                <Checkbox className="pt-3" defaultChecked>
+                  Use dark text color on top of the accent color
+                </Checkbox>
               </Col>
             </Row>
-            <div className="admin-org-toggle">
-              <p>
-                <Switch className="mr-3" onChange={onChangeDefaultColor} />
-                Use default colors?
-              </p>
-            </div>
           </div>
           <Button
             type="ghost"
