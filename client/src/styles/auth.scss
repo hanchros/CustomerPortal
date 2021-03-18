@@ -251,6 +251,27 @@ input:-webkit-autofill:focus {
   }
 }
 
+.forgot-link {
+  color: inherit !important;
+  font-size: 13px;
+  &:hover {
+    text-decoration: none !important;
+  }
+}
+
+.signin-line {
+  border-top: 1px solid #aaa;
+  width: 100%;
+}
+
+.signin-overflow {
+  background-color: white;
+  width: fit-content;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  padding: 0 5px;
+}
+
 @media screen and (max-width: 768px) {
   .register-modal {
     .ant-card-cover {

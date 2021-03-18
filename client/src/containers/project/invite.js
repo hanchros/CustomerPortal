@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Container, Col, Row } from "reactstrap";
-import { Button, Modal, Tabs, List, Avatar, Select } from "antd";
-import { LeftOutlined, UserOutlined } from "@ant-design/icons";
-import { sendInvite, joinOrgProject } from "../../actions/project";
+import { Button, Modal, Tabs, List, Avatar, Select, message } from "antd";
+import { LeftOutlined, UserOutlined, FileAddOutlined } from "@ant-design/icons";
+import {
+  sendInvite,
+  joinOrgProject,
+  downloadInvite,
+} from "../../actions/project";
 import { Header, Footer } from "../../components/template";
 import { listOrgReport } from "../../actions/organization";
 import { listMailByOrg } from "../../actions/mail";
@@ -17,7 +21,7 @@ import { fetchUserByEmail } from "../../actions/user";
 import { ModalSpinner } from "../../components/pages/spinner";
 import UserIcon from "../../assets/img/user-avatar.png";
 import { OrgInviteForm, TeamInviteForm } from "./invite-forms";
-import { getFieldData } from "../../utils/helper";
+import { getFieldData, extractContent } from "../../utils/helper";
 import { Link } from "react-router-dom";
 import BDImg from "../../assets/icon/building.svg";
 import BDWImg from "../../assets/icon/building-white.svg";
@@ -39,6 +43,7 @@ class Invite extends Component {
       exUser: {},
       tabkey: "1",
       orgId: "",
+      showDLModal: false,
     };
   }
 
@@ -75,7 +80,7 @@ class Invite extends Component {
     values.content = getInviteContent(values);
     values.logo =
       organization.currentOrganization.logo ||
-      "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+      "https://clientintegration-integra.s3.us-west-2.amazonaws.com/6045ab2a-37ea-44c5-b04f-06aeb318fd4e.png";
     values.sender_organization = organization.currentOrganization.org_name;
     const mail = await getInviteEmailTemplate(values);
     this.setState({
@@ -118,6 +123,36 @@ class Invite extends Component {
 
   onHidePreview = () => {
     this.setState({ visible: false });
+  };
+
+  onHideDLModal = () => {
+    this.setState({ showDLModal: false, formVaule: {} });
+  };
+
+  onOpenDLModal = (values) => {
+    const { getInviteContent, organization } = this.props;
+    const content = getInviteContent(values);
+    values.content = content;
+    values.logo =
+      organization.currentOrganization.logo ||
+      "https://clientintegration-integra.s3.us-west-2.amazonaws.com/6045ab2a-37ea-44c5-b04f-06aeb318fd4e.png";
+    values.sender_organization = organization.currentOrganization.org_name;
+    this.setState({ formVaule: values, showDLModal: true });
+  };
+
+  onDownload = async () => {
+    const { downloadInvite } = this.props;
+    const { formVaule } = this.state;
+    this.setState({ loading: true });
+    await downloadInvite(formVaule);
+    this.setState({ loading: false });
+    this.onHideDLModal();
+  };
+
+  onCopyLink = () => {
+    const { formVaule } = this.state;
+    navigator.clipboard.writeText(extractContent(formVaule.content, true));
+    message.success("Copied!");
   };
 
   getExMembers = (org_id) => {
@@ -175,8 +210,12 @@ class Invite extends Component {
               {item.org_name}
             </Option>
           ))}
-          <Option key={"new"} value={"new"}>
-            Another organization
+          <Option
+            key={"new"}
+            value={"new"}
+            style={{ borderTop: "1px solid #ddd" }}
+          >
+            Add New Organization
           </Option>
         </Select>
         {exMembers.length > 0 && (
@@ -210,7 +249,11 @@ class Invite extends Component {
           />
         )}
         {orgId === "new" && (
-          <OrgInviteForm onSubmit={this.onShowPreview} project={curProj} />
+          <OrgInviteForm
+            onSubmit={this.onShowPreview}
+            project={curProj}
+            onDownload={this.onOpenDLModal}
+          />
         )}
       </div>
     );
@@ -267,6 +310,7 @@ class Invite extends Component {
             project={curProj}
             org={curOrg}
             roles={roles}
+            onDownload={this.onOpenDLModal}
           />
         </div>
       </div>
@@ -302,7 +346,15 @@ class Invite extends Component {
   };
 
   render() {
-    const { loading, visible, content, showExUser, tabkey } = this.state;
+    const {
+      loading,
+      visible,
+      content,
+      showExUser,
+      showDLModal,
+      tabkey,
+      formVaule,
+    } = this.state;
     return (
       <React.Fragment>
         <Header />
@@ -425,6 +477,47 @@ class Invite extends Component {
               <ModalSpinner visible={loading} />
             </Modal>
           )}
+          {showDLModal && (
+            <Modal
+              title={"Invitation"}
+              visible={showDLModal}
+              width={600}
+              footer={false}
+              onCancel={this.onHideDLModal}
+            >
+              <div
+                className="flex mb-4"
+                style={{ justifyContent: "space-between" }}
+              >
+                <h5>
+                  <b>Copy invite and send it manually</b>
+                </h5>
+                <Button
+                  className="ghost-btn"
+                  type="ghost"
+                  onClick={this.onCopyLink}
+                >
+                  Copy text
+                </Button>
+              </div>
+
+              <div
+                style={{ backgroundColor: "#f5f7fa", padding: "20px" }}
+                dangerouslySetInnerHTML={{ __html: formVaule.content }}
+              />
+              <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+                <Button
+                  type="ghost"
+                  onClick={this.onDownload}
+                  className="black-btn wide"
+                >
+                  <FileAddOutlined />
+                  download pdf invitation
+                </Button>
+              </div>
+              <ModalSpinner visible={loading} />
+            </Modal>
+          )}
         </Container>
         <Footer />
       </React.Fragment>
@@ -443,6 +536,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   sendInvite,
+  downloadInvite,
   joinOrgProject,
   listMailByOrg,
   getInviteContent,

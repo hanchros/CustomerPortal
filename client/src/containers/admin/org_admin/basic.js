@@ -51,73 +51,93 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
         </Col>
         <Col md={8}>
           <div className="account-form-box">
-            <span className="form-label">Organization name*</span>
-            <Form.Item
-              name="org_name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the organization name!",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <span className="form-label">Organization type*</span>
-            <Form.Item
-              name="org_type"
-              rules={[
-                {
-                  required: true,
-                  message: "Please choose the type!",
-                },
-              ]}
-            >
-              <Select size="large">
-                {orgTypes.length > 0 &&
-                  orgTypes.map((item, index) => {
-                    return (
-                      <Select.Option key={index} value={item.value}>
-                        {item.value}
-                      </Select.Option>
-                    );
-                  })}
-              </Select>
-            </Form.Item>
-            <span className="form-label">Headquarters location</span>
-            <Form.Item
-              name="location"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the headquarters location!",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <span className="form-label">Website*</span>
-            <Form.Item
-              name="social"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the organization social media!",
-                },
-              ]}
-            >
-              <Input size="large" />
-            </Form.Item>
-            <span className="form-label">Linkedin</span>
-            <Form.Item name="linkedin">
-              <Input size="large" />
-            </Form.Item>
+            <Row>
+              <Col md={6}>
+                <span className="form-label">Organization name*</span>
+                <Form.Item
+                  name="org_name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input the organization name!",
+                    },
+                  ]}
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col md={6}>
+                <span className="form-label">Organization type*</span>
+                <Form.Item
+                  name="org_type"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please choose the type!",
+                    },
+                  ]}
+                >
+                  <Select size="large">
+                    {orgTypes.length > 0 &&
+                      orgTypes.map((item, index) => {
+                        return (
+                          <Select.Option key={index} value={item.value}>
+                            {item.value}
+                          </Select.Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <span className="form-label">Headquarters location</span>
+                <Form.Item
+                  name="location"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input the headquarters location!",
+                    },
+                  ]}
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <span className="form-label">Website*</span>
+                <Form.Item
+                  name="social"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input the organization social media!",
+                    },
+                  ]}
+                >
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+              <Col md={6}>
+                <span className="form-label">Linkedin</span>
+                <Form.Item name="linkedin">
+                  <Input size="large" />
+                </Form.Item>
+              </Col>
+            </Row>
             <p className="mt-3">
               <b>Bio</b>
             </p>
-            <Form.Item name="bio">
-              <Input.TextArea rows={5} size="large" />
-            </Form.Item>
+            <Row>
+              <Col>
+                <Form.Item name="bio">
+                  <Input.TextArea rows={5} size="large" />
+                </Form.Item>
+              </Col>
+            </Row>
           </div>
           <div className="account-form-box mt-5">
             <Row>

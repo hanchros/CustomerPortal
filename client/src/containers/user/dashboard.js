@@ -95,6 +95,10 @@ class UserDashboard extends Component {
     const profile = user.profile || {};
     const me = this.props.user;
     const curOrg = this.props.organization.currentOrganization;
+    let isSameOrg = false;
+    if (me.profile && profile.org)
+      isSameOrg = me.profile.org._id === profile.org._id;
+
     return (
       <React.Fragment>
         <Header />
@@ -217,46 +221,48 @@ class UserDashboard extends Component {
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <p className="mt-5">
-                <b>Projects</b>
-              </p>
-              <hr />
-              <div className="projects-table-header">
-                <span />
-                <span>name</span>
-                <span>leader</span>
-                <span>organization</span>
-                <span></span>
-              </div>
-              {projects.map((proj) => (
-                <div
-                  className="project-table-item"
-                  key={proj._id}
-                  onClick={() => this.goToProject(proj)}
-                >
-                  <div className="cell0">
-                    <Avatar src={proj.logo || OrgLogo} />
-                  </div>
-                  <div className="cell0">
-                    <p>
-                      <b>{proj.name}</b>
-                    </p>
-                    <span>{proj.objective}</span>
-                  </div>
-                  <div className="cell0">
-                    {proj.participant.profile.first_name}{" "}
-                    {proj.participant.profile.last_name}
-                  </div>
-                  <div className="cell0">
-                    {proj.participant.profile.org_name}
-                  </div>
-                  <div className="cell0"></div>
+          {isSameOrg && (
+            <Row>
+              <Col>
+                <p className="mt-5">
+                  <b>Projects</b>
+                </p>
+                <hr />
+                <div className="projects-table-header">
+                  <span />
+                  <span>name</span>
+                  <span>leader</span>
+                  <span>organization</span>
+                  <span></span>
                 </div>
-              ))}
-            </Col>
-          </Row>
+                {projects.map((proj) => (
+                  <div
+                    className="project-table-item"
+                    key={proj._id}
+                    onClick={() => this.goToProject(proj)}
+                  >
+                    <div className="cell0">
+                      <Avatar src={proj.logo || OrgLogo} />
+                    </div>
+                    <div className="cell0">
+                      <p>
+                        <b>{proj.name}</b>
+                      </p>
+                      <span>{proj.objective}</span>
+                    </div>
+                    <div className="cell0">
+                      {proj.participant.profile.first_name}{" "}
+                      {proj.participant.profile.last_name}
+                    </div>
+                    <div className="cell0">
+                      {proj.participant.profile.org_name}
+                    </div>
+                    <div className="cell0"></div>
+                  </div>
+                ))}
+              </Col>
+            </Row>
+          )}
           {visible && (
             <Modal
               title={`Open Chat room with team member`}

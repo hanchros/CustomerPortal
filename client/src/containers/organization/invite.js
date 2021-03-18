@@ -135,7 +135,7 @@ class OrgInvitePage extends Component {
     values.content = getInviteContent(values);
     values.logo =
       organization.currentOrganization.logo ||
-      "https://hackathon-cretech.s3.us-east-2.amazonaws.com/7e68ac9b-cc75-4d15-a8e1-a07a9e48bc90.png";
+      "https://clientintegration-integra.s3.us-west-2.amazonaws.com/6045ab2a-37ea-44c5-b04f-06aeb318fd4e.png";
     const mail = await getInviteEmailTemplate(values);
     this.setState({
       loading: false,

@@ -236,6 +236,15 @@ exports.archiveProject = async (req, res, next) => {
   }
 };
 
+exports.unArchiveProject = async (req, res, next) => {
+  try {
+    await Project.findByIdAndUpdate(req.params.id, { status: "Live" });
+    return res.status(201).json({ message: "success" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.getMailTemplate = (req, res, next) => {
   try {
     let result = {

@@ -8,7 +8,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { getFieldDataByNameValue } from "../../utils/helper";
 import { createArticle } from "../../actions/article";
 import RichTextEditor from "../../components/pages/editor";
-import UploadLogo from "../../components/template/upload";
+import { BigUpload } from "../../components/template";
 
 const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
   const [avatarURL, setAvatar] = useState("");
@@ -41,7 +41,7 @@ const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
         <RichTextEditor size="large" />
       </Form.Item>
       <div className="center">
-        <UploadLogo setAvatar={setAvatar} imageUrl={avatarURL} />
+        <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
       </div>
       <div className="flex">
         <Button type="ghost" htmlType="submit" className="black-btn mr-2">

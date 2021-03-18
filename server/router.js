@@ -174,6 +174,8 @@ module.exports = function (app) {
   projectRoutes.get("/admin/list/:org_id", ProjectController.listAllProject);
   // Admin project archive route
   projectRoutes.post("/admin/archive/:id", ProjectController.archiveProject);
+  // Admin project archive route
+  projectRoutes.post("/admin/unarchive/:id", ProjectController.unArchiveProject);
   // Get invite mail template route
   projectRoutes.post("/mail/template", ProjectController.getMailTemplate);
 
@@ -198,6 +200,8 @@ module.exports = function (app) {
   inviteRoutes.put("/cancel/:id", InviteController.cancelInvite);
   // create invite of ex org member to project route
   inviteRoutes.post("/project/:projectId", requireAuth, InviteController.inviteOrgToProject);
+  // create project new member invite route
+  inviteRoutes.post("/download", requireAuth, InviteController.downloadInvitePDF);
 
 
   //= ========================

@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import Client from "./api";
 import { message } from "antd";
+import download from "js-file-download";
 
 //= ===============================
 // Project actions
@@ -250,6 +251,18 @@ export function archiveProject(id) {
   };
 }
 
+export function unArchiveProject(id) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      await client.post(`${API_URL}/project/admin/unarchive/${id}`);
+      message.success("Project has been unarchived successfully");
+    } catch (err) {
+      createNotification("Project Archive", errorMessage(err));
+    }
+  };
+}
+
 export function sendInvite(values) {
   const client = Client(true);
   return async (dispatch) => {
@@ -258,6 +271,20 @@ export function sendInvite(values) {
       message.success("Invitation sent successfully!");
     } catch (error) {
       createNotification("Send Invitation", errorMessage(error));
+    }
+  };
+}
+
+export function downloadInvite(values) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      const res = await client.post(`${API_URL}/invite/download`, values, {
+        responseType: "blob",
+      });
+      download(res.data, "invite.pdf");
+    } catch (error) {
+      createNotification("Download Invitation", errorMessage(error));
     }
   };
 }

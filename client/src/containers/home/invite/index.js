@@ -31,12 +31,16 @@ class InviteHomePage extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { match, getOrgByName, listProjectDetails } = this.props;
+    const { match, getOrgByName, listProjectDetails, location } = this.props;
     let org = await getOrgByName(match.params.org_name);
+    const params = new URLSearchParams(location.search);
     if (org) {
       await listProjectDetails(org._id);
       this.setAppColors(org.profile);
       this.setState({ org });
+    }
+    if (params.get("tab")) {
+      this.onBegin();
     }
   };
 
@@ -153,7 +157,7 @@ class InviteHomePage extends React.Component {
         </div>
         <p className="mt-4 mb-4">
           Please check your email for an invitation from
-          register@collaboration.app with a "Smart Document" PDF invitation
+          support@collaboration.app with a "Smart Document" PDF invitation
           attached.
         </p>
         <hr className="mt-5 mb-5" />

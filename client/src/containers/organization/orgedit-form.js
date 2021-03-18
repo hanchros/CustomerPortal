@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Select, Button } from "antd";
 import { Col, Row } from "reactstrap";
-import Avatar from "../../components/template/upload";
+import { BigUpload } from "../../components/template";
 import IconLinkedin from "../../assets/icon/linkedin.png";
 import IconFacebook from "../../assets/icon/facebook.png";
 import IconTwitter from "../../assets/icon/twitter.png";
@@ -38,7 +38,7 @@ const OrgEditForm = ({
           <Input size="large" disabled placeholder="Upload Logo" />
         </Col>
         <Col sm={6} className="center">
-          <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
+          <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
         </Col>
       </Row>
       <Row>

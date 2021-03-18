@@ -3,7 +3,7 @@ import { Form, Input, Button, Popconfirm, Divider, Select, Switch } from "antd";
 import { Col, Row } from "reactstrap";
 import { PlusOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../../components/pages/editor";
-import Avatar from "../../../components/template/upload";
+import { BigUpload } from "../../../components/template";
 import UploadFiles from "../../../components/template/upload_files";
 
 const EditArticle = ({
@@ -66,7 +66,7 @@ const EditArticle = ({
       <Row className="mb-3">
         <Col md={4}>
           <div className="center">
-            <Avatar setAvatar={setIconURL} imageUrl={iconURL} />
+            <BigUpload setAvatar={setIconURL} imageUrl={iconURL} />
           </div>
         </Col>
         <Col md={8} style={{ paddingTop: "33px" }}>
@@ -158,7 +158,7 @@ const EditArticle = ({
         </Col>
         <Col md={4}>
           <div className="center">
-            <Avatar setAvatar={setAvatar} imageUrl={avatarURL} />
+            <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
           </div>
         </Col>
       </Row>

@@ -39,6 +39,7 @@ class HeaderTemplate extends Component {
       message,
     } = this.props;
 
+    const path = window.location.pathname;
     return (
       <React.Fragment>
         <div className="main-nav">
@@ -63,35 +64,60 @@ class HeaderTemplate extends Component {
               <Nav className="mr-auto" navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={`/dashboard`}>
+                    <Link
+                      className={`nav-link ${
+                        path === "/dashboard" ? "active" : ""
+                      }`}
+                      to={`/dashboard`}
+                    >
                       DASHBOARD
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={`/techhub`}>
+                    <Link
+                      className={`nav-link ${
+                        path === "/techhub" ? "active" : ""
+                      }`}
+                      to={`/techhub`}
+                    >
                       TECHHUB
                     </Link>
                   </NavItem>
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to={`/learnhub`}>
+                    <Link
+                      className={`nav-link ${
+                        path === "/learnhub" ? "active" : ""
+                      }`}
+                      to={`/learnhub`}
+                    >
                       LEARN
                     </Link>
                   </NavItem>
                 )}
                 {orgAdmin && (
                   <NavItem>
-                    <Link className="nav-link" to={`/admin`}>
+                    <Link
+                      className={`nav-link ${
+                        path === "/admin" ? "active" : ""
+                      }`}
+                      to={`/admin`}
+                    >
                       ADMIN
                     </Link>
                   </NavItem>
                 )}
                 {isAdmin && (
                   <NavItem>
-                    <Link className="nav-link" to="/super">
+                    <Link
+                      className={`nav-link ${
+                        path === "/super" ? "active" : ""
+                      }`}
+                      to="/super"
+                    >
                       SUPER
                     </Link>
                   </NavItem>
@@ -100,7 +126,12 @@ class HeaderTemplate extends Component {
               <Nav navbar>
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link" to="/messages">
+                    <Link
+                      className={`nav-link ${
+                        path === "/messages" ? "active" : ""
+                      }`}
+                      to="/messages"
+                    >
                       <div className="mr-2">
                         <Badge count={message.unread}>
                           <MessageOutlined />
@@ -111,7 +142,12 @@ class HeaderTemplate extends Component {
                 )}
                 {authenticated && (
                   <NavItem>
-                    <Link className="nav-link notif" to="/notification">
+                    <Link
+                      className={`nav-link notif ${
+                        path === "/notification" ? "active" : ""
+                      }`}
+                      to="/notification"
+                    >
                       <div className="mr-2">
                         <Badge count={notification.unread}>
                           <BellOutlined />

@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input, Select, Button } from "antd";
+import { FileAddOutlined } from "@ant-design/icons";
 
-export const OrgInviteForm = ({ onSubmit, project }) => {
+export const OrgInviteForm = ({ onSubmit, project, onDownload }) => {
+  const [download, setDownload] = useState(false);
   const onFinish = (values) => {
     values.project_name = project.name;
     values.project_id = project._id;
     values.intro = "";
-    onSubmit(values);
+    if (download) onDownload(values);
+    else onSubmit(values);
+  };
+
+  const onDownloadClick = (e) => {
+    setDownload(true);
+  };
+
+  const onSendClick = (e) => {
+    setDownload(false);
   };
 
   return (
@@ -60,7 +71,21 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
         <Input size="large" />
       </Form.Item>
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
-        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+        <Button
+          type="ghost"
+          htmlType="submit"
+          className="ghost-btn"
+          onClick={onDownloadClick}
+        >
+          <FileAddOutlined />
+          generate invitation
+        </Button>
+        <Button
+          type="ghost"
+          htmlType="submit"
+          className="black-btn ml-3"
+          onClick={onSendClick}
+        >
           Send Invite
         </Button>
       </div>
@@ -68,13 +93,29 @@ export const OrgInviteForm = ({ onSubmit, project }) => {
   );
 };
 
-export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
+export const TeamInviteForm = ({
+  onSubmit,
+  project,
+  org,
+  roles,
+  onDownload,
+}) => {
+  const [download, setDownload] = useState(false);
   const onFinish = (values) => {
     values.project_name = project.name;
     values.project_id = project._id;
     values.organization = org.org_name;
     values.intro = window.btoa(values.intro || "");
-    onSubmit(values);
+    if (download) onDownload(values);
+    else onSubmit(values);
+  };
+
+  const onDownloadClick = (e) => {
+    setDownload(true);
+  };
+
+  const onSendClick = (e) => {
+    setDownload(false);
   };
 
   return (
@@ -135,7 +176,21 @@ export const TeamInviteForm = ({ onSubmit, project, org, roles }) => {
         </Select>
       </Form.Item>
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
-        <Button type="ghost" htmlType="submit" className="black-btn ml-3">
+        <Button
+          type="ghost"
+          htmlType="submit"
+          className="ghost-btn"
+          onClick={onDownloadClick}
+        >
+          <FileAddOutlined />
+          generate invitation
+        </Button>
+        <Button
+          type="ghost"
+          htmlType="submit"
+          className="black-btn ml-3"
+          onClick={onSendClick}
+        >
           Send Invite
         </Button>
       </div>

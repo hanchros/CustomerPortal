@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { listProjectDetails, archiveProject } from "../../../actions/project";
+import {
+  listProjectDetails,
+  archiveProject,
+  unArchiveProject,
+} from "../../../actions/project";
 import { PlusOutlined, MoreOutlined } from "@ant-design/icons";
 import { Row, Col } from "reactstrap";
 import { Skeleton, Avatar, Popconfirm, Button, Popover } from "antd";
@@ -32,6 +36,13 @@ class ProjectReport extends Component {
     listProjectDetails(curOrg._id);
   };
 
+  onUnArchiveProject = async (id) => {
+    const { organization, listProjectDetails, unArchiveProject } = this.props;
+    const curOrg = organization.currentOrganization;
+    await unArchiveProject(id);
+    listProjectDetails(curOrg._id);
+  };
+
   renderAction = (proj) => {
     let content = (
       <div className="blue-popover">
@@ -46,6 +57,25 @@ class ProjectReport extends Component {
             >
               ARCHIVE PROJECT
             </Popconfirm>
+          </li>
+        </ul>
+      </div>
+    );
+    return (
+      <Popover placement="bottomRight" content={content} trigger="click">
+        <Link to="#">
+          <MoreOutlined />
+        </Link>
+      </Popover>
+    );
+  };
+
+  renderArchiveAction = (proj) => {
+    let content = (
+      <div className="blue-popover">
+        <ul>
+          <li onClick={() => this.onUnArchiveProject(proj._id)}>
+            UNARCHIVE PROJECT
           </li>
         </ul>
       </div>
@@ -158,7 +188,9 @@ class ProjectReport extends Component {
                       {proj.participant.profile.first_name}{" "}
                       {proj.participant.profile.last_name}
                     </div>
-                    <div className="cell0"></div>
+                    <div className="cell0">
+                      {this.renderArchiveAction(proj)}
+                    </div>
                   </div>
                 ))}
               </Col>
@@ -183,4 +215,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   listProjectDetails,
   archiveProject,
+  unArchiveProject,
 })(ProjectReport);

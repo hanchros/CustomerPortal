@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { FileAddOutlined } from "@ant-design/icons";
 import { Form, Input, Checkbox, Button } from "antd";
 import { Link } from "react-router-dom";
 import { loginUser } from "../../actions/auth";
@@ -7,7 +8,7 @@ import history from "../../history";
 import HomeHOC from "../../components/template/home-hoc";
 import RequestInvite from "../home/invite/request-invite";
 
-const LoginForm = ({ onSubmit, onGoRI }) => {
+const LoginForm = ({ onSubmit, onGoRI, onGoPDF }) => {
   const onFinish = (values) => {
     onSubmit(values);
   };
@@ -64,11 +65,26 @@ const LoginForm = ({ onSubmit, onGoRI }) => {
         >
           Sign me in
         </Button>
-        <div className="mt-5 center">
-          <div>Don't have an account?</div>
-          <Link to="#" onClick={onGoRI} className="underline-link">
-            Request an access
-          </Link>
+        <div
+          className="mt-5 flex"
+          style={{ flexDirection: "column", alignItems: "center" }}
+        >
+          <div className="signin-line"></div>
+          <div className="signin-overflow">Don't have an account?</div>
+          <Button
+            className="ghost-btn wide mb-3"
+            type="ghost"
+            onClick={onGoPDF}
+          >
+            <FileAddOutlined />
+            Provide pdf invitation
+          </Button>
+          <span>
+            or{" "}
+            <Link to="#" onClick={onGoRI} className="underline-link">
+              Request an access to the platform
+            </Link>
+          </span>
         </div>
       </div>
     </Form>
@@ -94,6 +110,10 @@ class Login extends Component {
     }
   }
 
+  onGoToProvidePDF = () => {
+    history.push("/integra/email-invite?tab=2");
+  };
+
   render() {
     const { loginUser } = this.props;
     const { showRI } = this.state;
@@ -109,7 +129,11 @@ class Login extends Component {
                   <b>Sign in</b>
                 </h3>
               </div>
-              <LoginForm onSubmit={loginUser} onGoRI={this.onToggleRI} />
+              <LoginForm
+                onSubmit={loginUser}
+                onGoRI={this.onToggleRI}
+                onGoPDF={this.onGoToProvidePDF}
+              />
             </div>
           </div>
         )}

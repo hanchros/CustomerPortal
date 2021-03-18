@@ -3,9 +3,10 @@ import Policy from "react-s3/lib/Policy";
 import Signature from "react-s3/lib/Signature";
 import { xAmzDate, dateYMD } from "react-s3/lib/Date";
 import { v4 as uuidv4 } from "uuid";
-import { Upload, message, Tooltip } from "antd";
+import { Upload, message, Tooltip, Modal, Button } from "antd";
 import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import UploadUser from "../../assets/icon/upload_user.svg";
+import UploadUser from "../../../assets/icon/upload_user.svg";
+import ImageCropper from "./image_cropper";
 
 const config = {
   bucketName: process.env.REACT_APP_S3_BUCKET,
@@ -22,7 +23,7 @@ const beforeUpload = (file) => {
   if (!isJpgOrPngOrGif) {
     message.error("You can only upload JPG/PNG/GIF file!");
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 3;
   if (!isLt2M) {
     message.error("Image must smaller than 2MB!");
   }
@@ -80,16 +81,32 @@ class Avatar extends React.Component {
   state = {
     loading: false,
     imageUrl: this.props.imageUrl || "",
+    blob: null,
+    inputImg: null,
+    filename: "",
+    showCropModal: false,
   };
 
-  handleChange = (info) => {
+  setBlob = (blob) => {
+    this.setState({ blob });
+  };
+
+  setInputImg = (inputImg) => {
+    this.setState({ inputImg });
+  };
+
+  startUpload = () => {
+    const { blob, filename } = this.state;
+    if (!blob) return;
+    const file = new File([blob], filename);
     this.setState({ loading: true });
-    uploadFile(info)
+    uploadFile(file)
       .then((data) => {
         const imageUrl = data.location;
         this.setState({
           imageUrl,
           loading: false,
+          showCropModal: false,
         });
         this.props.setAvatar(imageUrl);
       })
@@ -99,6 +116,30 @@ class Avatar extends React.Component {
       });
   };
 
+  handleChange = (info) => {
+    const reader = new FileReader();
+    reader.addEventListener(
+      "load",
+      () => {
+        this.setInputImg(reader.result);
+      },
+      false
+    );
+
+    if (info) {
+      reader.readAsDataURL(info);
+      this.setState({ showCropModal: true, filename: info.name });
+    }
+  };
+
+  onHideModal = () => {
+    this.setState({
+      showCropModal: false,
+      inputImg: null,
+      filename: "",
+    });
+  };
+
   onRemoveImg = (e) => {
     e.stopPropagation();
     this.setState({ imageUrl: "" });
@@ -106,7 +147,7 @@ class Avatar extends React.Component {
   };
 
   render() {
-    const { imageUrl, loading } = this.state;
+    const { imageUrl, loading, showCropModal, inputImg } = this.state;
     const uploadButton = (
       <div>
         {loading ? (
@@ -122,29 +163,62 @@ class Avatar extends React.Component {
     );
 
     return (
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="big-uploader"
-        showUploadList={false}
-        beforeUpload={beforeUpload}
-        data={this.handleChange}
-      >
-        {imageUrl && !loading ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-        ) : (
-          uploadButton
+      <React.Fragment>
+        <Upload
+          name="avatar"
+          listType="picture-card"
+          className="big-uploader"
+          showUploadList={false}
+          beforeUpload={beforeUpload}
+          data={this.handleChange}
+        >
+          {imageUrl && !loading ? (
+            <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+          ) : (
+            uploadButton
+          )}
+          {imageUrl && (
+            <Tooltip title="Remove">
+              <CloseCircleOutlined
+                className="upload-remove"
+                onClick={this.onRemoveImg}
+                style={{ fontSize: "16px", color: "#999" }}
+              />
+            </Tooltip>
+          )}
+        </Upload>
+        {showCropModal && (
+          <Modal
+            title="Image Upload"
+            visible={showCropModal}
+            width={800}
+            footer={false}
+            onCancel={this.onHideModal}
+          >
+            <ImageCropper getBlob={this.setBlob} inputImg={inputImg} />
+            <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+              <Button
+                type="ghost"
+                onClick={this.onHideModal}
+                className="ghost-btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="ghost"
+                className="black-btn ml-3"
+                onClick={this.startUpload}
+              >
+                {loading ? (
+                  <LoadingOutlined className="mr-3 ml-3" />
+                ) : (
+                  "Upload"
+                )}
+              </Button>
+            </div>
+          </Modal>
         )}
-        {imageUrl && (
-          <Tooltip title="Remove">
-            <CloseCircleOutlined
-              className="upload-remove"
-              onClick={this.onRemoveImg}
-              style={{ fontSize: "16px", color: "#999" }}
-            />
-          </Tooltip>
-        )}
-      </Upload>
+      </React.Fragment>
     );
   }
 }

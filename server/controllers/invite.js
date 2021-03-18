@@ -102,6 +102,61 @@ exports.sendInviteNewMember = async (req, res, next) => {
   }
 };
 
+exports.downloadInvitePDF = async (req, res, next) => {
+  try {
+    const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
+    const sender_organization = req.user.profile.org_name;
+    const iv = new Invite({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      organization: req.body.organization,
+      project: req.body.project_id,
+      type: 1,
+    });
+    const niv = await iv.save();
+    const values = Object.assign(req.body, {
+      sender_name,
+      sender_organization,
+      invite: niv._id,
+    });
+    const project = await Project.findById(values.project_id);
+    utils.createPDFDoc(values, project.description);
+    await sleep(3000);
+
+    delete values.logo;
+    delete values.content;
+    delete values.project_description;
+    const form = new FormData();
+    form.append(
+      "file",
+      fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`)
+    );
+    form.append("data_form", JSON.stringify(values));
+    form.append("meta_form", JSON.stringify(values));
+    form.append("master_id", "123456789");
+    form.append("cartridge_type", "Organization");
+
+    let response = await axios.post(
+      "http://integraapiproduction.azurewebsites.net/pdf",
+      form,
+      {
+        headers: form.getHeaders(),
+        responseType: "stream",
+      }
+    );
+    let filename = `invite_${new Date().getTime().toString(36)}.pdf`;
+    let path = `${__dirname}/../uploads/${filename}`;
+    const writer = fs.createWriteStream(path);
+    response.data.pipe(writer);
+    writer.on("close", () => {
+      res.download(path, "invite.pdf");
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.inviteOrgToProject = async (req, res, next) => {
   try {
     const customer = await User.findById(req.body.user);

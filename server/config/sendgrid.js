@@ -13,7 +13,7 @@ exports.userEmailVerification = function userEmailVerification(
 ) {
   const msg = {
     to: recipient,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "Participant Email Verification",
     html: userEVFactory(recipient, name, token),
   };
@@ -25,7 +25,7 @@ exports.userEmailVerification = function userEmailVerification(
 exports.userForgotPasword = function userForgotPasword(recipient, token) {
   const msg = {
     to: recipient,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "Participant Reset Password",
     html: userFPFactory(token),
   };
@@ -37,7 +37,7 @@ exports.userForgotPasword = function userForgotPasword(recipient, token) {
 exports.newMessage = function newMessage(name, sender, content, email) {
   const msg = {
     to: email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "You have unread messages",
     html: messageFactory(name, sender, content),
   };
@@ -55,7 +55,7 @@ exports.newNotification = function newNotification(
 ) {
   const msg = {
     to: email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: senderName,
     html: notificationFactory(title, content, senderName, senderPhoto),
   };
@@ -70,7 +70,7 @@ exports.inviteMail = function inviteMail(values, filename) {
 
   const msg = {
     to: values.email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "You are invited",
     html: inviteFactory(values),
     attachments: [
@@ -90,7 +90,7 @@ exports.inviteMail = function inviteMail(values, filename) {
 exports.inviteOrgMemberMail = function inviteOrgMemberMail(values) {
   const msg = {
     to: values.email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "You are invited",
     html: inviteOrgMemberFactory(values),
   };
@@ -102,7 +102,7 @@ exports.inviteOrgMemberMail = function inviteOrgMemberMail(values) {
 exports.inviteRequestMail = function inviteRequestMail(values) {
   const msg = {
     to: values.admin_email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "New Request for Invite",
     html: inviteRequestFactory(values),
   };
@@ -114,7 +114,7 @@ exports.inviteRequestMail = function inviteRequestMail(values) {
 exports.joinProjectMail = function joinProjectMail(values) {
   const msg = {
     to: values.email,
-    from: "mrinow@collaboration.app",
+    from: "support@collaboration.app",
     subject: "You are invited",
     html: joinProjectMailFactory(values),
   };

@@ -180,6 +180,39 @@ a.card-link {
   }
 }
 
+.ant-message {
+  top: 15px !important;
+  .ant-message-notice-content {
+    width: 84%;
+    text-align: left;
+    color: white;
+    padding: 0;
+    border-radius: 3px;
+
+    .ant-message-custom-content {
+      padding: 13px 30px;
+      border-radius: 3px;
+    }
+
+    .ant-message-success {
+      background-color: #00A843;
+    }
+
+    .ant-message-error {
+      background-color: #D33535;
+    }
+
+    .ant-message-warn, .ant-message-warning {
+      background-color: #ffc54f;
+    }
+
+
+    .anticon {
+      color: white;
+    }
+  }
+}
+
 @media screen and (max-width: 768px) {
   .ant-drawer-content-wrapper {
     width: 95% !important;
