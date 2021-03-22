@@ -293,6 +293,7 @@
   justify-content: center;
   border-radius: 3px !important;
   height: 38px !important;
+  letter-spacing: 1px;
 }
 
 .ghost-btn.wide,
@@ -314,6 +315,7 @@
   border-radius: 3px !important;
   border: 1px solid black !important;
   height: 38px !important;
+  letter-spacing: 1px;
 }
 
 .project-org-side {
@@ -502,6 +504,17 @@
       }
     }
   }
+}
+
+.invite-edit-info {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #ddd;
+  padding: 14px 0;
+}
+
+.invite-edit-info.mb-4 {
+  border-bottom: 1px solid #ddd;
 }
 
 @media screen and (min-width: 768px) {

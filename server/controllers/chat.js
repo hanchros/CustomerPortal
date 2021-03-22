@@ -11,6 +11,7 @@ exports.getConversations = async (req, res, next) => {
   try {
     let conversations = await Conversation.find({ participants: req.user._id })
       .populate({ path: "participants", select: "_id profile" })
+      .populate({ path: "project", select: "_id name logo" })
       .sort({ createdAt: "desc" });
     let totalUnread = 0;
     let cvs = [];

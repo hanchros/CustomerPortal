@@ -28,6 +28,12 @@ const InviteSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Project",
     },
+    profile: {
+      sender_name: { type: String },
+      sender_organization: { type: String },
+      logo: { type: String },
+      content: { type: String },
+    },
     type: {
       type: Number,
       // 0: request, 1: invite, 2: ex-invite

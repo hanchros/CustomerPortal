@@ -5,7 +5,7 @@ import {
   getOrganization,
   listOrgReport,
 } from "../../../actions/organization";
-import { getFieldData } from "../../../utils/helper";
+import { getOrgTypesData } from "../../../utils/helper";
 import OrgEditForm from "../../organization/orgedit-form";
 
 class EditOrg extends Component {
@@ -28,7 +28,7 @@ class EditOrg extends Component {
 
   render = () => {
     const { fieldData, org, hideModal } = this.props;
-    const orgTypes = getFieldData(fieldData, "org_type");
+    const orgTypes = getOrgTypesData(fieldData);
     const { avatarURL } = this.state;
 
     return (

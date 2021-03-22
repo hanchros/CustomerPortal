@@ -18,6 +18,7 @@ export const OrgRegisterForm = ({ onSubmit, org_name }) => {
     values.logo = avatarURL;
     values.profile = org_consts;
     values.social = processLink(values.social);
+    values.org_name = values.org_name.trim()
     onSubmit(values);
   };
 

@@ -3,6 +3,17 @@ export const getFieldData = (fieldData = [], field) => {
   return result;
 };
 
+export const getOrgTypesData = (fieldData = []) => {
+  let result = fieldData.filter((item) => item.field === "org_type");
+  result = result.sort((a, b) => {
+    if (a.value === "Other") return 1;
+    if (b.value === "Other") return -1;
+    if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
+    return -1
+  });
+  return result;
+};
+
 export const getOneFieldData = (fieldData = [], field) => {
   for (let fd of fieldData) {
     if (fd.field === field) return fd.value;

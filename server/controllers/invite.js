@@ -37,6 +37,58 @@ exports.createInviteRequest = async (req, res, next) => {
   }
 };
 
+const sendInviteEmail = async (iv) => {
+  const values = {
+    first_name: iv.first_name,
+    last_name: iv.last_name,
+    email: iv.email,
+    organization: iv.organization,
+    project_id: iv.project,
+    sender_name: iv.profile.sender_name,
+    sender_organization: iv.profile.sender_organization,
+    logo: iv.profile.logo,
+    content: iv.profile.content,
+    invite: iv._id,
+  };
+  const project = await Project.findById(values.project_id);
+  const mailContent = {
+    logo: values.logo,
+    content: values.content,
+    email: values.email,
+    sender_organization: values.sender_organization,
+    project_name: project.name,
+  };
+  utils.createPDFDoc(values, project.description);
+  await sleep(3000);
+  delete values.logo;
+  delete values.content;
+  const form = new FormData();
+  form.append(
+    "file",
+    fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`)
+  );
+  form.append("data_form", JSON.stringify(values));
+  form.append("meta_form", JSON.stringify(values));
+  form.append("master_id", "123456789");
+  form.append("cartridge_type", "Organization");
+
+  let response = await axios.post(
+    "http://integraapiproduction.azurewebsites.net/pdf",
+    form,
+    {
+      headers: form.getHeaders(),
+      responseType: "stream",
+    }
+  );
+  let filename = `invite_${new Date().getTime().toString(36)}.pdf`;
+  let path = `${__dirname}/../uploads/${filename}`;
+  const writer = fs.createWriteStream(path);
+  response.data.pipe(writer);
+  writer.on("close", () => {
+    sendgrid.inviteMail(mailContent, filename);
+  });
+};
+
 exports.sendInviteNewMember = async (req, res, next) => {
   try {
     const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
@@ -47,53 +99,42 @@ exports.sendInviteNewMember = async (req, res, next) => {
       email: req.body.email,
       organization: req.body.organization,
       project: req.body.project_id,
+      profile: {
+        sender_name,
+        sender_organization,
+        logo: req.body.logo,
+        content: req.body.content,
+      },
       type: 1,
     });
     const niv = await iv.save();
-    const values = Object.assign(req.body, {
-      sender_name,
-      sender_organization,
-      invite: niv._id,
+    await sendInviteEmail(niv);
+    return res.status(200).json({
+      invite: niv,
     });
-    const mailContent = {
-      logo: values.logo,
-      content: values.content,
-      email: values.email,
-      sender_organization,
-      project_name: values.project_name,
-    };
-    const project = await Project.findById(values.project_id);
-    utils.createPDFDoc(values, project.description);
-    await sleep(3000);
+  } catch (err) {
+    return next(err);
+  }
+};
 
-    delete values.logo;
-    delete values.content;
-    delete values.project_description;
-    const form = new FormData();
-    form.append(
-      "file",
-      fs.createReadStream(`${__dirname}/../uploads/orginvite.pdf`)
-    );
-    form.append("data_form", JSON.stringify(values));
-    form.append("meta_form", JSON.stringify(values));
-    form.append("master_id", "123456789");
-    form.append("cartridge_type", "Organization");
-
-    let response = await axios.post(
-      "http://integraapiproduction.azurewebsites.net/pdf",
-      form,
-      {
-        headers: form.getHeaders(),
-        responseType: "stream",
-      }
-    );
-    let filename = `invite_${new Date().getTime().toString(36)}.pdf`;
-    let path = `${__dirname}/../uploads/${filename}`;
-    const writer = fs.createWriteStream(path);
-    response.data.pipe(writer);
-    writer.on("close", () => {
-      sendgrid.inviteMail(mailContent, filename);
+exports.notifyInvite = async (req, res, next) => {
+  try {
+    const niv = await Invite.findById(req.params.inv_id);
+    await sendInviteEmail(niv);
+    return res.status(200).json({
+      invite: niv,
     });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.editInviteNewMember = async (req, res, next) => {
+  try {
+    const niv = await Invite.findById(req.params.inv_id);
+    niv.email = req.body.email;
+    await niv.save();
+    await sendInviteEmail(niv);
     return res.status(200).json({
       invite: niv,
     });

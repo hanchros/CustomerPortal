@@ -22,6 +22,7 @@ const OrgEditForm = ({
     values.logo = avatarURL || "";
     values.creator = org.creator || userId || null;
     values.profile = org.profile || {};
+    values.org_name = values.org_name.trim()
     values.social = processLink(values.social);
     onSubmit(values);
   };
@@ -73,6 +74,7 @@ const OrgEditForm = ({
                   return (
                     <Select.Option key={index} value={item.value}>
                       {item.value}
+                      {item.value === "Other" ? "..." : ""}
                     </Select.Option>
                   );
                 })}

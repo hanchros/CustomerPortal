@@ -7,7 +7,7 @@ import {
   updateOrganization,
   testColorChange,
 } from "../../../actions/organization";
-import { getFieldData, processLink } from "../../../utils/helper";
+import { processLink, getOrgTypesData } from "../../../utils/helper";
 import { BigUpload } from "../../../components/template";
 import { org_consts } from "../../../constants";
 
@@ -21,6 +21,7 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
     values.social = processLink(values.social);
     values.linkedin = processLink(values.linkedin);
     values.profile = profile;
+    values.org_name = values.org_name.trim();
     await onUpdateOrg(values);
   };
 
@@ -83,6 +84,7 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
                         return (
                           <Select.Option key={index} value={item.value}>
                             {item.value}
+                            {item.value === "Other" ? "..." : ""}
                           </Select.Option>
                         );
                       })}
@@ -189,7 +191,7 @@ class OrgBasics extends React.Component {
       fieldData,
     } = this.props;
     const org = organization.currentOrganization;
-    const orgTypes = getFieldData(fieldData, "org_type");
+    const orgTypes = getOrgTypesData(fieldData);
 
     return (
       <OrgAdminForm

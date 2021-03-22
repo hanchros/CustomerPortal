@@ -281,7 +281,9 @@ class Invite extends Component {
                   <Button
                     type="ghost"
                     className="black-btn"
-                    onClick={() => this.onJoinOrg(curProj._id, item._id)}
+                    onClick={() =>
+                      this.onJoinOrg(curProj._id, item._id, curOrg._id)
+                    }
                   >
                     Invite
                   </Button>,

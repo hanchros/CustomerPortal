@@ -25,7 +25,7 @@ import { Link } from "react-router-dom";
 import ChallengeIcon from "../../../assets/icon/challenge.png";
 import UserIcon from "../../../assets/img/user-avatar.png";
 import OrgEdit from "./org-edit";
-import { getFieldData } from "../../../utils/helper";
+import { getOrgTypesData } from "../../../utils/helper";
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -144,7 +144,7 @@ class OrgReport extends Component {
   render() {
     const { fieldData } = this.props;
     const { loading, visible, curOrg } = this.state;
-    const orgTypes = getFieldData(fieldData, "org_type");
+    const orgTypes = getOrgTypesData(fieldData);
     const filtOrgs = this.filterOrgs();
     return (
       <div className="container">
@@ -173,6 +173,7 @@ class OrgReport extends Component {
                     return (
                       <Select.Option key={item._id} value={item.value}>
                         {item.value}
+                        {item.value === "Other" ? "..." : ""}
                       </Select.Option>
                     );
                   })}

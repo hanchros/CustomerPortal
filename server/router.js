@@ -200,9 +200,12 @@ module.exports = function (app) {
   inviteRoutes.put("/cancel/:id", InviteController.cancelInvite);
   // create invite of ex org member to project route
   inviteRoutes.post("/project/:projectId", requireAuth, InviteController.inviteOrgToProject);
-  // create project new member invite route
+  // download invite route
   inviteRoutes.post("/download", requireAuth, InviteController.downloadInvitePDF);
-
+  // notify invite route
+  inviteRoutes.post("/notify/:inv_id", requireAuth, InviteController.notifyInvite);
+  // edit invite route
+  inviteRoutes.post("/edit/:inv_id", requireAuth, InviteController.editInviteNewMember); 
 
   //= ========================
   // Project comment Routes

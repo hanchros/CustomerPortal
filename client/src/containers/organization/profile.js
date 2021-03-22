@@ -5,7 +5,7 @@ import {
   createOrganization,
 } from "../../actions/organization";
 import { Header } from "../../components/template";
-import { getFieldData } from "../../utils/helper";
+import { getOrgTypesData } from "../../utils/helper";
 import OrgEditForm from "./orgedit-form";
 import history from "../../history";
 
@@ -36,7 +36,7 @@ class EditOrg extends Component {
 
   render = () => {
     const { fieldData, authOrg } = this.props;
-    const orgTypes = getFieldData(fieldData, "org_type");
+    const orgTypes = getOrgTypesData(fieldData);
 
     return (
       <React.Fragment>

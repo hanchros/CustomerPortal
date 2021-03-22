@@ -55,7 +55,7 @@ class AdminDashboard extends Component {
         <Skeleton active loading={!isAdmin} />
         <Skeleton active loading={!isAdmin} />
         {isAdmin && (
-          <Layout className="message-box">
+          <Layout className="message-box-layout">
             <Sider
               collapsible
               collapsed={this.state.collapsed}

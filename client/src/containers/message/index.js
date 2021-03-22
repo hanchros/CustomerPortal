@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Row, Col, Container } from "reactstrap";
 import { connect } from "react-redux";
-import { Header } from "../../components/template";
+import { SendOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   fetchMessages,
   sendReply,
@@ -10,26 +11,13 @@ import {
   deleteMessage,
   blockChat,
 } from "../../actions/message";
-import { getProject, getParticipant } from "../../actions/project";
-import {
-  Layout,
-  Menu,
-  Breadcrumb,
-  Tooltip,
-  List,
-  Comment,
-  Input,
-  Badge,
-  Button,
-  Mentions,
-} from "antd";
+import { Tooltip, List, Comment, Input, Badge, Button, Mentions } from "antd";
 import moment from "moment";
 import UserAvatar from "../../assets/img/user-avatar.png";
-import { Link } from "react-router-dom";
 import TeamIcon from "../../assets/img/team-icon.png";
+import { Header } from "../../components/template";
+import { getProject, getParticipant } from "../../actions/project";
 
-const { Content, Sider } = Layout;
-const { Search } = Input;
 const { Option } = Mentions;
 
 class MessageBox extends Component {
@@ -62,7 +50,7 @@ class MessageBox extends Component {
           this.setState({
             isTeamChat: !!cv.project,
             receptor: cv.name || "",
-            receptorId: cv.project || "",
+            receptorId: cv.project ? cv.project._id : "",
           });
           break;
         }
@@ -83,7 +71,7 @@ class MessageBox extends Component {
   };
 
   scrollToBottom = () => {
-    this.messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    // this.messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   onCollapse = (collapsed) => {
@@ -95,17 +83,17 @@ class MessageBox extends Component {
     await fetchMessages(cvId);
     setChannel(cvId);
     this.setState({ receptor: name, receptorId: id, isTeamChat });
-    this.scrollToBottom();
+    // this.scrollToBottom();
     if (isTeamChat) getProject(id);
   };
 
   renderMenuItem = (cv) => {
-    const { user } = this.props;
+    const { user, message } = this.props;
     const { searchTxt } = this.state;
     let name = cv.name,
-      photo = TeamIcon,
-      isTeamChat = true,
-      id = cv.project;
+      photo,
+      isTeamChat,
+      id;
     if (!cv.project) {
       let users = cv.participants;
       if (users.length < 2) return null;
@@ -117,24 +105,26 @@ class MessageBox extends Component {
       photo = receptor.profile.photo || UserAvatar;
       id = receptor._id;
       isTeamChat = false;
+    } else {
+      photo = cv.project.logo || TeamIcon;
+      isTeamChat = true;
+      id = cv.project._id;
     }
     if (searchTxt && !name.toLowerCase().includes(searchTxt.toLowerCase())) {
       return null;
     }
 
     return (
-      <Menu.Item
+      <li
         key={cv._id}
         onClick={() => this.onClickConversation(cv._id, name, id, isTeamChat)}
         title={name}
+        className={cv._id === message.channelId ? "active" : ""}
       >
-        <React.Fragment>
-          <Badge count={cv.unread} style={{ backgroundColor: "#52c41a" }}>
-            <img className="anticon" src={photo} alt="logo" />
-          </Badge>
-          <span className="menu-name">{name}</span>
-        </React.Fragment>
-      </Menu.Item>
+        <img src={photo} alt="" />
+        <span className="menu-name">{name}</span>
+        <Badge count={cv.unread} style={{ backgroundColor: "#B5DC17" }} />
+      </li>
     );
   };
 
@@ -143,6 +133,7 @@ class MessageBox extends Component {
     const messages = message.messages || [];
     let result = [];
     for (let m of messages) {
+      if (!m.author) continue
       let author = `${m.author.profile.first_name} ${m.author.profile.last_name}`;
       let avatar = m.author.profile.photo || UserAvatar;
       let content = <p>{m.body}</p>;
@@ -239,73 +230,53 @@ class MessageBox extends Component {
     return (
       <React.Fragment>
         <Header />
-        <Layout className="message-box">
-          <Sider
-            collapsible
-            collapsed={this.state.collapsed}
-            onCollapse={this.onCollapse}
-          >
-            <Menu theme="dark" selectedKeys={[message.channelId]} mode="inline">
-              <Menu.Item
-                className="search-conversation"
-                key={"search-conversation"}
-              >
-                <Search
-                  value={searchTxt}
-                  onChange={this.onChangeSearch}
-                  placeholder="search"
-                />
-              </Menu.Item>
-              {conversations.map((cv) => {
-                return this.renderMenuItem(cv);
-              })}
-            </Menu>
-          </Sider>
-          <Layout className="site-layout">
-            <Content style={{ margin: "0 16px" }}>
-              <Breadcrumb style={{ margin: "16px 0" }}>
-                <Breadcrumb.Item>
-                  {isTeamChat ? "Team" : "User"}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>{receptor}</Breadcrumb.Item>
-                {/* {!isTeamChat && receptorId && (
-                  <Popconfirm
-                    placement="bottomRight"
-                    title="Are you sure block this user?"
-                    onConfirm={() => blockChat(receptorId)}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Link className="link-block" title="Block User" to="#">
-                      <MehOutlined />
-                    </Link>
-                  </Popconfirm>
-                )} */}
-              </Breadcrumb>
-              <div className="site-layout-background">
-                {conversations.length === 0 && (
-                  <p>
-                    To message someone new, find the user's profile and send a
-                    message. Go to <Link to="/participants">Users</Link> to find
-                    a user's profile.
-                  </p>
-                )}
-                <List
-                  className="comment-list"
-                  itemLayout="horizontal"
-                  dataSource={this.processMessage()}
-                  renderItem={(item) => (
-                    <li>
-                      <Comment
-                        actions={this.mkCommentActions(item)}
-                        author={item.author}
-                        avatar={item.avatar}
-                        content={item.content}
-                        datetime={item.datetime}
-                      />
-                    </li>
-                  )}
-                />
+        <Container className="content">
+          <Row>
+            <Col md={4} className="mb-2 pr-4">
+              <Input
+                size="large"
+                value={searchTxt}
+                onChange={this.onChangeSearch}
+                placeholder="Search"
+                prefix={<SearchOutlined />}
+              />
+              <List
+                className="message-list"
+                itemLayout="horizontal"
+                dataSource={conversations}
+                renderItem={(item) => {
+                  return this.renderMenuItem(item);
+                }}
+              />
+            </Col>
+            <Col md={8}>
+              <div className="message-box">
+                <div className="message-header">
+                  <h5>
+                    <b>
+                      {isTeamChat ? "Team" : "User"} / {receptor}
+                    </b>
+                  </h5>
+                </div>
+                <div className="message-board">
+                  <List
+                    className="comment-list"
+                    itemLayout="horizontal"
+                    dataSource={this.processMessage()}
+                    renderItem={(item) => (
+                      <li>
+                        <Comment
+                          actions={this.mkCommentActions(item)}
+                          author={item.author}
+                          avatar={item.avatar}
+                          content={item.content}
+                          datetime={item.datetime}
+                        />
+                      </li>
+                    )}
+                  />
+                  <div ref={this.messagesEndRef} />
+                </div>
                 {message.channelId && (
                   <div className="message-input">
                     <Mentions
@@ -323,19 +294,18 @@ class MessageBox extends Component {
                       ))}
                     </Mentions>
                     <Button
-                      size="large"
-                      type="primary"
+                      type="ghost"
+                      className="black-btn wide ml-3"
                       onClick={this.sendMessage}
                     >
-                      Send
+                      Send <SendOutlined />
                     </Button>
                   </div>
                 )}
               </div>
-            </Content>
-            <div ref={this.messagesEndRef} />
-          </Layout>
-        </Layout>
+            </Col>
+          </Row>
+        </Container>
       </React.Fragment>
     );
   }

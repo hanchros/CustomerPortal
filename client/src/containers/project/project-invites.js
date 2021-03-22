@@ -3,15 +3,88 @@ import { connect } from "react-redux";
 import { Container } from "reactstrap";
 import { Header, Footer } from "../../components/template";
 import { Link } from "react-router-dom";
-import { Popover, Skeleton, Modal, Button } from "antd";
+import { Popover, Skeleton, Modal, Button, Form, Input } from "antd";
 import { LeftOutlined, MoreOutlined } from "@ant-design/icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import moment from "moment";
-import { resolveInvite, listInvitesByProject } from "../../actions/invite";
+import {
+  resolveInvite,
+  listInvitesByProject,
+  notifyInvite,
+  editInvite,
+} from "../../actions/invite";
 import NonList from "../../components/pages/non-list";
 import ExclaimImg from "../../assets/icon/exclaime.svg";
 import ProjImg from "../../assets/icon/plates.svg";
+import { ModalSpinner } from "../../components/pages/spinner";
+
+const EditInviteForm = ({ onSubmit, invite, onCancel }) => {
+  const onFinish = async (values) => {
+    onSubmit(invite._id, values.email);
+    onCancel();
+  };
+
+  const onCancelEdit = (e) => {
+    e.preventDefault();
+    onCancel();
+  };
+
+  return (
+    <Form
+      name="create-note"
+      className="mt-4 register-form p-3"
+      onFinish={onFinish}
+      initialValues={{ email: invite.email }}
+    >
+      <div className="center">
+        <h2>
+          <b>Edit invitation</b>
+        </h2>
+      </div>
+      <div className="invite-edit-info mt-5">
+        <span>Name</span>
+        <span> {invite.name} </span>
+      </div>
+      <div className="invite-edit-info">
+        <span>Organization</span>
+        <span>{invite.org_name}</span>
+      </div>
+      <div className="invite-edit-info mb-4">
+        <span>Position</span>
+        <span>{"Sales and Marketing"}</span>
+      </div>
+      <span className="form-label">Email*</span>
+      <Form.Item
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: `Please input the email!`,
+          },
+        ]}
+      >
+        <Input type="email" size="large" />
+      </Form.Item>
+      <Button
+        type="ghost"
+        htmlType="submit"
+        className="black-btn wide mt-5"
+        style={{ width: "100%" }}
+      >
+        send invite to a new email
+      </Button>
+      <Button
+        type="ghost"
+        onClick={onCancelEdit}
+        className="ghost-btn wide mt-3"
+        style={{ width: "100%" }}
+      >
+        Cancel
+      </Button>
+    </Form>
+  );
+};
 
 class ProjectInviteMng extends Component {
   constructor() {
@@ -21,6 +94,8 @@ class ProjectInviteMng extends Component {
       loading: false,
       visible: false,
       invite: {},
+      modalLoading: false,
+      showEditModal: false,
     };
   }
 
@@ -49,6 +124,32 @@ class ProjectInviteMng extends Component {
     });
   };
 
+  onNotifyInvite = async (row) => {
+    this.setState({ modalLoading: true });
+    await this.props.notifyInvite(row._id);
+    this.setState({ modalLoading: false });
+  };
+
+  onEditInvite = async (id, email) => {
+    this.setState({ modalLoading: true });
+    await this.props.editInvite(id, email);
+    this.setState({ modalLoading: false });
+  };
+
+  openEditModal = (row) => {
+    this.setState({
+      invite: row,
+      showEditModal: true,
+    });
+  };
+
+  hideEditModal = () => {
+    this.setState({
+      invite: {},
+      showEditModal: false,
+    });
+  };
+
   setTableInvites = (ivs) => {
     let result = [],
       k = 0;
@@ -73,8 +174,8 @@ class ProjectInviteMng extends Component {
     let content = (
       <div className="blue-popover">
         <ul>
-          <li onClick={() => {}}>NOTIFY AGAIN</li>
-          <li onClick={() => {}}>EDIT INVITATION</li>
+          <li onClick={() => this.onNotifyInvite(row)}>NOTIFY AGAIN</li>
+          <li onClick={() => this.openEditModal(row)}>EDIT INVITATION</li>
           <li onClick={() => this.setInviteSelect(row)}>CANCEL INVITATION</li>
         </ul>
       </div>
@@ -90,7 +191,13 @@ class ProjectInviteMng extends Component {
 
   render = () => {
     const { project, goback, invites } = this.props;
-    const { loading, visible, invite } = this.state;
+    const {
+      loading,
+      visible,
+      invite,
+      modalLoading,
+      showEditModal,
+    } = this.state;
     const curProj = project.project;
     const adminFormatter = (cell, row) => {
       return this.renderAction(row);
@@ -178,9 +285,7 @@ class ProjectInviteMng extends Component {
             >
               <div className="confirm-file-read">
                 <img src={ExclaimImg} alt="" />
-                <p>
-                  Note, we are not able to revoke already sent email
-                </p>
+                <p>Note, we are not able to revoke already sent email</p>
                 <span>
                   <b>{invite.name}</b>
                   <br />
@@ -206,6 +311,22 @@ class ProjectInviteMng extends Component {
               </div>
             </Modal>
           )}
+          {showEditModal && (
+            <Modal
+              visible={showEditModal}
+              width={500}
+              footer={false}
+              onCancel={this.hideEditModal}
+              centered
+            >
+              <EditInviteForm
+                invite={invite}
+                onCancel={this.hideEditModal}
+                onSubmit={this.onEditInvite}
+              />
+            </Modal>
+          )}
+          <ModalSpinner visible={modalLoading} />
         </Container>
         <Footer />
       </React.Fragment>
@@ -223,4 +344,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   resolveInvite,
   listInvitesByProject,
+  notifyInvite,
+  editInvite,
 })(ProjectInviteMng);

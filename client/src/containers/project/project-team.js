@@ -16,7 +16,7 @@ class ProjectTeam extends Component {
     const curProj = project.project;
     let conversations = message.conversations;
     for (let cv of conversations) {
-      if (cv.project && cv.project === curProj._id) {
+      if (cv.project && cv.project._id === curProj._id) {
         setChannel(cv._id);
         history.push("/messages");
         return;

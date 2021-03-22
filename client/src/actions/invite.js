@@ -88,3 +88,27 @@ export function resolveInvite(id, resolve) {
     }
   };
 }
+
+export function notifyInvite(inv_id) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      await client.post(`${API_URL}/invite/notify/${inv_id}`);
+      message.success("Invitation is resent successfully");
+    } catch (err) {
+      createNotification("Notify Invite", errorMessage(err));
+    }
+  };
+}
+
+export function editInvite(inv_id, email) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      await client.post(`${API_URL}/invite/edit/${inv_id}`, { email });
+      message.success("Invitation has been updated successfully");
+    } catch (err) {
+      createNotification("Update Invite", errorMessage(err));
+    }
+  };
+}
