@@ -3,7 +3,7 @@ import { Form, Input, Button, Popconfirm, Divider, Select, Switch } from "antd";
 import { Col, Row } from "reactstrap";
 import { PlusOutlined } from "@ant-design/icons";
 import RichTextEditor from "../../../components/pages/editor";
-import { BigUpload } from "../../../components/template";
+import { Upload, BigUpload } from "../../../components/template";
 import UploadFiles from "../../../components/template/upload_files";
 
 const EditArticle = ({
@@ -63,114 +63,107 @@ const EditArticle = ({
       onFinish={onFinish}
       initialValues={{ ...article }}
     >
-      <Row className="mb-3">
-        <Col md={4}>
-          <div className="center">
-            <BigUpload setAvatar={setIconURL} imageUrl={iconURL} />
-          </div>
-        </Col>
-        <Col md={8} style={{ paddingTop: "33px" }}>
-          <Form.Item
-            name="title"
-            rules={[
-              {
-                required: true,
-                message: "Please input the article title!",
-              },
-            ]}
-          >
+      <div className="mb-4">
+        <Upload setAvatar={setIconURL} imageUrl={iconURL} />
+      </div>
+      <span className="form-label">Title*</span>
+      <Form.Item
+        name="title"
+        rules={[
+          {
+            required: true,
+            message: "Please input the article title!",
+          },
+        ]}
+      >
+        <Input type="text" size="large" />
+      </Form.Item>
+      <span className="form-label">Article content*</span>
+      <Form.Item name="content">
+        <RichTextEditor size="large" />
+      </Form.Item>
+      <span className="form-label">Article type​*</span>
+      <Form.Item
+        name="tag"
+        rules={[
+          {
+            required: true,
+            message: "Please choose the type!",
+          },
+        ]}
+      >
+        <Select size="large">
+          {tags.map((item) => {
+            return (
+              <Select.Option key={item._id} value={item._id}>
+                {item.value}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+      <span className="form-label">Article topic*</span>
+      <Form.Item
+        name="topic"
+        rules={[
+          {
+            required: true,
+            message: "Please input the topic!",
+          },
+        ]}
+      >
+        <Select
+          size="large"
+          dropdownRender={(menu) => (
+            <div>
+              {menu}
+              <Divider style={{ margin: "4px 0" }} />
+              <div style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}>
+                <Input
+                  style={{ flex: "auto" }}
+                  value={newTopic}
+                  onChange={(e) => setNewTopic(e.target.value)}
+                />
+                <Button type="primary" className="ml-3" onClick={addNewTopic}>
+                  <PlusOutlined /> Add item
+                </Button>
+              </div>
+            </div>
+          )}
+        >
+          {artTopics.map((item, index) => {
+            return (
+              <Select.Option key={index} value={item}>
+                {item}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+      <hr className="mt-5" />
+      <h5 className="mb-4">
+        <b>Article Details</b>
+      </h5>
+      <Row className="mt-4">
+        <Col md={8}>
+          <span className="form-label">Video link</span>
+          <Form.Item name="video">
+            <Input type="text" size="large" />
+          </Form.Item>
+          <span className="form-label">Iframe link</span>
+          <Form.Item name="iframe" className="mt-4">
             <Input type="text" size="large" />
           </Form.Item>
         </Col>
-      </Row>
-      <Form.Item name="content">
-        <RichTextEditor size="large" placeholder="Content" />
-      </Form.Item>
-      <Form.Item name="video">
-        <Input type="text" size="large" placeholder="Video Link" />
-      </Form.Item>
-
-      <Row className="mt-4">
-        <Col md={8}>
-          <Form.Item
-            name="tag"
-            rules={[
-              {
-                required: true,
-                message: "Please choose the type!",
-              },
-            ]}
-          >
-            <Select placeholder="Article Type​" size="large">
-              {tags.map((item) => {
-                return (
-                  <Select.Option key={item._id} value={item._id}>
-                    {item.value}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="topic"
-            rules={[
-              {
-                required: true,
-                message: "Please input the topic!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Article Topic"
-              size="large"
-              dropdownRender={(menu) => (
-                <div>
-                  {menu}
-                  <Divider style={{ margin: "4px 0" }} />
-                  <div
-                    style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}
-                  >
-                    <Input
-                      style={{ flex: "auto" }}
-                      value={newTopic}
-                      onChange={(e) => setNewTopic(e.target.value)}
-                    />
-                    <Button
-                      type="primary"
-                      className="ml-3"
-                      onClick={addNewTopic}
-                    >
-                      <PlusOutlined /> Add item
-                    </Button>
-                  </div>
-                </div>
-              )}
-            >
-              {artTopics.map((item, index) => {
-                return (
-                  <Select.Option key={index} value={item}>
-                    {item}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        </Col>
         <Col md={4}>
+          <span className="form-label">Article image</span>
           <div className="center">
             <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
           </div>
         </Col>
       </Row>
-
-      <Form.Item name="iframe" className="mt-4">
-        <Input type="text" placeholder="Iframe Link" size="large" />
-      </Form.Item>
-
-      <span>Upload Documents:</span>
-      <br />
+      <span className="form-label mr-4">Upload Documents:</span>
       <UploadFiles files={files} setFiles={setFiles} />
-
       <Row className="mt-4">
         <Col md={6}>
           <Form.Item
