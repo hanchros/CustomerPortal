@@ -1,10 +1,12 @@
 import {
   FETCH_INVITE_REQUEST_LIST,
   RESOLVE_INVITE_REQUEST,
+  FETCH_SCINVITE_LIST,
 } from "../actions/types";
 
 const INITIAL_STATE = {
   invites: [],
+  scinvites: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -22,6 +24,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         invites: airs,
       };
+    case FETCH_SCINVITE_LIST:
+      return { ...state, scinvites: action.invites };
     default:
       return state;
   }

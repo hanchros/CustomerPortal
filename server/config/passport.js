@@ -1,7 +1,7 @@
 // Importing Passport, strategies, and config
 const passport = require("passport"),
   User = require("../models/user"),
-  Organization = require("../models/organization"),
+  SoftCompany = require("../models/softcompany"),
   config = require("./main"),
   JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -18,7 +18,7 @@ const jwtOptions = {
 
 // Setting up JWT login strategy
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-  if (payload.email) {
+  if (payload.role) {
     User.findById(payload._id, (err, user) => {
       if (err) {
         return done(err, false);
@@ -30,8 +30,8 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
         done(null, false);
       }
     });
-  } else if (payload.org_name) {
-    Organization.findById(payload._id, (err, org) => {
+  } else {
+    SoftCompany.findById(payload._id, (err, org) => {
       if (err) {
         return done(err, false);
       }

@@ -9,6 +9,7 @@ const Token = require("../models/token");
 const Organization = require("../models/organization");
 const ProjectMember = require("../models/projectmember");
 const Timeline = require("../models/timeline");
+const SoftCompany = require("../models/softcompany");
 
 // Generate JWT
 // TO-DO Add issuer and audience
@@ -32,30 +33,52 @@ exports.login = async (req, res, next) => {
         select: "_id profile",
       },
     });
-    if (!user) {
-      return res.status(401).json({ error: "No user with the email" });
+    if (user) {
+      user.comparePassword(password, (err, isMatch) => {
+        if (err || !isMatch) {
+          return res.status(401).json({ error: "Password mismatch" });
+        }
+        const userInfo = setUserInfo(user);
+        if (!userInfo.verified) {
+          return res
+            .status(422)
+            .send({ error: "Your account is not verified yet" });
+        }
+        let result = {
+          token: `JWT ${generateToken(userInfo)}`,
+          user: userInfo,
+        };
+        if (getRole(userInfo.role) === 3) {
+          return res
+            .status(422)
+            .send({ error: "Your account is not authorized" });
+        }
+        return res.status(200).json(result);
+      });
+    } else {
+      // check software company
+      let softcompany = await SoftCompany.findOne({ email });
+      if (!softcompany) {
+        return res
+          .status(401)
+          .json({ error: "No user or software company with the email" });
+      }
+      softcompany.comparePassword(password, (err, isMatch) => {
+        if (err || !isMatch) {
+          return res.status(401).json({ error: "Password mismatch" });
+        }
+        let result = {
+          token: `JWT ${generateToken({
+            _id: softcompany._id,
+            org_name: softcompany.profile.org_name,
+            email: softcompany.email,
+            contact: softcompany.profile.contact,
+          })}`,
+          softcompany,
+        };
+        return res.status(200).json(result);
+      });
     }
-    user.comparePassword(password, (err, isMatch) => {
-      if (err || !isMatch) {
-        return res.status(401).json({ error: "Password mismatch" });
-      }
-      const userInfo = setUserInfo(user);
-      if (!userInfo.verified) {
-        return res
-          .status(422)
-          .send({ error: "Your account is not verified yet" });
-      }
-      let result = {
-        token: `JWT ${generateToken(userInfo)}`,
-        user: userInfo,
-      };
-      if (getRole(userInfo.role) === 3) {
-        return res
-          .status(422)
-          .send({ error: "Your account is not authorized" });
-      }
-      return res.status(200).json(result);
-    });
   } catch (err) {
     return next(err);
   }
@@ -115,7 +138,8 @@ exports.inviteRegister = async function (req, res, next) {
 
   try {
     let users = await User.find({ email });
-    if (users.length > 0) {
+    let scs = await SoftCompany.find({ email });
+    if (scs.length > 0 || users.length > 0) {
       return res
         .status(422)
         .send({ error: "That email address is already in use." });
@@ -229,7 +253,19 @@ exports.forgotPassword = async (req, res, next) => {
         message: "Please check your email for the link to reset your password.",
       });
     }
-
+    let softcompany = await SoftCompany.findOne({ email });
+    if (softcompany) {
+      let token = new Token({
+        _userId: softcompany._id,
+        token: crypto.randomBytes(16).toString("hex"),
+        mode: "organization",
+      });
+      token = await token.save();
+      sendgrid.userForgotPasword(email, token.token);
+      return res.status(200).json({
+        message: "Please check your email for the link to reset your password.",
+      });
+    }
     return res.status(422).json({
       error:
         "Your request could not be processed with the email. Please try again.",
@@ -251,22 +287,41 @@ exports.verifyToken = function (req, res, next) {
           "Your token has expired. Please attempt to reset your password again.",
       });
     }
-    User.findById(token._userId, (err, user) => {
-      if (err) {
-        return next(err);
-      }
-      user.password = req.body.password;
-      user.save((err) => {
+    if (token.mode === "organization") {
+      SoftCompany.findById(token._userId, (err, softcompany) => {
         if (err) {
           return next(err);
-        } else {
-          return res.status(200).json({
-            message:
-              "Password changed successfully. Please login with your new password.",
-          });
         }
+        softcompany.password = req.body.password;
+        softcompany.save((err) => {
+          if (err) {
+            return next(err);
+          } else {
+            return res.status(200).json({
+              message:
+                "Password changed successfully. Please login with your new password.",
+            });
+          }
+        });
       });
-    });
+    } else {
+      User.findById(token._userId, (err, user) => {
+        if (err) {
+          return next(err);
+        }
+        user.password = req.body.password;
+        user.save((err) => {
+          if (err) {
+            return next(err);
+          } else {
+            return res.status(200).json({
+              message:
+                "Password changed successfully. Please login with your new password.",
+            });
+          }
+        });
+      });
+    }
   });
 };
 
@@ -295,11 +350,7 @@ exports.resendVerification = function (req, res, next) {
     if (err) {
       return res.status(500).send({ error: err.message });
     }
-    if (mode === "organization") {
-      sendgrid.orgEmailVerification(email, name, token.token);
-    } else {
-      sendgrid.userEmailVerification(email, name, token.token);
-    }
+    sendgrid.userEmailVerification(email, name, token.token);
   });
 };
 
@@ -312,6 +363,22 @@ exports.changePassword = async (req, res, next) => {
       }
       user.password = req.body.newPassword;
       user.save();
+      return res.status(200).json({ message: "success" });
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.changeCompanyPassword = async (req, res, next) => {
+  try {
+    let softcompany = await SoftCompany.findById(req.user._id);
+    softcompany.comparePassword(req.body.oldPassword, (err, isMatch) => {
+      if (err || !isMatch) {
+        return res.status(401).json({ error: "Password mismatch" });
+      }
+      softcompany.password = req.body.newPassword;
+      softcompany.save();
       return res.status(200).json({ message: "success" });
     });
   } catch (err) {

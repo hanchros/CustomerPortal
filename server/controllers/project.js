@@ -247,6 +247,7 @@ exports.unArchiveProject = async (req, res, next) => {
 
 exports.getMailTemplate = (req, res, next) => {
   try {
+    req.body.project_name = req.body.project_name || ""
     let result = {
       title: "Invite Email",
       html: sendgrid.inviteFactory(req.body),

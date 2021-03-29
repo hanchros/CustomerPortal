@@ -8,6 +8,7 @@ import {
   FETCH_USER_LIST,
   SET_PDF_INVITE_DATA,
   SET_CURRENT_ORGANIZATION,
+  SET_DEFAULT_COLOR,
 } from "./types";
 import history from "../history";
 import Client from "./api";
@@ -28,17 +29,26 @@ export function loginUser({ email, password }) {
       });
       cookie.save("token", response.data.token, { path: "/" });
       const user = response.data.user;
-      cookie.save("user", user, { path: "/" });
-      dispatch({ type: AUTH_USER });
-      dispatch({ type: FETCH_USER, payload: user });
-      dispatch({
-        type: SET_CURRENT_ORGANIZATION,
-        organization: user.profile.org,
-      });
-      setMessageUserId({ userId: user._id })(dispatch);
-      dispatch(fetchConversations());
-      dispatch(fetchNotifications());
-      history.push(`/dashboard`);
+      const softcompany = response.data.softcompany;
+      if (user) {
+        cookie.save("user", user, { path: "/" });
+        dispatch({ type: AUTH_USER });
+        dispatch({ type: FETCH_USER, payload: user });
+        dispatch({
+          type: SET_CURRENT_ORGANIZATION,
+          organization: user.profile.org,
+        });
+        setMessageUserId({ userId: user._id })(dispatch);
+        dispatch(fetchConversations());
+        dispatch(fetchNotifications());
+        history.push(`/dashboard`);
+      } else {
+        cookie.save("user", softcompany, { path: "/" });
+        dispatch({ type: AUTH_USER });
+        dispatch({ type: FETCH_USER, payload: softcompany });
+        dispatch({ type: SET_DEFAULT_COLOR });
+        history.push(`/company-dashboard`);
+      }
     } catch (err) {
       createNotification("Login Failed", errorMessage(err));
     }
@@ -224,6 +234,11 @@ export function protectedTest() {
         });
         setMessageUserId({ userId: response.data.user._id })(dispatch);
       }
+      if (response.data.softcompany) {
+        dispatch({ type: AUTH_USER });
+        dispatch({ type: FETCH_USER, payload: response.data.softcompany });
+        dispatch({ type: SET_DEFAULT_COLOR });
+      }
     } catch (error) {
       dispatch({ type: UNAUTH_USER, payload: "" });
       if (!getState().organization.setValue) {
@@ -293,6 +308,22 @@ export function changePassword(oldPassword, newPassword) {
     const client = Client(true);
     try {
       let res = await client.post(`${API_URL}/auth/change-password`, {
+        oldPassword,
+        newPassword,
+      });
+      message.success("Password has been changed successfully!");
+      return res.data.message;
+    } catch (err) {
+      createNotification("Change password", errorMessage(err));
+    }
+  };
+}
+
+export function changeCompanyPassword(oldPassword, newPassword) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      let res = await client.post(`${API_URL}/auth/company/change-password`, {
         oldPassword,
         newPassword,
       });

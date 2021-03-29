@@ -4,6 +4,7 @@ import { Header, Footer } from "../../components/template";
 import ArticlePage from "./article";
 import { Link } from "react-router-dom";
 import { Container } from "reactstrap";
+import CompanyApps from "./companyapps";
 
 class Techhub extends React.Component {
   constructor(props) {
@@ -27,8 +28,10 @@ class Techhub extends React.Component {
   };
 
   renderTabHeader = () => {
-    const curOrg = this.props.organization.currentOrganization;
+    const { organization, user } = this.props;
+    const curOrg = organization.currentOrganization;
     const { tabId } = this.state;
+    const isCompany = !user.role;
     return (
       <div className="account-nav">
         <Container className="subnav-responsive">
@@ -51,14 +54,16 @@ class Techhub extends React.Component {
             onClick={() => this.onChange("3")}
             className={`${tabId === "3" ? "active" : ""} ml-4`}
           >
-            <p>Applications</p>
+            <p>{isCompany ? "Ingegra Integrations" : "Applications"}</p>
           </Link>
           <Link
             to="#"
             onClick={() => this.onChange("4")}
             className={`${tabId === "4" ? "active" : ""} ml-4`}
           >
-            <p>{`${curOrg.org_name}'s Applications`}</p>
+            <p>
+              {isCompany ? "Applications" : `${curOrg.org_name}'s Applications`}
+            </p>
           </Link>
         </Container>
       </div>
@@ -67,6 +72,7 @@ class Techhub extends React.Component {
 
   render() {
     const { tabId, artId } = this.state;
+    const isCompany = !this.props.user.role;
     return (
       <React.Fragment>
         <Header />
@@ -77,9 +83,10 @@ class Techhub extends React.Component {
           {tabId === "3" && (
             <ArticlePage tag="application" scope={"global"} id={artId} />
           )}
-          {tabId === "4" && (
+          {tabId === "4" && !isCompany && (
             <ArticlePage tag="application" scope={"org"} id={artId} />
           )}
+          {tabId === "4" && isCompany && <CompanyApps />}
         </div>
         <Footer />
       </React.Fragment>
@@ -92,6 +99,7 @@ function mapStateToProps(state) {
     articles: state.article.articles,
     fieldData: state.profile.fieldData,
     organization: state.organization,
+    user: state.user.profile,
   };
 }
 

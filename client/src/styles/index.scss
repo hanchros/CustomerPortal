@@ -19,6 +19,7 @@
 @import "./invite.scss";
 @import "../assets/fonts/Poppins-Black.ttf";
 @import "./component.scss";
+@import "./softcompany.scss";
 
 @font-face {
   font-family: "Poppins";
@@ -122,6 +123,7 @@ body {
       color: white;
       font-weight: 500;
       letter-spacing: 1px;
+      opacity: 0.9;
     }
   }
 

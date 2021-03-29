@@ -26,7 +26,8 @@ export const FETCH_ORGANIZATION = "fetch_organization",
   FETCH_ORG_SEARCH_LIST = "fetch_org_seaerch_list",
   FETCH_SIMPLE_ORG = "fetch_simple_org",
   SET_ORG_SETTINGS = "set_org_settings",
-  SET_CURRENT_ORGANIZATION = "set_current_organization";
+  SET_CURRENT_ORGANIZATION = "set_current_organization",
+  SET_DEFAULT_COLOR = "set_default_color";
 
 //= =====================
 // Project Actions
@@ -67,7 +68,9 @@ export const FETCH_ARTICLE_LIST = "fetch_article_list",
 // InviteRequest Actions
 //= =====================
 export const FETCH_INVITE_REQUEST_LIST = "fetch_invite_request_list",
-  RESOLVE_INVITE_REQUEST = "update_invite_request";
+  RESOLVE_INVITE_REQUEST = "update_invite_request",
+  FETCH_SCINVITE_LIST = "fetch_scinvite_list",
+  RESOLVE_SCINVITE = "resolve_scinvite";
 
 //= =====================
 // Admin Actions
@@ -118,3 +121,5 @@ export const FETCH_TIMELINE_LIST = "fetch_timeline_list",
   CREATE_TIMELINE = "create_timeline",
   UPDATE_TIMELINE = "update_timeline",
   DELETE_TIMELINE = "delete_timeline";
+
+export const FETCH_SOFT_COMPANIES = "fetch_soft_companies";

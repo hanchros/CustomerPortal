@@ -19,6 +19,7 @@ import GlobalEmailTemplate from "./setting/email-template";
 import SupTemplate from "./template";
 import InviteRequests from "./inviteRequest";
 import Message from "./user/message";
+import SoftwareCompany from "./softcompany";
 
 const { Content, Sider } = Layout;
 
@@ -129,6 +130,15 @@ class AdminDashboard extends Component {
                     <span>Invite Requests</span>
                   </span>
                 </Menu.Item>
+                <Menu.Item
+                  key="sup-softcompany"
+                  onClick={() => this.switchPage("Super", "SoftwareCompany")}
+                >
+                  <span>
+                    <TeamOutlined />
+                    <span>Software Company</span>
+                  </span>
+                </Menu.Item>
               </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -164,6 +174,8 @@ class AdminDashboard extends Component {
         return <InviteRequests />;
       case "Super Message":
         return <Message />;
+      case "Super SoftwareCompany":
+        return <SoftwareCompany />;
       default:
         return null;
     }

@@ -55,6 +55,10 @@ import SuperAdminDashboard from "./containers/admin/super";
 import Notification from "./containers/notification";
 import Faq from "./containers/faq";
 
+// Import software company pages
+import CompanyDashboard from "./containers/softcompany/dashboard";
+import CompanyProfile from "./containers/softcompany"
+
 // Import higher order components
 import RequireAuth from "./containers/auth/require_auth";
 import { protectedTest } from "./actions/auth";
@@ -115,6 +119,15 @@ class Routes extends React.Component {
 
           <Route path="/techhub" component={RequireAuth(Techhub)} />
           <Route path="/learnhub" component={RequireAuth(LearnHub)} />
+
+          <Route
+            path="/company-dashboard"
+            component={RequireAuth(CompanyDashboard)}
+          />
+          <Route
+            path="/company-account"
+            component={RequireAuth(CompanyProfile)}
+          />
 
           <Route path="/admin" component={RequireAuth(AdminDashboard)} />
           <Route path="/super" component={RequireAuth(SuperAdminDashboard)} />

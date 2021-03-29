@@ -243,21 +243,19 @@ class ArticlePage extends React.Component {
   render() {
     const techTitleTags = this.state.groups;
     return (
-      <React.Fragment>
-        <Row>
-          <Col md={4} sm={12}>
-            <List
-              size="large"
-              dataSource={techTitleTags}
-              className="techhub-title-list"
-              renderItem={this.renderTitleItem}
-            />
-          </Col>
-          <Col md={8} sm={12}>
-            {this.renderArticles()}
-          </Col>
-        </Row>
-      </React.Fragment>
+      <Row>
+        <Col md={4} sm={12}>
+          <List
+            size="large"
+            dataSource={techTitleTags}
+            className="techhub-title-list"
+            renderItem={this.renderTitleItem}
+          />
+        </Col>
+        <Col md={8} sm={12}>
+          {this.renderArticles()}
+        </Col>
+      </Row>
     );
   }
 }

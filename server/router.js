@@ -15,6 +15,7 @@ const MailController = require("./controllers/mail");
 const FaqController = require("./controllers/faq");
 const ChatController = require("./controllers/chat");
 const TimelineController = require("./controllers/timeline");
+const SoftCompanyController = require("./controllers/softcompany");
 
 var multer  = require('multer')
 const express = require("express");
@@ -53,6 +54,7 @@ module.exports = function (app) {
     faqRoutes = express.Router(),
     chatRoutes = express.Router(),
     timelineRoutes = express.Router(),
+    softCompanyRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -84,6 +86,9 @@ module.exports = function (app) {
   authRoutes.post("/resend", AuthenticationController.resendVerification);
   // password change route
   authRoutes.post("/change-password", requireAuth, AuthenticationController.changePassword);
+  // change password sc route
+  authRoutes.post("/company/change-password", requireAuth, AuthenticationController.changeCompanyPassword);
+
 
   //= ========================
   // User Routes
@@ -411,6 +416,27 @@ module.exports = function (app) {
   // delete timeline route
   timelineRoutes.delete("/:id", requireAuth, TimelineController.deleteTimeline);
 
+
+  //= ========================
+  // Software company Routes
+  //= ========================
+  apiRoutes.use("/softcompany", softCompanyRoutes);
+  // list software companies route
+  softCompanyRoutes.get("/invites", requireAuth, SoftCompanyController.listSCInvite);
+  // send sc invite route
+  softCompanyRoutes.post("/invite", requireAuth, SoftCompanyController.sendSoftCompanyInvite);
+  // download sc invite route
+  softCompanyRoutes.post("/download", requireAuth, SoftCompanyController.downloadInvitePDF);
+  // notify sc invite route
+  softCompanyRoutes.post("/notify-invite/:inv_id", requireAuth, SoftCompanyController.notifyInvite);
+  // edit sc invite route
+  softCompanyRoutes.post("/edit-invite/:inv_id", requireAuth, SoftCompanyController.editInviteNewMember); 
+  // register sc route
+  softCompanyRoutes.post("/register", SoftCompanyController.inviteRegister);
+  // update sc route
+  softCompanyRoutes.put("/update", requireAuth, SoftCompanyController.updateCompanyProfile);
+  // list sc route
+  softCompanyRoutes.get("/", requireAuth, SoftCompanyController.listCompanies);
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   isAdmin: false,
   isSuper: false,
   orgAdmin: false,
+  projects: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -19,7 +20,7 @@ export default function (state = INITIAL_STATE, action) {
     case FETCH_USER:
       const profile = action.payload;
       localStorage.setItem("userId", profile._id);
-      let isAdmin = profile.role.includes("Admin");
+      let isAdmin = profile.role && profile.role.includes("Admin");
       let isSuper = profile.role === "SAdmin";
       let orgAdmin = false;
       if (profile.profile.org_role === "admin") {

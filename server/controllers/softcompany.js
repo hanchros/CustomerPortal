@@ -9,62 +9,33 @@ const fs = require("fs");
 const FormData = require("form-data");
 const utils = require("./util");
 const sockets = require("../socket");
+const SoftCompany = require("../models/softcompany");
 
-exports.createInviteRequest = async (req, res, next) => {
-  try {
-    let irs = await Invite.find({ email: req.body.email, resolved: 1 });
-    if (irs.length > 0) {
-      return res
-        .status(422)
-        .send({ error: "That email address is already in use." });
-    }
-    const ir = new Invite(Object.assign({ type: 0 }, req.body));
-    const result = await ir.save();
-    // sendgrid.inviteRequestMail(
-    //   Object.assign(
-    //     {
-    //       admin_name: "David Fisher",
-    //       admin_email: "dfisher@integraledger.com",
-    //     },
-    //     req.body
-    //   )
-    // );
-    res.status(201).json({
-      invite: result,
-    });
-  } catch (err) {
-    return next(err);
-  }
-};
-
-const sendInviteEmail = async (iv) => {
+const sendSCInvite = async (iv) => {
   const values = {
-    first_name: iv.first_name,
-    last_name: iv.last_name,
+    contact: iv.first_name,
     email: iv.email,
     organization: iv.organization,
-    project_id: iv.project,
+    phone: iv.profile.phone,
     sender_name: iv.profile.sender_name,
     sender_organization: iv.profile.sender_organization,
     logo: iv.profile.logo,
     content: iv.profile.content,
     invite: iv._id,
   };
-  const project = await Project.findById(values.project_id);
   const mailContent = {
     logo: values.logo,
     content: values.content,
     email: values.email,
     sender_organization: values.sender_organization,
-    project_name: project.name,
   };
-  await utils.createPDFDoc(values, project.description);
+  await utils.createSCPDFDoc(values);
   await sleep(2000);
   delete values.logo;
   delete values.content;
   const form = new FormData();
   const orgPdfPath = `${__dirname}/../uploads/${iv._id}.pdf`;
-  form.append("file", orgPdfPath);
+  form.append("file", fs.createReadStream(orgPdfPath));
   form.append("data_form", JSON.stringify(values));
   form.append("meta_form", JSON.stringify(values));
   form.append("master_id", "123456789");
@@ -89,26 +60,26 @@ const sendInviteEmail = async (iv) => {
   });
 };
 
-exports.sendInviteNewMember = async (req, res, next) => {
+exports.sendSoftCompanyInvite = async (req, res, next) => {
   try {
     const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
     const sender_organization = req.user.profile.org_name;
     const iv = new Invite({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
+      first_name: req.body.contact,
+      last_name: "",
       email: req.body.email,
       organization: req.body.organization,
-      project: req.body.project_id,
       profile: {
         sender_name,
         sender_organization,
         logo: req.body.logo,
         content: req.body.content,
+        phone: req.body.phone,
       },
-      type: 1,
+      type: 3,
     });
     const niv = await iv.save();
-    await sendInviteEmail(niv);
+    await sendSCInvite(niv);
     return res.status(200).json({
       invite: niv,
     });
@@ -120,7 +91,7 @@ exports.sendInviteNewMember = async (req, res, next) => {
 exports.notifyInvite = async (req, res, next) => {
   try {
     const niv = await Invite.findById(req.params.inv_id);
-    await sendInviteEmail(niv);
+    await sendSCInvite(niv);
     return res.status(200).json({
       invite: niv,
     });
@@ -134,9 +105,20 @@ exports.editInviteNewMember = async (req, res, next) => {
     const niv = await Invite.findById(req.params.inv_id);
     niv.email = req.body.email;
     await niv.save();
-    await sendInviteEmail(niv);
+    await sendSCInvite(niv);
     return res.status(200).json({
       invite: niv,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.listSCInvite = async (req, res, next) => {
+  try {
+    const invites = await Invite.find({ type: 3, resolved: 1 });
+    return res.status(200).json({
+      invites,
     });
   } catch (err) {
     return next(err);
@@ -148,12 +130,18 @@ exports.downloadInvitePDF = async (req, res, next) => {
     const sender_name = `${req.user.profile.first_name} ${req.user.profile.last_name}`;
     const sender_organization = req.user.profile.org_name;
     const iv = new Invite({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
+      first_name: req.body.contact,
+      last_name: "",
       email: req.body.email,
       organization: req.body.organization,
-      project: req.body.project_id,
-      type: 1,
+      profile: {
+        sender_name,
+        sender_organization,
+        phone: req.body.phone,
+        logo: req.body.logo,
+        content: req.body.content,
+      },
+      type: 3,
     });
     const niv = await iv.save();
     const values = Object.assign(req.body, {
@@ -161,15 +149,13 @@ exports.downloadInvitePDF = async (req, res, next) => {
       sender_organization,
       invite: niv._id,
     });
-    const project = await Project.findById(values.project_id);
-    await utils.createPDFDoc(values, project.description);
+    await utils.createSCPDFDoc(values);
     await sleep(2000);
     delete values.logo;
     delete values.content;
-    delete values.project_description;
     const form = new FormData();
     const orgPdfPath = `${__dirname}/../uploads/${niv._id}.pdf`;
-    form.append("file", orgPdfPath);
+    form.append("file", fs.createReadStream(orgPdfPath));
     form.append("data_form", JSON.stringify(values));
     form.append("meta_form", JSON.stringify(values));
     form.append("master_id", "123456789");
@@ -193,11 +179,11 @@ exports.downloadInvitePDF = async (req, res, next) => {
       res.download(path, "invite.pdf");
     });
   } catch (err) {
-    return next(err);
+    return res.status(422).send({ error: err });
   }
 };
 
-exports.inviteOrgToProject = async (req, res, next) => {
+exports.inviteSCToProject = async (req, res, next) => {
   try {
     const customer = await User.findById(req.body.user);
     const org = await Organization.findById(req.body.organization);
@@ -237,64 +223,52 @@ exports.inviteOrgToProject = async (req, res, next) => {
   }
 };
 
-exports.listInviteRequest = (req, res, next) => {
-  Invite.find({ resolved: 1, type: 0 }).exec((err, irs) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      invites: irs,
-    });
-  });
-};
-
-exports.listInvitesByProjects = (req, res, next) => {
-  Invite.find({
-    resolved: 1,
-    type: [1, 2],
-    project: req.params.project_id,
-  }).exec((err, irs) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      invites: irs,
-    });
-  });
-};
-
-exports.getInvite = (req, res, next) => {
-  Invite.findById(req.params.id).exec((err, iv) => {
-    if (err) {
-      return next(err);
-    }
-    res.status(201).json({
-      invite: iv,
-    });
-  });
-};
-
-exports.resolveInvite = async (req, res, next) => {
+exports.inviteRegister = async function (req, res, next) {
+  const email = req.body.email;
+  const password = req.body.password;
+  delete req.body.email;
+  delete req.body.password;
   try {
-    ir = await Invite.findById(req.params.id);
-    ir.resolved = 2;
-    ir.save();
-    res.status(201).json({
-      invite: ir,
+    let users = await User.find({ email });
+    let scs = await SoftCompany.find({ email });
+    if (scs.length > 0 || users.length > 0) {
+      return res
+        .status(422)
+        .send({ error: "That email address is already in use." });
+    }
+    let sc = new SoftCompany({
+      email,
+      password,
+      profile: req.body,
     });
+    sc = await sc.save();
+    sc.password = "";
+    return res.status(201).json({ softcompany: sc });
   } catch (err) {
     return next(err);
   }
 };
 
-exports.cancelInvite = async (req, res, next) => {
+exports.updateCompanyProfile = async function (req, res, next) {
+  let profile = req.body.profile;
+  let email = profile.email;
+  delete profile.email;
   try {
-    ir = await Invite.findById(req.params.id);
-    ir.resolved = 0;
-    ir.save();
-    res.status(201).json({
-      invite: ir,
+    await SoftCompany.findByIdAndUpdate(req.user._id, {
+      profile,
+      email,
     });
+    let softcompany = await SoftCompany.findById(req.user._id);
+    return res.status(201).json({ softcompany });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.listCompanies = async function (req, res, next) {
+  try {
+    const softcompanies = await SoftCompany.find({}, "_id profile");
+    return res.status(201).json({ softcompanies });
   } catch (err) {
     return next(err);
   }

@@ -10,6 +10,7 @@ import {
   FETCH_ORG_USER_LIST,
   FETCH_ORG_PROJECT_LIST,
   SET_ORG_SETTINGS,
+  SET_DEFAULT_COLOR
 } from "../actions/types";
 import { org_consts } from "../constants";
 
@@ -87,6 +88,16 @@ export default function (state = INITIAL_STATE, action) {
         orgSettings: ost,
         setValue: true,
       };
+    case SET_DEFAULT_COLOR:
+      const bstyle = document.documentElement.style;
+      bstyle.setProperty("--primary_color", org_consts.primary_color);
+      bstyle.setProperty("--secondary_color", org_consts.secondary_color);
+      bstyle.setProperty("--background_color", org_consts.background_color);
+      bstyle.setProperty("--menufont_color", org_consts.menufont_color);
+      bstyle.setProperty("--font_color", org_consts.font_color);
+      bstyle.setProperty("--link_color", org_consts.link_color);
+      bstyle.setProperty("--shadow_color", org_consts.shadow_color);
+      return state
     case SET_ORG_SETTINGS:
       const astyle = document.documentElement.style;
       const aost = {

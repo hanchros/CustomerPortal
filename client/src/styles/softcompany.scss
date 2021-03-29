@@ -1,0 +1,49 @@
+.sc-invite-form {
+  box-shadow: 0 2px 9px var(--shadow_color);
+  border-top: 3px solid var(--primary_color);
+  border-radius: 3px;
+  background-color: white;
+
+  .form-box {
+    padding: 40px;
+    border-top: 1px solid #ddd;
+  }
+}
+
+.company-invite {
+  .ant-collapse-header {
+    color: #111;
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+    .ant-collapse-extra {
+      margin-left: auto;
+    }
+    .anticon {
+      font-size: 22px;
+      margin-right: 10px;
+    }
+    .sc-services {
+      padding: 0 7px;
+      background: #096AF5;
+      color: white;
+      border-radius: 2px;
+    }
+  }
+  .ant-collapse-content {
+    .cs-checker {
+      margin-left: 20px;
+      margin-top: 7px;
+      margin-bottom: 7px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sc-invite-form {
+    .form-box {
+      padding: 20px;
+    }
+  }
+}

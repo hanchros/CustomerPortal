@@ -62,6 +62,7 @@ exports.addNewOrgMail = async (orgId) => {
   try {
     mails = await Mail.find({ organization: null });
     for (let mail of mails) {
+      if (mail._doc.name === "Software Company Invite") continue;
       const nm = new Mail({
         name: mail._doc.name,
         content: mail._doc.content,

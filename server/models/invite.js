@@ -14,7 +14,6 @@ const InviteSchema = new Schema(
     },
     last_name: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -33,10 +32,11 @@ const InviteSchema = new Schema(
       sender_organization: { type: String },
       logo: { type: String },
       content: { type: String },
+      phone: { type: String },
     },
     type: {
       type: Number,
-      // 0: request, 1: invite, 2: ex-invite
+      // 0: request, 1: invite, 2: ex-invite, 3: software-company
     },
     resolved: {
       type: Number,

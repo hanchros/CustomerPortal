@@ -103,12 +103,12 @@ class Login extends Component {
     this.setState({ showRI: !this.state.showRI });
   };
 
-  componentDidMount() {
-    if (this.props.authenticated) {
-      history.push(`/dashboard`);
-      return;
-    }
-  }
+  // componentDidMount() {
+  //   if (this.props.authenticated) {
+  //     history.push(`/dashboard`);
+  //     return;
+  //   }
+  // }
 
   onGoToProvidePDF = () => {
     history.push("/integra/email-invite?tab=2");

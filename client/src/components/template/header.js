@@ -16,6 +16,7 @@ import { BellOutlined, MessageOutlined } from "@ant-design/icons";
 import { deleteUser } from "../../actions/user";
 import { Link } from "react-router-dom";
 import sampleUrl from "../../assets/img/user-avatar.png";
+import IntegraLogo from "../../assets/img/logo.png";
 
 class HeaderTemplate extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class HeaderTemplate extends Component {
     } = this.props;
 
     const path = window.location.pathname;
+    const isCompany = !currentUser.role;
     return (
       <React.Fragment>
         <div className="main-nav">
@@ -49,26 +51,48 @@ class HeaderTemplate extends Component {
             color="transparent"
             expand="md"
           >
-            <Link
-              className="navbar-brand"
-              to={authenticated ? "/dashboard" : "/"}
-            >
-              {currentUser.profile && currentUser.profile.org.logo ? (
-                <img src={currentUser.profile.org.logo} alt="logo" />
-              ) : (
-                "HOME"
-              )}
-            </Link>
+            {isCompany && (
+              <Link
+                className="navbar-brand"
+                to={authenticated ? "/company-dashboard" : "/"}
+              >
+                <img src={IntegraLogo} alt="logo" />
+              </Link>
+            )}
+            {!isCompany && (
+              <Link
+                className="navbar-brand"
+                to={authenticated ? "/dashboard" : "/"}
+              >
+                {currentUser.profile && currentUser.profile.org.logo ? (
+                  <img src={currentUser.profile.org.logo} alt="logo" />
+                ) : (
+                  "HOME"
+                )}
+              </Link>
+            )}
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
-                {authenticated && (
+                {!isCompany && authenticated && (
                   <NavItem>
                     <Link
                       className={`nav-link ${
                         path === "/dashboard" ? "active" : ""
                       }`}
                       to={`/dashboard`}
+                    >
+                      DASHBOARD
+                    </Link>
+                  </NavItem>
+                )}
+                {isCompany && authenticated && (
+                  <NavItem>
+                    <Link
+                      className={`nav-link ${
+                        path === "/company-dashboard" ? "active" : ""
+                      }`}
+                      to={`/company-dashboard`}
                     >
                       DASHBOARD
                     </Link>
@@ -124,7 +148,7 @@ class HeaderTemplate extends Component {
                 )}
               </Nav>
               <Nav navbar>
-                {authenticated && (
+                {!isCompany && authenticated && (
                   <NavItem>
                     <Link
                       className={`nav-link ${
@@ -140,7 +164,7 @@ class HeaderTemplate extends Component {
                     </Link>
                   </NavItem>
                 )}
-                {authenticated && (
+                {!isCompany && authenticated && (
                   <NavItem>
                     <Link
                       className={`nav-link notif ${
@@ -159,7 +183,7 @@ class HeaderTemplate extends Component {
                 {authenticated && (
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
-                      {currentUser.profile && (
+                      {!isCompany && currentUser.profile && (
                         <React.Fragment>
                           <Avatar
                             src={currentUser.profile.photo || sampleUrl}
@@ -168,12 +192,25 @@ class HeaderTemplate extends Component {
                           {`${currentUser.profile.first_name} ${currentUser.profile.last_name}`}
                         </React.Fragment>
                       )}
+                      {isCompany && currentUser.profile && (
+                        <React.Fragment>
+                          <Avatar src={currentUser.profile.logo || sampleUrl} />{" "}
+                          &nbsp;{currentUser.profile.contact}
+                        </React.Fragment>
+                      )}
                     </DropdownToggle>
                     <DropdownMenu right>
                       <DropdownItem>
-                        <Link className="nav-link" to={"/account"}>
-                          My Profile
-                        </Link>
+                        {!isCompany && (
+                          <Link className="nav-link" to={"/account"}>
+                            My Profile
+                          </Link>
+                        )}
+                        {isCompany && (
+                          <Link className="nav-link" to={"/company-account"}>
+                            Company Profile
+                          </Link>
+                        )}
                       </DropdownItem>
                       <DropdownItem divider />
                       <DropdownItem>
@@ -189,11 +226,6 @@ class HeaderTemplate extends Component {
                     <NavItem>
                       <Link className="nav-link" to="/login">
                         Login
-                      </Link>
-                    </NavItem>
-                    <NavItem>
-                      <Link className="nav-link" to="/register">
-                        Register
                       </Link>
                     </NavItem>
                   </React.Fragment>

@@ -14,6 +14,7 @@ const TokenSchema = new Schema({
     ref: "User",
   },
   token: { type: String, required: true },
+  mode: { type: String, default: "user" },
   createdAt: { type: Date, required: true, default: Date.now, expires: 43200 },
 });
 

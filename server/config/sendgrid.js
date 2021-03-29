@@ -26,7 +26,7 @@ exports.userForgotPasword = function userForgotPasword(recipient, token) {
   const msg = {
     to: recipient,
     from: "support@collaboration.app",
-    subject: "Participant Reset Password",
+    subject: "Reset Password",
     html: userFPFactory(token),
   };
   sgMail.send(msg).catch((err) => {
@@ -65,9 +65,9 @@ exports.newNotification = function newNotification(
 };
 
 exports.inviteMail = function inviteMail(values, filename) {
-  pathToAttachment = `${__dirname}/../uploads/${filename}`;
-  attachment = fs.readFileSync(pathToAttachment).toString("base64");
-
+  const pathToAttachment = `${__dirname}/../uploads/${filename}`;
+  const attachment = fs.readFileSync(pathToAttachment).toString("base64");
+  values.project_name = values.project_name || "";
   const msg = {
     to: values.email,
     from: "support@collaboration.app",
@@ -82,9 +82,14 @@ exports.inviteMail = function inviteMail(values, filename) {
       },
     ],
   };
-  sgMail.send(msg).catch((err) => {
-    console.log(err);
-  });
+  sgMail
+    .send(msg)
+    .then(() => {
+      fs.unlinkSync(pathToAttachment);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.inviteOrgMemberMail = function inviteOrgMemberMail(values) {

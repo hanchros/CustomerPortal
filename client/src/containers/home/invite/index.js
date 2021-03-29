@@ -16,6 +16,7 @@ import ChallengeIcon from "../../../assets/icon/challenge.png";
 import UploadIcon from "../../../assets/icon/upload.svg";
 import CryptFileIcon from "../../../assets/icon/crypted_file.svg";
 import { org_consts } from "../../../constants";
+import CompanyRegister from "./company";
 
 class InviteHomePage extends React.Component {
   constructor() {
@@ -105,7 +106,9 @@ class InviteHomePage extends React.Component {
   };
 
   onConfirm = () => {
-    this.setState({ step: 3, showConfModal: false });
+    const { pdfData } = this.state;
+    if (pdfData.contact) this.setState({ step: 6, showConfModal: false });
+    else this.setState({ step: 3, showConfModal: false });
   };
 
   renderHome = () => {
@@ -238,6 +241,7 @@ class InviteHomePage extends React.Component {
         )}
         {step === 4 && <ProjectRegister goBack={this.onCompleteInvite} />}
         {step === 5 && <InviteComplete />}
+        {step === 6 && <CompanyRegister goBack={this.onBegin} />}
       </HomeHOC>
     );
   }

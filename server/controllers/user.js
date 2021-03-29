@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const setUserInfo = require("../helpers").setUserInfo;
 const ProjectMember = require("../models/projectmember");
+const SoftCompany = require("../models/softcompany");
 
 //= =======================================
 // User Routes
@@ -35,8 +36,15 @@ exports.getUserSession = async (req, res, next) => {
         select: "_id profile",
       },
     });
-    const userToReturn = setUserInfo(user);
-    return res.status(200).json({ user: userToReturn });
+    if (user) {
+      const userToReturn = setUserInfo(user);
+      return res.status(200).json({ user: userToReturn });
+    }
+    let softcompany = await SoftCompany.findById(
+      req.user._id,
+      "_id email profile"
+    );
+    return res.status(200).json({ softcompany });
   } catch (err) {
     return next(err);
   }
