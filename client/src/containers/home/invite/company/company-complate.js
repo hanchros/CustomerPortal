@@ -20,7 +20,7 @@ class CompanyComplete extends React.Component {
           <h5 className="mb-4">
             <b>Congratulations!</b>
           </h5>
-          <span>You are the part of the Collaboration.App</span>
+          <span>You have successfully joined collaborate.app!</span>
           <Button
             type="ghost"
             className="black-btn wide mt-5 mb-3 mr-auto ml-auto"

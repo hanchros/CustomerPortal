@@ -14,6 +14,7 @@ import inviteReducer from "./invite";
 import messageReducer from "./message";
 import timelineReducer from "./timeline";
 import softcompanyReducer from "./softcompany";
+import technologyReducer from "./technology";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   message: messageReducer,
   timeline: timelineReducer,
   softcompany: softcompanyReducer,
+  technology: technologyReducer,
 });
 
 export default rootReducer;

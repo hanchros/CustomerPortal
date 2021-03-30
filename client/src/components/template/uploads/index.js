@@ -7,6 +7,7 @@ import { Upload, message, Tooltip, Modal, Button } from "antd";
 import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import UploadUser from "../../../assets/icon/upload_user.svg";
 import ImageCropper from "./image_cropper";
+import UploadPhoto from "../../../assets/icon/upload-photo.svg";
 
 const config = {
   bucketName: process.env.REACT_APP_S3_BUCKET,
@@ -148,15 +149,16 @@ class Avatar extends React.Component {
 
   render() {
     const { imageUrl, loading, showCropModal, inputImg } = this.state;
+    const { subject } = this.props;
     const uploadButton = (
       <div>
         {loading ? (
           <LoadingOutlined style={{ fontSize: "50px" }} />
         ) : (
-          <img src={UploadUser} alt="" />
+          <img src={subject ? UploadPhoto : UploadUser} alt="" />
         )}
         <div className="ant-upload-text">
-          Drag and drop profile photo here or{" "}
+          Drag and drop {subject || "profile"} photo here or{" "}
           <span className="underscore">choose file manually</span>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import UploadUser from "../../assets/icon/upload_user.svg";
+import UploadPhoto from "../../assets/icon/upload-photo.svg";
 
 const config = {
   bucketName: process.env.REACT_APP_S3_BUCKET,
@@ -107,15 +108,16 @@ class Avatar extends React.Component {
 
   render() {
     const { imageUrl, loading } = this.state;
+    const { subject } = this.props;
     const uploadButton = (
       <div>
         {loading ? (
           <LoadingOutlined style={{ fontSize: "50px" }} />
         ) : (
-          <img src={UploadUser} alt="" />
+          <img src={subject ? UploadPhoto : UploadUser} alt="" />
         )}
         <div className="ant-upload-text">
-          Drag and drop profile photo here or{" "}
+          Drag and drop {subject || "profile"} logo here or{" "}
           <span className="underscore">choose file manually</span>
         </div>
       </div>

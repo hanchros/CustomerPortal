@@ -16,6 +16,7 @@ const FaqController = require("./controllers/faq");
 const ChatController = require("./controllers/chat");
 const TimelineController = require("./controllers/timeline");
 const SoftCompanyController = require("./controllers/softcompany");
+const TechnologyController = require("./controllers/technology")
 
 var multer  = require('multer')
 const express = require("express");
@@ -55,6 +56,7 @@ module.exports = function (app) {
     chatRoutes = express.Router(),
     timelineRoutes = express.Router(),
     softCompanyRoutes = express.Router(),
+    technologyRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -437,6 +439,21 @@ module.exports = function (app) {
   softCompanyRoutes.put("/update", requireAuth, SoftCompanyController.updateCompanyProfile);
   // list sc route
   softCompanyRoutes.get("/", requireAuth, SoftCompanyController.listCompanies);
+ 
+
+  //= ========================
+  // Technology Routes
+  //= ========================
+  apiRoutes.use("/technology", technologyRoutes);
+  // create article document route
+  technologyRoutes.post("/", requireAuth, TechnologyController.createTechnology);
+  // List article documents route
+  technologyRoutes.get("/:org_id", TechnologyController.listTechnology);
+  // update article document route
+  technologyRoutes.put("/", requireAuth, TechnologyController.updateTechnology);
+  // delete article document route
+  technologyRoutes.delete("/:id", requireAuth, TechnologyController.deleteTechnology);
+
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

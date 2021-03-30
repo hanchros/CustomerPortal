@@ -18,7 +18,7 @@ export const OrgRegisterForm = ({ onSubmit, org_name }) => {
     values.logo = avatarURL;
     values.profile = org_consts;
     values.social = processLink(values.social);
-    values.org_name = values.org_name.trim()
+    values.org_name = values.org_name.trim();
     onSubmit(values);
   };
 
@@ -53,7 +53,11 @@ export const OrgRegisterForm = ({ onSubmit, org_name }) => {
             </Form.Item>
           </Col>
           <Col md={6} className="pt-2 center">
-            <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+            <BigUpload
+              setAvatar={setAvatar}
+              imageUrl={avatarURL}
+              subject="project"
+            />
           </Col>
         </Row>
       </div>

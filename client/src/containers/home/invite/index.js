@@ -134,7 +134,8 @@ class InviteHomePage extends React.Component {
           </div>
         )}
         <span className="home-span">
-          Join to project and find out more information
+          Click the "Start Registration" button to join the project and start
+          collaborating.
         </span>
         {org && (
           <Button

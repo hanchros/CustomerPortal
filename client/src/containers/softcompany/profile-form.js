@@ -16,10 +16,6 @@ const ProfileForm = ({ onSubmit, profile, orgTypes }) => {
   const onFinish = (values) => {
     values.logo = avatarURL;
     values.website = processLink(values.website);
-    values.doc_url = processLink(values.doc_url);
-    values.api_url = processLink(values.api_url);
-    values.example_url = processLink(values.example_url);
-    values.landing_url = processLink(values.landing_url);
     values.services = services;
     onSubmit(values);
   };
@@ -66,7 +62,11 @@ const ProfileForm = ({ onSubmit, profile, orgTypes }) => {
           <h4 className="mb-4">
             <b>{profile.org_name}</b>
           </h4>
-          <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+          <BigUpload
+            setAvatar={setAvatar}
+            imageUrl={avatarURL}
+            subject="company"
+          />
         </Col>
         <Col md={8}>
           <div className="sc-invite-form">
@@ -173,7 +173,7 @@ const ProfileForm = ({ onSubmit, profile, orgTypes }) => {
               </Row>
             </div>
           </div>
-          <div className="home-invite-form company-invite mt-4 mb-4">
+          <div className="home-invite-form company-invite mt-4">
             <h5 className="mb-5">
               <b>What type of software do you provide?</b>
             </h5>
@@ -213,43 +213,10 @@ const ProfileForm = ({ onSubmit, profile, orgTypes }) => {
               ))}
             </Collapse>
           </div>
-          <div className="home-invite-form">
-            <h5 className="mb-5">
-              <b>Your offerings</b>
-            </h5>
-            <span className="form-label">Describe your service*</span>
-            <Form.Item
-              name="main_service"
-              rules={[
-                {
-                  required: true,
-                  message: "Please describe your service!",
-                },
-              ]}
-            >
-              <Input.TextArea rows={3} size="large" />
-            </Form.Item>
-            <span className="form-label">Documentation URL</span>
-            <Form.Item name="doc_url">
-              <Input size="large" placeholder="http://" />
-            </Form.Item>
-            <span className="form-label">API URL</span>
-            <Form.Item name="api_url">
-              <Input size="large" placeholder="http://" />
-            </Form.Item>
-            <span className="form-label">Example URL</span>
-            <Form.Item name="example_url">
-              <Input size="large" placeholder="http://" />
-            </Form.Item>
-            <span className="form-label">Landing page URL</span>
-            <Form.Item name="landing_url">
-              <Input size="large" placeholder="http://" />
-            </Form.Item>
-          </div>
           <Button
             type="ghost"
             htmlType="submit"
-            className="black-btn mt-5"
+            className="black-btn mt-4"
             style={{ float: "right" }}
           >
             Save Changes

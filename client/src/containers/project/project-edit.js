@@ -99,7 +99,11 @@ const CreateForm = ({
           </Col>
           <Col md={6}>
             <div className="center mt-4">
-              <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+              <BigUpload
+                setAvatar={setAvatar}
+                imageUrl={avatarURL}
+                subject="project"
+              />
             </div>
           </Col>
         </Row>

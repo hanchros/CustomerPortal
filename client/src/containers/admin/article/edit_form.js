@@ -158,7 +158,11 @@ const EditArticle = ({
         <Col md={4}>
           <span className="form-label">Article image</span>
           <div className="center">
-            <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+            <BigUpload
+              setAvatar={setAvatar}
+              imageUrl={avatarURL}
+              subject="article"
+            />
           </div>
         </Col>
       </Row>

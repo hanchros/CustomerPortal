@@ -123,3 +123,8 @@ export const FETCH_TIMELINE_LIST = "fetch_timeline_list",
   DELETE_TIMELINE = "delete_timeline";
 
 export const FETCH_SOFT_COMPANIES = "fetch_soft_companies";
+
+export const FETCH_TECHNOLOGY = "fetch_technology",
+  UPDATE_TECHNOLOGY = "update_technology",
+  CREATE_TECHNOLOGY = "create_technology",
+  DELETE_TECHNOLOGY = "delete_technology";

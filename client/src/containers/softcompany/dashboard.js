@@ -10,6 +10,7 @@ import { protectedTest } from "../../actions/auth";
 import history from "../../history";
 import BuildLogo from "../../assets/icon/display.svg";
 import NonList from "../../components/pages/non-list";
+import CompanyTechs from "./company-tech";
 
 const { TabPane } = Tabs;
 
@@ -53,7 +54,7 @@ class Dashboard extends Component {
       onClick={() => this.setState({ title })}
       className={this.state.title === title && "active"}
     >
-      <span >{title}</span>
+      <span>{title}</span>
     </List.Item>
   );
 
@@ -78,7 +79,7 @@ class Dashboard extends Component {
           />
         </Col>
         <Col md={8}>
-          <div className="account-form-box mb-3" style={{minHeight: "40vh"}}>
+          <div className="account-form-box mb-3" style={{ minHeight: "40vh" }}>
             {items.map((item) => (
               <h5 key={item} className="mb-4">
                 <b>{item}</b>
@@ -235,6 +236,9 @@ class Dashboard extends Component {
               </TabPane>
               <TabPane tab="INVITATIONS" key="3">
                 <h3>Show Invitations</h3>
+              </TabPane>
+              <TabPane tab="APPLICATIONS" key="4">
+                <CompanyTechs />
               </TabPane>
             </Tabs>
           )}

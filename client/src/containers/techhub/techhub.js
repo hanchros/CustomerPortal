@@ -54,7 +54,7 @@ class Techhub extends React.Component {
             onClick={() => this.onChange("3")}
             className={`${tabId === "3" ? "active" : ""} ml-4`}
           >
-            <p>{isCompany ? "Ingegra Integrations" : "Applications"}</p>
+            <p>Ingegra Integrations</p>
           </Link>
           <Link
             to="#"
@@ -96,8 +96,6 @@ class Techhub extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    articles: state.article.articles,
-    fieldData: state.profile.fieldData,
     organization: state.organization,
     user: state.user.profile,
   };

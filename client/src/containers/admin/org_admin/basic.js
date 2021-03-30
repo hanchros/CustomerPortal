@@ -48,7 +48,11 @@ const OrgAdminForm = ({ onUpdateOrg, org, orgTypes, testColorChange }) => {
           <h4 className="mb-4">
             <b>{org.org_name}</b>
           </h4>
-          <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+          <BigUpload
+            setAvatar={setAvatar}
+            imageUrl={avatarURL}
+            subject="organization"
+          />
         </Col>
         <Col md={8}>
           <div className="account-form-box">

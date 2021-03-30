@@ -29,11 +29,6 @@ const SoftCompanySchema = new Schema(
       website: { type: String },
       description: { type: String },
       logo: { type: String },
-      doc_url: { type: String },
-      example_url: { type: String },
-      landing_url: { type: String },
-      api_url: { type: String },
-      main_service: { type: String },
       services: [
         {
           title: { type: String },

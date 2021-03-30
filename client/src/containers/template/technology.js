@@ -41,7 +41,11 @@ const TechnologyForm = ({ addTech, onCancel, tagId, org }) => {
         <RichTextEditor size="large" />
       </Form.Item>
       <div className="center">
-        <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+        <BigUpload
+          setAvatar={setAvatar}
+          imageUrl={avatarURL}
+          subject="technology"
+        />
       </div>
       <div className="flex">
         <Button type="ghost" htmlType="submit" className="black-btn mr-2">

@@ -22,7 +22,7 @@ const OrgEditForm = ({
     values.logo = avatarURL || "";
     values.creator = org.creator || userId || null;
     values.profile = org.profile || {};
-    values.org_name = values.org_name.trim()
+    values.org_name = values.org_name.trim();
     values.social = processLink(values.social);
     onSubmit(values);
   };
@@ -39,7 +39,11 @@ const OrgEditForm = ({
           <Input size="large" disabled placeholder="Upload Logo" />
         </Col>
         <Col sm={6} className="center">
-          <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+          <BigUpload
+            setAvatar={setAvatar}
+            imageUrl={avatarURL}
+            subject="organization"
+          />
         </Col>
       </Row>
       <Row>

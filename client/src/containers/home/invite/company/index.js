@@ -4,7 +4,6 @@ import { registerCompany } from "../../../../actions/softcompany";
 import { resolveInvite } from "../../../../actions/invite";
 import Step1 from "./step1";
 import Step2 from "./step2";
-import Step3 from "./step3";
 import CompanyComplete from "./company-complate";
 
 class CompanyRegister extends React.Component {
@@ -37,11 +36,6 @@ class CompanyRegister extends React.Component {
     this.goToStep(2);
   };
 
-  onSubmit2 = (data) => {
-    this.setState({ scData: data });
-    this.goToStep(3);
-  };
-
   render() {
     const { goBack } = this.props;
     const { step, scData } = this.state;
@@ -53,19 +47,11 @@ class CompanyRegister extends React.Component {
       return (
         <Step2
           goBack={() => this.goToStep(1)}
-          onSubmit={this.onSubmit2}
-          scData={scData}
-        />
-      );
-    else if (step === 3)
-      return (
-        <Step3
-          goBack={() => this.goToStep(2)}
           onSubmit={this.onSubmitRegister}
           scData={scData}
         />
       );
-    return <CompanyComplete goBack={() => this.goToStep(3)} />;
+    return <CompanyComplete goBack={() => this.goToStep(2)} />;
   }
 }
 

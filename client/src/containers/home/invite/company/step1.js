@@ -139,7 +139,11 @@ export const SCStep1Form = ({ onSubmit, goBack, orgTypes, scData }) => {
                 <Input.TextArea size="large" rows={3} />
               </Form.Item>
               <div className="flex" style={{ justifyContent: "center" }}>
-                <BigUpload setAvatar={setAvatar} imageUrl={avatarURL} />
+                <BigUpload
+                  setAvatar={setAvatar}
+                  imageUrl={avatarURL}
+                  subject="company"
+                />
               </div>
             </Col>
           </Row>
