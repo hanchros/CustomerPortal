@@ -38,7 +38,6 @@ const UserSchema = new Schema(
       linkedin: { type: String },
       facebook: { type: String },
       web: { type: String },
-      tags: [{ type: Schema.Types.ObjectId, ref: "FieldData" }],
       contact: { type: String },
       role: { type: String },
       setting: {

@@ -8,7 +8,8 @@
     "test": "mocha -S --ui bdd --require ./tests/spec_helper.js --recursive ./tests --reporter spec",
     "dev": "nodemon index.js",
     "logo": "node qrcode/index.js",
-    "seed": "node seeder.js"
+    "seed": "node seeder.js",
+    "clean": "node clean.js"
   },
   "keywords": [
     "mern",

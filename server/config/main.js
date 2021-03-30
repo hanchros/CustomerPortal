@@ -2,8 +2,8 @@ module.exports = {
   // Secret key for JWT signing and encryption
   secret: 'mysecret',
   // Database connection information
-  // database: 'mongodb://localhost:27017/customerportal',
-  database: 'mongodb+srv://admin:Admin55555@cluster0-rxvkj.azure.mongodb.net/customerportal?retryWrites=true&w=majority',
+  database: 'mongodb://localhost:27017/customerportal',
+  // database: 'mongodb+srv://admin:Admin55555@cluster0-rxvkj.azure.mongodb.net/customerportal?retryWrites=true&w=majority',
   // Setting port for server
   port: 8080,
   // SendGrid API key

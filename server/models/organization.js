@@ -31,8 +31,6 @@ const OrgSchema = new Schema(
       font_color: { type: String },
       link_color: { type: String },
       shadow_color: { type: String },
-      title_page: { type: String },
-      title_page_description: { type: String },
     },
   },
   {
