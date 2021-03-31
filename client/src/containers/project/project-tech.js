@@ -34,7 +34,7 @@ class ProjectTech extends Component {
     } else if (
       item.organization === this.props.organization.currentOrganization._id
     ) {
-      history.push(`/techhub?tab=4&id=${item._id}`);
+      history.push(`/techhub?tab=5&id=${item._id}`);
     } else {
       this.setState({ visibleDetail: true, curTech: item });
     }

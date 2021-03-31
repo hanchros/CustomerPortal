@@ -162,7 +162,7 @@ exports.deleteProject = (req, res, next) => {
 };
 
 exports.listProjectByCreator = (req, res, next) => {
-  Project.find({ participant: req.params.participantId })
+  Project.find({ participant: req.params.participantId, status: "Live" })
     .sort({ createdAt: "desc" })
     .exec((err, projects) => {
       if (err) {

@@ -33,7 +33,7 @@ const TechnologySchema = new Schema(
     landing_url: {
       type: String,
     },
-    organization: { type: Schema.Types.ObjectId, ref: "Organization" },
+    organization: { type: Schema.Types.ObjectId, ref: "SoftCompany" },
   },
   {
     timestamps: true,

@@ -17,6 +17,7 @@ const ChatController = require("./controllers/chat");
 const TimelineController = require("./controllers/timeline");
 const SoftCompanyController = require("./controllers/softcompany");
 const TechnologyController = require("./controllers/technology")
+const ProjectCompanyController = require("./controllers/projectcompany")
 
 var multer  = require('multer')
 const express = require("express");
@@ -57,6 +58,7 @@ module.exports = function (app) {
     timelineRoutes = express.Router(),
     softCompanyRoutes = express.Router(),
     technologyRoutes = express.Router(),
+    projectcompanyRoutes = express.Router(),
     fieldDataRoutes = express.Router();
 
 
@@ -445,15 +447,29 @@ module.exports = function (app) {
   // Technology Routes
   //= ========================
   apiRoutes.use("/technology", technologyRoutes);
-  // create article document route
+  // create technology document route
   technologyRoutes.post("/", requireAuth, TechnologyController.createTechnology);
-  // List article documents route
+  // List technology documents route
   technologyRoutes.get("/:org_id", TechnologyController.listTechnology);
-  // update article document route
+  // update technology document route
   technologyRoutes.put("/", requireAuth, TechnologyController.updateTechnology);
-  // delete article document route
+  // delete technology document route
   technologyRoutes.delete("/:id", requireAuth, TechnologyController.deleteTechnology);
+  // List all technology documents route
+  technologyRoutes.get("/", TechnologyController.listAllTechnology);
 
+  //= ========================
+  // ProjectCompany Routes
+  //= ========================
+  apiRoutes.use("/project-company", projectcompanyRoutes);
+  // create project company route
+  projectcompanyRoutes.post("/", requireAuth, ProjectCompanyController.createProjectCompany);
+  // List project company by company route
+  projectcompanyRoutes.get("/company/:company_id", ProjectCompanyController.listPCByCompany);
+  // resolve project company route
+  projectcompanyRoutes.put("/:inv_id", requireAuth, ProjectCompanyController.resolvePCInvite);
+  // List project company by project route
+  projectcompanyRoutes.get("/project/:project_id", ProjectCompanyController.listPCByProject);
 
   // Set url for API group routes
   app.use("/api", apiRoutes);

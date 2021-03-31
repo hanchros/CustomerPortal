@@ -35,6 +35,20 @@ exports.listTechnology = (req, res, next) => {
   });
 };
 
+exports.listAllTechnology = (req, res, next) => {
+  Technology.find({})
+    .populate({ path: "organization", select: "_id profile" })
+    .sort({ title: 1 })
+    .exec((err, hds) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).json({
+        technologies: hds,
+      });
+    });
+};
+
 exports.deleteTechnology = (req, res, next) => {
   Technology.deleteOne({ _id: req.params.id }).exec((err, hd) => {
     if (err) {

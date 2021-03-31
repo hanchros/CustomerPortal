@@ -26,7 +26,7 @@
     }
     .sc-services {
       padding: 0 7px;
-      background: #096AF5;
+      background: #096af5;
       color: white;
       border-radius: 2px;
     }
@@ -40,10 +40,17 @@
   }
 }
 
+.modal-invite-pc {
+  padding: 20px;
+}
+
 @media screen and (max-width: 768px) {
   .sc-invite-form {
     .form-box {
       padding: 20px;
     }
+  }
+  .modal-invite-pc {
+    padding: 5px;
   }
 }

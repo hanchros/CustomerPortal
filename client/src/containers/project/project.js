@@ -18,6 +18,7 @@ import ChallengeLogo from "../../assets/icon/challenge.png";
 import ProjectTeam from "./project-team";
 import ProjectInvite from "./project-invites";
 import ProjectTech from "./project-tech";
+import ProjectApps from "./project-apps";
 import history from "../../history";
 
 const { TabPane } = Tabs;
@@ -175,6 +176,9 @@ class Project extends Component {
             </TabPane>
             <TabPane tab="TECHNOLOGIES" key="3">
               <ProjectTech isCreator={isCreator} />
+            </TabPane>
+            <TabPane tab="APPLICATIONS" key="4">
+              <ProjectApps />
             </TabPane>
           </Tabs>
           <hr className="mt-4" />

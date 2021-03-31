@@ -23,6 +23,21 @@ export function listTechnology(org_id) {
   };
 }
 
+export function listAllTechnology() {
+  const client = Client();
+  return async (dispatch) => {
+    try {
+      let res = await client.get(`${API_URL}/technology`);
+      dispatch({
+        type: FETCH_TECHNOLOGY,
+        technologies: res.data.technologies,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
 export function createTechnology(values) {
   const client = Client(true);
   return async (dispatch) => {

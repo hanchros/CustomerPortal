@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
-import { Avatar, Skeleton, Tabs, List } from "antd";
+import { Avatar, Skeleton, Tabs, List, Button, Modal } from "antd";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
 import { listOrgProjects } from "../../actions/organization";
@@ -11,6 +11,12 @@ import history from "../../history";
 import BuildLogo from "../../assets/icon/display.svg";
 import NonList from "../../components/pages/non-list";
 import CompanyTechs from "./company-tech";
+import {
+  listPCByCompany,
+  resolveProjectCompany,
+} from "../../actions/softcompany";
+import moment from "moment";
+import PlatesImg from "../../assets/icon/plates.svg";
 
 const { TabPane } = Tabs;
 
@@ -21,19 +27,17 @@ class Dashboard extends Component {
     this.state = {
       loading: false,
       show_detail: false,
-      show_invite: false,
       title: "",
+      curPC: {},
+      showPCModal: false,
     };
   }
 
   componentDidMount = async () => {
-    const { user, protectedTest } = this.props;
-
+    const { user, protectedTest, listPCByCompany } = this.props;
     this.setState({ loading: true });
-    if (!user._id) {
-      await protectedTest();
-    }
-    // await listOrgProjects(curOrg._id);
+    if (!user._id) await protectedTest();
+    else await listPCByCompany(user._id);
     this.setState({ loading: false });
   };
 
@@ -45,10 +49,6 @@ class Dashboard extends Component {
     this.setState({ show_detail: !this.state.show_detail });
   };
 
-  onToggleInvite = () => {
-    this.setState({ show_invite: !this.state.show_invite });
-  };
-
   renderTitleItem = (title) => (
     <List.Item
       onClick={() => this.setState({ title })}
@@ -57,6 +57,21 @@ class Dashboard extends Component {
       <span>{title}</span>
     </List.Item>
   );
+
+  onOpenInvite = (pc) => {
+    this.setState({ curPC: pc, showPCModal: true });
+  };
+
+  onHideInvite = () => {
+    this.setState({ curPC: {}, showPCModal: false });
+  };
+
+  onResolveInvite = async (resolve) => {
+    const { user, listPCByCompany, resolveProjectCompany } = this.props;
+    await resolveProjectCompany(this.state.curPC._id, resolve);
+    await listPCByCompany(user._id);
+    this.onHideInvite();
+  };
 
   renderServices = () => {
     const { user } = this.props;
@@ -92,8 +107,8 @@ class Dashboard extends Component {
   };
 
   renderProjects = () => {
-    let projects = this.props.projects;
-    projects = projects.filter((proj) => !!proj.participant);
+    const projectcompanies = this.props.softcompany.projectcompanies;
+    let pcs = projectcompanies.filter((pc) => pc.status === 0);
     return (
       <React.Fragment>
         <Row>
@@ -105,31 +120,28 @@ class Dashboard extends Component {
               <span>leader</span>
               <span></span>
             </div>
-            {projects.length === 0 && (
-              <NonList
-                title="You have no projects yet."
-                description='Press "Create project" button to start.'
-              />
-            )}
-            {projects.map((proj) => (
+            {pcs.length === 0 && <NonList title="You have no projects yet." />}
+            {pcs.map((pc) => (
               <div
                 className="project-table-item"
-                key={proj._id}
-                onClick={() => this.goToProject(proj)}
+                key={pc._id}
+                onClick={() => this.goToProject(pc.project)}
               >
                 <div className="cell0">
-                  <Avatar src={proj.logo || OrgLogo} />
+                  <Avatar src={pc.project.logo || OrgLogo} />
                 </div>
                 <div className="cell0">
                   <p>
-                    <b>{proj.name}</b>
+                    <b>{pc.project.name}</b>
                   </p>
-                  <span>{proj.objective}</span>
+                  <span>{pc.project.objective}</span>
                 </div>
-                <div className="cell0">{proj.participant.profile.org_name}</div>
                 <div className="cell0">
-                  {proj.participant.profile.first_name}{" "}
-                  {proj.participant.profile.last_name}
+                  {pc.project.participant.profile.org_name}
+                </div>
+                <div className="cell0">
+                  {pc.project.participant.profile.first_name}{" "}
+                  {pc.project.participant.profile.last_name}
                 </div>
                 <div className="cell0"></div>
               </div>
@@ -137,6 +149,110 @@ class Dashboard extends Component {
           </Col>
         </Row>
       </React.Fragment>
+    );
+  };
+
+  renderInvites = () => {
+    const { curPC, showPCModal } = this.state;
+    const projectcompanies = this.props.softcompany.projectcompanies;
+    let pcs = projectcompanies.filter((pc) => pc.status === 1);
+    for (let i = 0; i < pcs.length; i++) {
+      let ago = moment(pcs[i].createdAt).fromNow();
+      ago = ago.replace(" ago", "");
+      pcs[i].ago = ago;
+    }
+
+    return (
+      <Row>
+        <Col>
+          <div className="projects-table-header">
+            <span />
+            <span>Project</span>
+            <span>Technology</span>
+            <span>Waiting Time</span>
+          </div>
+          {pcs.length === 0 && <NonList title="You have no invites yet." />}
+          {pcs.map((pc) => (
+            <div
+              className="project-table-item"
+              key={pc._id}
+              onClick={() => this.onOpenInvite(pc)}
+            >
+              <div className="cell0">
+                <Avatar src={pc.project.logo || OrgLogo} />
+              </div>
+              <div className="cell0">
+                <p>
+                  <b>{pc.project.name}</b>
+                </p>
+                <span>{pc.project.objective}</span>
+              </div>
+              <div className="cell0">{pc.technology.title}</div>
+              <div className="cell0">{pc.ago}</div>
+            </div>
+          ))}
+          {showPCModal && (
+            <Modal
+              title={"Invitation of Applciation to Project"}
+              visible={showPCModal}
+              width={900}
+              footer={false}
+              onCancel={this.onHideInvite}
+            >
+              <div className="project-info-box">
+                <div className="project-detail-head">
+                  <div className="pt-1">
+                    <img src={PlatesImg} alt="" />
+                  </div>
+                  <div style={{ width: "100%" }}>
+                    <div className="flex mb-5" style={{ alignItems: "center" }}>
+                      <h3>{curPC.project.name}</h3>
+                    </div>
+                    <p>{curPC.project.objective}</p>
+                    <Row style={{ maxWidth: "500px" }} className="mb-4">
+                      <Col md={6}>
+                        <div className="form-label mb-2 mt-2">Organization</div>
+                        <span>
+                          {curPC.project.participant
+                            ? curPC.project.participant.profile.org_name
+                            : ""}
+                        </span>
+                      </Col>
+                      <Col md={6}>
+                        <div className="form-label mb-2 mt-2">Leader</div>
+                        <span>
+                          {curPC.project.participant
+                            ? `${curPC.project.participant.profile.first_name} ${curPC.project.participant.profile.last_name}`
+                            : ""}
+                        </span>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+                <div className="project-img-box">
+                  <img src={curPC.project.logo || OrgLogo} alt="" />
+                </div>
+              </div>
+              <div className="flex" style={{ justifyContent: "flex-end" }}>
+                <Button
+                  type="ghost"
+                  className="ghost-btn"
+                  onClick={() => this.onResolveInvite("decline")}
+                >
+                  decline
+                </Button>
+                <Button
+                  type="ghost"
+                  className="black-btn ml-3"
+                  onClick={() => this.onResolveInvite("accept")}
+                >
+                  Accept
+                </Button>
+              </div>
+            </Modal>
+          )}
+        </Col>
+      </Row>
     );
   };
 
@@ -204,16 +320,6 @@ class Dashboard extends Component {
   render() {
     const { user } = this.props;
     const { loading } = this.state;
-    // if (show_invite)
-    //   return (
-    //     <React.Fragment>
-    //       <Header />
-    //       <Container className="content">
-    //         <InvitePage goBack={this.onToggleInvite} />
-    //       </Container>
-    //     </React.Fragment>
-    //   );
-
     return (
       <React.Fragment>
         <Header />
@@ -235,7 +341,7 @@ class Dashboard extends Component {
                 {this.renderProjects()}
               </TabPane>
               <TabPane tab="INVITATIONS" key="3">
-                <h3>Show Invitations</h3>
+                {this.renderInvites()}
               </TabPane>
               <TabPane tab="APPLICATIONS" key="4">
                 <CompanyTechs />
@@ -253,10 +359,13 @@ function mapStateToProps(state) {
   return {
     user: state.user.profile,
     projects: state.user.projects,
+    softcompany: state.softcompany,
   };
 }
 
 export default connect(mapStateToProps, {
   listOrgProjects,
   protectedTest,
+  listPCByCompany,
+  resolveProjectCompany,
 })(Dashboard);

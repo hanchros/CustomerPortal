@@ -5,6 +5,7 @@ import ArticlePage from "./article";
 import { Link } from "react-router-dom";
 import { Container } from "reactstrap";
 import CompanyApps from "./companyapps";
+import CompanyAllApps from "./company-all-tech";
 
 class Techhub extends React.Component {
   constructor(props) {
@@ -54,17 +55,24 @@ class Techhub extends React.Component {
             onClick={() => this.onChange("3")}
             className={`${tabId === "3" ? "active" : ""} ml-4`}
           >
-            <p>Ingegra Integrations</p>
+            <p>Integra Integrations</p>
           </Link>
           <Link
             to="#"
             onClick={() => this.onChange("4")}
             className={`${tabId === "4" ? "active" : ""} ml-4`}
           >
-            <p>
-              {isCompany ? "Applications" : `${curOrg.org_name}'s Applications`}
-            </p>
+            <p>Applications</p>
           </Link>
+          {!isCompany && (
+            <Link
+              to="#"
+              onClick={() => this.onChange("5")}
+              className={`${tabId === "5" ? "active" : ""} ml-4`}
+            >
+              <p>{`${curOrg.org_name}'s Applications`}</p>
+            </Link>
+          )}
         </Container>
       </div>
     );
@@ -83,10 +91,12 @@ class Techhub extends React.Component {
           {tabId === "3" && (
             <ArticlePage tag="application" scope={"global"} id={artId} />
           )}
-          {tabId === "4" && !isCompany && (
+          {tabId === "4" && isCompany && <CompanyApps />}
+          {tabId === "4" && !isCompany && <CompanyAllApps />}
+
+          {tabId === "5" && !isCompany && (
             <ArticlePage tag="application" scope={"org"} id={artId} />
           )}
-          {tabId === "4" && isCompany && <CompanyApps />}
         </div>
         <Footer />
       </React.Fragment>

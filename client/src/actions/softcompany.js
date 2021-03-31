@@ -2,7 +2,12 @@ import { API_URL, createNotification, errorMessage } from "./index";
 import Client from "./api";
 import { message } from "antd";
 import download from "js-file-download";
-import { FETCH_SCINVITE_LIST, FETCH_USER, FETCH_SOFT_COMPANIES } from "./types";
+import {
+  FETCH_SCINVITE_LIST,
+  FETCH_USER,
+  FETCH_SOFT_COMPANIES,
+  FETCH_PROJECT_COMPANIES,
+} from "./types";
 
 export function getInviteContent(values) {
   return (dispatch, getState) => {
@@ -135,6 +140,64 @@ export function listCompanies() {
       dispatch({
         type: FETCH_SOFT_COMPANIES,
         softcompanies: res.data.softcompanies,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function inviteProjectCompany(values) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      await client.post(`${API_URL}/project-company`, values);
+      message.success("Invitation has been sent successfully");
+    } catch (err) {
+      createNotification("Send Invite", errorMessage(err));
+    }
+  };
+}
+
+export function resolveProjectCompany(id, resolve) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      await client.put(`${API_URL}/project-company/${id}`, { resolve });
+      message.success("Invitation has been resolved successfully");
+    } catch (err) {
+      createNotification("Resolve Invite", errorMessage(err));
+    }
+  };
+}
+
+export function listPCByCompany(company_id) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      const res = await client.get(
+        `${API_URL}/project-company/company/${company_id}`
+      );
+      dispatch({
+        type: FETCH_PROJECT_COMPANIES,
+        projectcompanies: res.data.projectcompanies,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+export function listPCByProject(project_id) {
+  return async (dispatch) => {
+    try {
+      const client = Client(true);
+      const res = await client.get(
+        `${API_URL}/project-company/project/${project_id}`
+      );
+      dispatch({
+        type: FETCH_PROJECT_COMPANIES,
+        projectcompanies: res.data.projectcompanies,
       });
     } catch (err) {
       console.log(err);

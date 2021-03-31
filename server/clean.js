@@ -16,6 +16,10 @@ const Notification = require("./models/notification");
 const ProjectOrg = require("./models/projectorg");
 const Template = require("./models/template");
 const Mail = require("./models/mail");
+const Technology = require("../models/technology");
+const SoftCompany = require("../models/softcompany");
+const ProjectCompany = require("../models/projectcompany");
+
 const ROLE_SUPER_ADMIN = require("./constants").ROLE_SUPER_ADMIN;
 
 const main = async () => {
@@ -51,6 +55,9 @@ const cleanModels = async () => {
   await Notification.deleteMany({});
   await ProjectOrg.deleteMany({});
   await Template.deleteMany({});
+  await Technology.deleteMany({});
+  await SoftCompany.deleteMany({});
+  await ProjectCompany.deleteMany({});
   await Article.deleteMany({ organization: { $ne: null } });
   await Mail.deleteMany({ organization: { $ne: null } });
 };
@@ -81,6 +88,16 @@ const createInitUser = async () => {
     user.profile.org_role = "admin";
     user.profile.role = "Operations";
     await user.save();
+    mails = await Mail.find({ organization: null });
+    for (let mail of mails) {
+      if (mail._doc.name === "Software Company Invite") continue;
+      const nm = new Mail({
+        name: mail._doc.name,
+        content: mail._doc.content,
+        organization: org._id,
+      });
+      await nm.save();
+    }
   } catch (err) {
     console.log(err);
   }
