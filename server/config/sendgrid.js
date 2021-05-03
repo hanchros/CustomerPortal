@@ -170,7 +170,13 @@ function inviteFactory(values) {
   const link = `${mainURL}/${encodeURIComponent(
     values.sender_organization
   )}/email-invite?project=${encodeURIComponent(values.project_name)}`;
-  const mailData = Object.assign(values, { link });
+
+  const mailData = Object.assign(values, {
+    link,
+    logo:
+      values.logo ||
+      "https://clientintegration-integra.s3.us-west-2.amazonaws.com/6045ab2a-37ea-44c5-b04f-06aeb318fd4e.png",
+  });
   let template = fs.readFileSync("template/OrgInvite.html", {
     encoding: "utf-8",
   });

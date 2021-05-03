@@ -64,7 +64,7 @@ const sendInviteEmail = async (iv) => {
   delete values.content;
   const form = new FormData();
   const orgPdfPath = `${__dirname}/../uploads/${iv._id}.pdf`;
-  form.append("file", orgPdfPath);
+  form.append("file", fs.createReadStream(orgPdfPath));
   form.append("data_form", JSON.stringify(values));
   form.append("meta_form", JSON.stringify(values));
   form.append("master_id", "123456789");
@@ -169,7 +169,7 @@ exports.downloadInvitePDF = async (req, res, next) => {
     delete values.project_description;
     const form = new FormData();
     const orgPdfPath = `${__dirname}/../uploads/${niv._id}.pdf`;
-    form.append("file", orgPdfPath);
+    form.append("file", fs.createReadStream(orgPdfPath));
     form.append("data_form", JSON.stringify(values));
     form.append("meta_form", JSON.stringify(values));
     form.append("master_id", "123456789");

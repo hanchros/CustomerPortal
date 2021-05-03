@@ -34,14 +34,14 @@ class Dashboard extends Component {
   }
 
   componentDidMount = async () => {
-    const { curOrg, listOrgProjects, listOrgUsers, protectedTest } = this.props;
+    const { listOrgProjects, listOrgUsers, protectedTest } = this.props;
     this.setState({ loading: true });
-    if (!curOrg._id) {
+    if (!this.props.curOrg._id) {
       await protectedTest();
     }
-    if (curOrg._id) {
-      await listOrgProjects(curOrg._id);
-      await listOrgUsers(curOrg._id);
+    if (this.props.curOrg._id) {
+      await listOrgProjects(this.props.curOrg._id);
+      await listOrgUsers(this.props.curOrg._id);
     }
     this.setState({ loading: false });
   };
@@ -195,7 +195,7 @@ class Dashboard extends Component {
 
   render() {
     const { loading, show_invite, show_project_create } = this.state;
-    const { users } = this.props;
+    const { users, curOrg } = this.props;
 
     if (show_invite)
       return (
@@ -216,8 +216,8 @@ class Dashboard extends Component {
         <Container className="content">
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
-          {this.renderOrgInfo()}
-          {!loading && (
+          {curOrg._id && this.renderOrgInfo()}
+          {!loading && curOrg._id && (
             <Tabs
               defaultActiveKey="1"
               type="card"

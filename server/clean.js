@@ -16,9 +16,9 @@ const Notification = require("./models/notification");
 const ProjectOrg = require("./models/projectorg");
 const Template = require("./models/template");
 const Mail = require("./models/mail");
-const Technology = require("../models/technology");
-const SoftCompany = require("../models/softcompany");
-const ProjectCompany = require("../models/projectcompany");
+const Technology = require("./models/technology");
+const SoftCompany = require("./models/softcompany");
+const ProjectCompany = require("./models/projectcompany");
 
 const ROLE_SUPER_ADMIN = require("./constants").ROLE_SUPER_ADMIN;
 
@@ -63,9 +63,9 @@ const cleanModels = async () => {
 };
 
 const createInitUser = async () => {
-  const email = "mrinow@integraledger.com";
-  const first_name = "Mike";
-  const last_name = "Rinow";
+  const email = "collaboration@integraledger.com";
+  const first_name = "Integra";
+  const last_name = "Ledger";
   const password = "MikeRinow1!";
   try {
     let user = new User({

@@ -22,6 +22,18 @@ export const OrgInviteForm = ({ onSubmit, project, onDownload }) => {
 
   return (
     <Form name="inviteOrg" className="register-form" onFinish={onFinish}>
+      <span className="form-label">Organization name*</span>
+      <Form.Item
+        name="organization"
+        rules={[
+          {
+            required: true,
+            message: "Please input the organization!",
+          },
+        ]}
+      >
+        <Input size="large" autoFocus={true} />
+      </Form.Item>
       <span className="form-label">Person’s corporate email*</span>
       <Form.Item
         name="email"
@@ -53,18 +65,6 @@ export const OrgInviteForm = ({ onSubmit, project, onDownload }) => {
           {
             required: true,
             message: "Please input last name!",
-          },
-        ]}
-      >
-        <Input size="large" />
-      </Form.Item>
-      <span className="form-label">Organization name*</span>
-      <Form.Item
-        name="organization"
-        rules={[
-          {
-            required: true,
-            message: "Please input the organization!",
           },
         ]}
       >

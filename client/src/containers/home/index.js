@@ -10,9 +10,7 @@ class HomePage extends React.Component {
       <HomeHOC>
         <div className="flex-colume-center">
           <div className="home-page">
-            <div className="main-background-title">
-              Let's safe collaboration started
-            </div>
+            <div className="main-background-title">Start collaborating now</div>
             <Button
               type="ghost"
               className="black-btn mt-5"

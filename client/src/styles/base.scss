@@ -213,6 +213,12 @@ a.card-link {
   }
 }
 
+.preview-modal {
+  .ant-modal-title {
+    font-size: 20px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .ant-drawer-content-wrapper {
     width: 95% !important;

@@ -135,7 +135,9 @@ class SCInviteEdit extends Component {
     } = this.props;
     this.setState({ loading: true });
     values.content = getInviteContent(values);
-    values.logo = organization.currentOrganization.logo;
+    values.logo =
+      organization.currentOrganization.logo ||
+      "https://clientintegration-integra.s3.us-west-2.amazonaws.com/6045ab2a-37ea-44c5-b04f-06aeb318fd4e.png";
     values.sender_organization = organization.currentOrganization.org_name;
     const mail = await getInviteEmailTemplate(values);
     this.setState({
@@ -212,11 +214,12 @@ class SCInviteEdit extends Component {
         </Row>
         {visible && (
           <Modal
-            title={"Preview Invite Mail"}
+            title={"Preview Invite Email"}
             visible={visible}
             width={600}
             footer={false}
             onCancel={this.onHidePreview}
+            className="preview-modal"
           >
             <div
               style={{ border: "1px solid #4472c4" }}

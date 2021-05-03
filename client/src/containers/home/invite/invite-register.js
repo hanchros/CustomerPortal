@@ -154,7 +154,7 @@ class InviteRegister extends React.Component {
     await registerInvitedUser(values);
     await resolveInvite(pdfData.invite, true);
     this.setState({ loading: false });
-    if (pdfData.project_name) this.props.goNext();
+    if (pdfData.project_id) this.props.goNext();
     else history.push("/login");
   };
 

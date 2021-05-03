@@ -52,7 +52,7 @@ const EditInviteForm = ({ onSubmit, invite, onCancel }) => {
       </div>
       <div className="invite-edit-info mb-4">
         <span>Position</span>
-        <span>{"Sales and Marketing"}</span>
+        <span>{"Marketing or Business Development"}</span>
       </div>
       <span className="form-label">Email*</span>
       <Form.Item

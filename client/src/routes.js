@@ -26,6 +26,7 @@ import TemplatePage from "./containers/template";
 
 // Import techhub pages
 import Techhub from "./containers/techhub/techhub";
+import TechhubEmbed from "./containers/techhub/techhub-embed";
 import LearnHub from "./containers/techhub/learn";
 
 // Import authentication related pages
@@ -57,7 +58,7 @@ import Faq from "./containers/faq";
 
 // Import software company pages
 import CompanyDashboard from "./containers/softcompany/dashboard";
-import CompanyProfile from "./containers/softcompany"
+import CompanyProfile from "./containers/softcompany";
 
 // Import higher order components
 import RequireAuth from "./containers/auth/require_auth";
@@ -118,6 +119,7 @@ class Routes extends React.Component {
           />
 
           <Route path="/techhub" component={RequireAuth(Techhub)} />
+          <Route path="/techhub-embed" component={TechhubEmbed} />
           <Route path="/learnhub" component={RequireAuth(LearnHub)} />
 
           <Route
@@ -134,7 +136,7 @@ class Routes extends React.Component {
           <Route path="/messages" component={RequireAuth(MessageBox)} />
           <Route path="/notification" component={RequireAuth(Notification)} />
           <Route path="/faq" component={Faq} />
-          <Route path="/dashboard" component={RequireAuth(Dashboard)} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/:org_name" component={RequireAuth(OrgDashboard)} />
 
           <Route path="*" component={NotFoundPage} />

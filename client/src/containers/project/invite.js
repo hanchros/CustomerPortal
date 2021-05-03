@@ -434,11 +434,12 @@ class Invite extends Component {
 
           {visible && (
             <Modal
-              title={"Preview Invite Mail"}
+              title={"Preview Invite Email"}
               visible={visible}
               width={600}
               footer={false}
               onCancel={this.onHidePreview}
+              className="preview-modal"
             >
               <div
                 style={{ border: "1px solid #4472c4" }}

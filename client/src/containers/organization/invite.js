@@ -85,11 +85,7 @@ const InviteForm = ({ onSubmit, org, user, onCancel, roles }) => {
         </Form.Item>
       </div>
       <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
-        <Button
-          type="ghost"
-          onClick={onCancelInvite}
-          className="ghost-btn"
-        >
+        <Button type="ghost" onClick={onCancelInvite} className="ghost-btn">
           Cancel
         </Button>
         <Button type="ghost" htmlType="submit" className="black-btn ml-3">
@@ -165,11 +161,12 @@ class OrgInvitePage extends Component {
         />
         {visible && (
           <Modal
-            title={"Preview Invite Mail"}
+            title={"Preview Invite Email"}
             visible={visible}
             width={600}
             footer={false}
             onCancel={this.onHidePreview}
+            className="preview-modal"
           >
             <div
               style={{ border: "1px solid #4472c4" }}
