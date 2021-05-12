@@ -275,6 +275,15 @@ class ProjectInviteMng extends Component {
           {this.setTableInvites(invites).length === 0 && (
             <NonList title="You have no invites yet" />
           )}
+          <div className="flex mt-5" style={{ justifyContent: "flex-end" }}>
+            <Button
+              type="ghost"
+              className="ghost-btn wide wide ml-3"
+              onClick={goback}
+            >
+              <LeftOutlined /> Back to Project
+            </Button>
+          </div>
           {visible && (
             <Modal
               visible={visible}

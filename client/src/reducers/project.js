@@ -7,6 +7,7 @@ import {
   CREATE_PROJECT,
   UPDATE_PROJECT,
   FETCH_PROJECT_ORGANIZATIONS,
+  FETCH_DIAGRAMS,
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -16,6 +17,7 @@ const INITIAL_STATE = {
   participants: [],
   organizations: [],
   comments: [],
+  diagrams: [],
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -54,6 +56,8 @@ export default function (state = INITIAL_STATE, action) {
         projects: uprojs,
         project: action.project,
       };
+    case FETCH_DIAGRAMS:
+      return { ...state, diagrams: action.diagrams };
     default:
       return state;
   }

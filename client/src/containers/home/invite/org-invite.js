@@ -69,17 +69,28 @@ class OrgInviteMember extends React.Component {
       last_name: params.get("ln"),
       role: params.get("role"),
     };
+    const sender = org.creator ? org.creator.profile : {};
     return (
       <HomeHOC>
         <div className="flex-colume-center">
-          <div className="main-background-title">INVITATION</div>
+          <div className="main-background-title mb-2">Organization Invite</div>
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
           {!loading && !isCreate && (
             <Result
               title="You are invited"
-              subTitle="You can accept the invitation to join the organization, or ignore this invitation if you are not willing to join it"
+              style={{width: "80%"}}
+              subTitle={
+                <span>
+                  {sender.first_name} {sender.last_name} invited to you join the
+                  organization {org.org_name} on Collaborate.App.
+                  <br /> Click the Accept button below to join {
+                    org.org_name
+                  }{" "}
+                  and begin collaborating!
+                </span>
+              }
               extra={[
                 <Button
                   type="primary"
@@ -87,9 +98,6 @@ class OrgInviteMember extends React.Component {
                   onClick={this.onAcceptInvite}
                 >
                   Accept
-                </Button>,
-                <Button key="buy" onClick={this.onCancelInvite}>
-                  Cancel
                 </Button>,
               ]}
             />

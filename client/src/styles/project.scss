@@ -646,3 +646,27 @@
     text-decoration: none !important;
   }
 }
+
+.pre-code {
+  margin-bottom: 0;
+  color: inherit;
+  text-align: left;
+  font-size: 7px;
+}
+.react-flow {
+  .updatesave__controls {
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    button {
+      margin-top: 5px;
+    }
+  }
+  .react-flow__node {
+    padding: 5px 10px;
+    min-width: 120px;
+  }
+}

@@ -112,7 +112,7 @@ export const InviteRegisterForm = ({
                 },
               ]}
             >
-              <Input size="large" type="password" />
+              <Input size="large" type="password" autoComplete="new-password" />
             </Form.Item>
             <span className="form-label">Confirm password*</span>
             <Form.Item

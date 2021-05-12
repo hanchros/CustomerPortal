@@ -17,6 +17,7 @@ import UserAvatar from "../../assets/img/user-avatar.png";
 import TeamIcon from "../../assets/img/team-icon.png";
 import { Header } from "../../components/template";
 import { getProject, getParticipant } from "../../actions/project";
+import history from "../../history";
 
 const { Option } = Mentions;
 
@@ -133,7 +134,7 @@ class MessageBox extends Component {
     const messages = message.messages || [];
     let result = [];
     for (let m of messages) {
-      if (!m.author) continue
+      if (!m.author) continue;
       let author = `${m.author.profile.first_name} ${m.author.profile.last_name}`;
       let avatar = m.author.profile.photo || UserAvatar;
       let content = <p>{m.body}</p>;
@@ -222,9 +223,19 @@ class MessageBox extends Component {
     return curMemebers;
   };
 
+  goToProject = (projectId) => {
+    history.push(`/project/${projectId}`);
+  };
+
   render() {
     const { message } = this.props;
-    const { messageText, receptor, searchTxt, isTeamChat } = this.state;
+    const {
+      messageText,
+      receptor,
+      searchTxt,
+      isTeamChat,
+      receptorId,
+    } = this.state;
     const conversations = message.conversations;
     const memberNames = this.getMemberNames();
     return (
@@ -257,6 +268,11 @@ class MessageBox extends Component {
                       {isTeamChat ? "Team" : "User"} / {receptor}
                     </b>
                   </h5>
+                  {isTeamChat && (
+                    <Button onClick={() => this.goToProject(receptorId)}>
+                      Back to project
+                    </Button>
+                  )}
                 </div>
                 <div className="message-board">
                   <List

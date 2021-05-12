@@ -169,6 +169,12 @@ a.card-link {
 
 .ant-popover-inner-content {
   padding: 0 !important;
+  .ant-popover-message {
+    padding: 5px 8px;
+  }
+  .ant-popover-buttons {
+    padding: 8px;
+  }
 }
 
 .ant-popover-placement-bottomRight {

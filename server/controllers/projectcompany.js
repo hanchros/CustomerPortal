@@ -9,6 +9,13 @@ exports.createProjectCompany = async (req, res, next) => {
         .send({ error: "The company is already associated with this project" });
     }
     let projectcompany = new ProjectCompany(req.body);
+    expcs = await ProjectCompany.find({
+      softcompany: req.body.softcompany,
+      project: req.body.project,
+    });
+    if (expcs && expcs.length > 0) {
+      projectcompany.status = 0;
+    }
     projectcompany = await projectcompany.save();
     return res.status(200).json({ projectcompany });
   } catch (err) {

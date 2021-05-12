@@ -7,6 +7,7 @@ import {
   CREATE_PROJECT,
   UPDATE_PROJECT,
   FETCH_PROJECT_ORGANIZATIONS,
+  FETCH_DIAGRAMS,
 } from "./types";
 import axios from "axios";
 import Client from "./api";
@@ -338,5 +339,39 @@ export function getBorderStyle() {
   return async (dispatch, getState) => {
     const orgSettings = getState().organization.orgSettings;
     return `1px solid ${orgSettings.primary_color}`;
+  };
+}
+
+export function listDiagrams(project_id) {
+  const client = Client(true);
+  return async (dispatch) => {
+    try {
+      const res = await client.get(`${API_URL}/project/diagram/${project_id}`);
+      dispatch({
+        type: FETCH_DIAGRAMS,
+        diagrams: res.data.diagrams,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function updateDiagrams(project_id, diagrams) {
+  return async (dispatch) => {
+    const client = Client(true);
+    try {
+      const res = await client.post(
+        `${API_URL}/project/diagram/${project_id}`,
+        { diagrams }
+      );
+      dispatch({
+        type: FETCH_DIAGRAMS,
+        diagrams: res.data.diagrams,
+      });
+      message.success("Diagram has been saved successfully");
+    } catch (err) {
+      createNotification("Save Diagram", errorMessage(err));
+    }
   };
 }

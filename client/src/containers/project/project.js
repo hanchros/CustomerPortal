@@ -20,6 +20,7 @@ import ProjectInvite from "./project-invites";
 import ProjectTech from "./project-tech";
 import ProjectApps from "./project-apps";
 import history from "../../history";
+import ProjectGraph from "./project-graph/index";
 
 const { TabPane } = Tabs;
 
@@ -179,6 +180,9 @@ class Project extends Component {
             </TabPane>
             <TabPane tab="APPLICATIONS" key="4">
               <ProjectApps />
+            </TabPane>
+            <TabPane tab="COLLABORATION" key="5">
+              <ProjectGraph isCreator={isCreator}/>
             </TabPane>
           </Tabs>
           <hr className="mt-4" />

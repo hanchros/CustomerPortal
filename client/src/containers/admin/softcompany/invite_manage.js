@@ -167,7 +167,7 @@ class SoftwareCompany extends Component {
       </div>
     );
     return (
-      <Popover placement="bottomRight" content={content} trigger="click">
+      <Popover className="more-popover" placement="bottomRight" content={content} trigger="click">
         <Link to="#">
           <MoreOutlined />
         </Link>

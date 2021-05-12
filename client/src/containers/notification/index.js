@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Row, Col, Container } from "reactstrap";
-import { Button } from "antd";
 import {
   readNotification,
   resolveNotification,
@@ -61,27 +60,6 @@ class Notification extends Component {
           <div className="mt-3">You have {item.status} the invitation</div>
         )}
       </div>
-      {item.status === "pending" && (
-        <div className="action-body">
-          <span className="error">Your action is required</span>
-          <div className="flex">
-            <Button
-              type="ghost"
-              className="ghost-btn mr-3"
-              onClick={() => this.onDeclineInvite(item)}
-            >
-              decline
-            </Button>
-            <Button
-              type="ghost"
-              className="black-btn"
-              onClick={() => this.onAcceptInvite(item)}
-            >
-              accept invitation
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 

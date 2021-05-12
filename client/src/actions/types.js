@@ -129,3 +129,5 @@ export const FETCH_TECHNOLOGY = "fetch_technology",
   UPDATE_TECHNOLOGY = "update_technology",
   CREATE_TECHNOLOGY = "create_technology",
   DELETE_TECHNOLOGY = "delete_technology";
+
+export const FETCH_DIAGRAMS = "fetch_diagrams";

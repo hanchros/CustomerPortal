@@ -18,6 +18,10 @@ import InvitePage from "../organization/invite";
 import NonList from "../../components/pages/non-list";
 import SelectTemplate from "../project/select-template";
 import OrgUsers from "../organization/users";
+import { resolveNotification } from "../../actions/notification";
+import { acceptOrgProject, resolveInvite } from "../../actions/invite";
+import { ClockCircleOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const { TabPane } = Tabs;
 
@@ -193,6 +197,76 @@ class Dashboard extends Component {
     );
   };
 
+  onAcceptInvite = async (item) => {
+    const { resolveNotification, acceptOrgProject, resolveInvite } = this.props;
+    await acceptOrgProject(item.invite);
+    await resolveInvite(item.invite, true);
+    await resolveNotification(item._id, "accepted");
+  };
+
+  onDeclineInvite = async (item) => {
+    const { resolveNotification, resolveInvite } = this.props;
+    await resolveInvite(item.invite, false);
+    await resolveNotification(item._id, "declined");
+  };
+
+  renderProjectInvite = () => {
+    const notifications = this.props.notification.notifications;
+    let invites = [];
+    for (let notif of notifications) {
+      if (notif.status === "pending") {
+        invites.push(notif);
+      }
+    }
+    if (invites.length === 0) return null;
+    return (
+      <React.Fragment>
+        {invites.map((item) => (
+          <div key={item._id} className="notif-box">
+            <div className="main-body">
+              <div
+                className="flex mb-3"
+                style={{ justifyContent: "space-between" }}
+              >
+                <h5>
+                  <b>{item.title}</b>
+                </h5>
+                <span className="date-format">
+                  <ClockCircleOutlined className="mr-2" />
+                  {moment(item.createdAt).format("MMM DD, h:mmA")}
+                </span>
+              </div>
+              <div
+                style={{ fontSize: "14px" }}
+                className="notif-content"
+                dangerouslySetInnerHTML={{ __html: item.body }}
+              />
+            </div>
+            <div className="action-body">
+              <span className="error">Your action is required</span>
+              <div className="flex">
+                <Button
+                  type="ghost"
+                  className="ghost-btn mr-3"
+                  onClick={() => this.onDeclineInvite(item)}
+                >
+                  decline
+                </Button>
+                <Button
+                  type="ghost"
+                  className="black-btn"
+                  onClick={() => this.onAcceptInvite(item)}
+                >
+                  accept invitation
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </React.Fragment>
+    );
+  };
+
   render() {
     const { loading, show_invite, show_project_create } = this.state;
     const { users, curOrg } = this.props;
@@ -217,6 +291,7 @@ class Dashboard extends Component {
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
           {curOrg._id && this.renderOrgInfo()}
+          {this.renderProjectInvite()}
           {!loading && curOrg._id && (
             <Tabs
               defaultActiveKey="1"
@@ -246,6 +321,7 @@ function mapStateToProps(state) {
     curOrg: state.organization.currentOrganization,
     users: state.organization.users,
     organization: state.organization,
+    notification: state.notification,
   };
 }
 
@@ -254,4 +330,7 @@ export default connect(mapStateToProps, {
   listOrgProjects,
   listOrgUsers,
   protectedTest,
+  resolveInvite,
+  acceptOrgProject,
+  resolveNotification,
 })(Dashboard);

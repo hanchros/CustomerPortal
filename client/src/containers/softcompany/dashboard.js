@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
-import { Avatar, Skeleton, Tabs, List, Button, Modal } from "antd";
+import { Avatar, Skeleton, Tabs, List, Button, Modal, Alert } from "antd";
 import { Header, Footer } from "../../components/template";
 import OrgLogo from "../../assets/icon/challenge.png";
 import { listOrgProjects } from "../../actions/organization";
@@ -30,15 +30,20 @@ class Dashboard extends Component {
       title: "",
       curPC: {},
       showPCModal: false,
+      activeKey: "1",
     };
   }
 
   componentDidMount = async () => {
-    const { user, protectedTest, listPCByCompany } = this.props;
+    const { protectedTest, listPCByCompany } = this.props;
     this.setState({ loading: true });
-    if (!user._id) await protectedTest();
-    else await listPCByCompany(user._id);
+    if (!this.props.user._id) await protectedTest();
+    if (this.props.user._id) await listPCByCompany(this.props.user._id);
     this.setState({ loading: false });
+  };
+
+  onChangeTab = (activeKey) => {
+    this.setState({ activeKey });
   };
 
   goToProject = (item) => {
@@ -109,6 +114,14 @@ class Dashboard extends Component {
   renderProjects = () => {
     const projectcompanies = this.props.softcompany.projectcompanies;
     let pcs = projectcompanies.filter((pc) => pc.status === 0);
+    let projs = [];
+    for (let pc of pcs) {
+      let fprojs = projs.filter((item) => item._id === pc.project._id);
+      if (fprojs.length === 0) {
+        projs.push(pc.project);
+      }
+    }
+
     return (
       <React.Fragment>
         <Row>
@@ -120,28 +133,28 @@ class Dashboard extends Component {
               <span>leader</span>
               <span></span>
             </div>
-            {pcs.length === 0 && <NonList title="You have no projects yet." />}
-            {pcs.map((pc) => (
+            {projs.length === 0 && (
+              <NonList title="You have no projects yet." />
+            )}
+            {projs.map((proj) => (
               <div
                 className="project-table-item"
-                key={pc._id}
-                onClick={() => this.goToProject(pc.project)}
+                key={proj._id}
+                onClick={() => this.goToProject(proj)}
               >
                 <div className="cell0">
-                  <Avatar src={pc.project.logo || OrgLogo} />
+                  <Avatar src={proj.logo || OrgLogo} />
                 </div>
                 <div className="cell0">
                   <p>
-                    <b>{pc.project.name}</b>
+                    <b>{proj.name}</b>
                   </p>
-                  <span>{pc.project.objective}</span>
+                  <span>{proj.objective}</span>
                 </div>
+                <div className="cell0">{proj.participant.profile.org_name}</div>
                 <div className="cell0">
-                  {pc.project.participant.profile.org_name}
-                </div>
-                <div className="cell0">
-                  {pc.project.participant.profile.first_name}{" "}
-                  {pc.project.participant.profile.last_name}
+                  {proj.participant.profile.first_name}{" "}
+                  {proj.participant.profile.last_name}
                 </div>
                 <div className="cell0"></div>
               </div>
@@ -150,6 +163,23 @@ class Dashboard extends Component {
         </Row>
       </React.Fragment>
     );
+  };
+
+  renderInvitationAlert = () => {
+    const projectcompanies = this.props.softcompany.projectcompanies;
+    let pcs = projectcompanies.filter((pc) => pc.status === 1);
+    if (pcs.length === 0) return null;
+
+    const valid = (
+      <div className="profile-alert">
+        You have been invited to join the projects &nbsp;&nbsp; Click{" "}
+        <Link to="#" onClick={() => this.setState({ activeKey: "3" })}>
+          here
+        </Link>{" "}
+        to check the invitation
+      </div>
+    );
+    return <Alert message={valid} className="mb-4" type="info" closable />;
   };
 
   renderInvites = () => {
@@ -319,20 +349,22 @@ class Dashboard extends Component {
 
   render() {
     const { user } = this.props;
-    const { loading } = this.state;
+    const { loading, activeKey } = this.state;
     return (
       <React.Fragment>
         <Header />
         <Container className="content">
           <Skeleton active loading={loading} />
           <Skeleton active loading={loading} />
+          {this.renderInvitationAlert()}
           {this.renderCompanyInfo()}
           {!loading && user.profile && (
             <Tabs
-              defaultActiveKey="1"
               type="card"
               size="large"
               className="custom-tabs"
+              onChange={this.onChangeTab}
+              activeKey={activeKey}
             >
               <TabPane tab="SERVICES" key="1">
                 {this.renderServices()}

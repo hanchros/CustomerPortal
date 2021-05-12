@@ -73,7 +73,7 @@ const SignupForm = ({ onSubmit }) => {
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="Password" />
+            <Input size="large" type="password" placeholder="Password" autoComplete="new-password" />
           </Form.Item>
         </Col>
         <Col md={6}>

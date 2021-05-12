@@ -163,7 +163,7 @@ export const SCStep1Form = ({ onSubmit, goBack, orgTypes, scData }) => {
                   },
                 ]}
               >
-                <Input size="large" type="password" />
+                <Input size="large" type="password" autoComplete="new-password"/>
               </Form.Item>
             </Col>
           </Row>

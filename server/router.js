@@ -18,6 +18,7 @@ const TimelineController = require("./controllers/timeline");
 const SoftCompanyController = require("./controllers/softcompany");
 const TechnologyController = require("./controllers/technology")
 const ProjectCompanyController = require("./controllers/projectcompany")
+const DiagramController = require("./controllers/diagram")
 
 var multer  = require('multer')
 const express = require("express");
@@ -187,8 +188,12 @@ module.exports = function (app) {
   projectRoutes.post("/admin/unarchive/:id", ProjectController.unArchiveProject);
   // Get invite mail template route
   projectRoutes.post("/mail/template", ProjectController.getMailTemplate);
-
-
+  // Get list diagram route
+  projectRoutes.get("/diagram/:project_id", DiagramController.listDiagram);
+  // Update diagrams route
+  projectRoutes.post("/diagram/:project_id", DiagramController.bulkUpdateDiagram);
+  
+  
   //= ========================
   // Invite Routes
   //= ========================
